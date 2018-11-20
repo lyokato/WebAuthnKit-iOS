@@ -1,0 +1,1023 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3B57E257E4B9B7C0AF05A39E /* Pods_WebAuthnKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59424062FA14F4308BAFACBB /* Pods_WebAuthnKit.framework */; };
+		90D2E9DE21A424DD00032373 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2E9DD21A424DD00032373 /* AppDelegate.swift */; };
+		90D2E9E021A424DD00032373 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2E9DF21A424DD00032373 /* ViewController.swift */; };
+		90D2E9E321A424DD00032373 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90D2E9E121A424DD00032373 /* Main.storyboard */; };
+		90D2E9E521A424DD00032373 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90D2E9E421A424DD00032373 /* Assets.xcassets */; };
+		90D2E9E821A424DD00032373 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90D2E9E621A424DD00032373 /* LaunchScreen.storyboard */; };
+		90D2EA1921A425DC00032373 /* WebAuthnKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90D2EA1021A425DC00032373 /* WebAuthnKit.framework */; };
+		90D2EA2021A425DD00032373 /* WebAuthnKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA1F21A425DD00032373 /* WebAuthnKitTests.swift */; };
+		90D2EA2221A425DD00032373 /* WebAuthnKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 90D2EA1221A425DC00032373 /* WebAuthnKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		90D2EA2521A425DD00032373 /* WebAuthnKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90D2EA1021A425DC00032373 /* WebAuthnKit.framework */; };
+		90D2EA2621A425DD00032373 /* WebAuthnKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 90D2EA1021A425DC00032373 /* WebAuthnKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		90D2EA3121A4422D00032373 /* WAKTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3021A4422D00032373 /* WAKTypes.swift */; };
+		90D2EA3321A4423200032373 /* WAKLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3221A4423200032373 /* WAKLogger.swift */; };
+		90D2EA3D21A442AE00032373 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3521A442AE00032373 /* JSON.swift */; };
+		90D2EA3E21A442AE00032373 /* PEM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3621A442AE00032373 /* PEM.swift */; };
+		90D2EA3F21A442AE00032373 /* COSE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3721A442AE00032373 /* COSE.swift */; };
+		90D2EA4021A442AE00032373 /* CBOR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3821A442AE00032373 /* CBOR.swift */; };
+		90D2EA4121A442AE00032373 /* Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3921A442AE00032373 /* Base64.swift */; };
+		90D2EA4221A442AE00032373 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3A21A442AE00032373 /* Bytes.swift */; };
+		90D2EA4321A442AE00032373 /* UUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3B21A442AE00032373 /* UUID.swift */; };
+		90D2EA4421A442AE00032373 /* DER.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3C21A442AE00032373 /* DER.swift */; };
+		90D2EA4721A443E200032373 /* CBORTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4521A443E200032373 /* CBORTests.swift */; };
+		90D2EA4821A443E200032373 /* COSETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4621A443E200032373 /* COSETests.swift */; };
+		90D2EA4E21A4449000032373 /* AuthenticatorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4B21A4449000032373 /* AuthenticatorData.swift */; };
+		90D2EA4F21A4449000032373 /* Attestation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4C21A4449000032373 /* Attestation.swift */; };
+		90D2EA5021A4449000032373 /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4D21A4449000032373 /* Authenticator.swift */; };
+		90D2EA5621A4452E00032373 /* InternalAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5121A4452E00032373 /* InternalAuthenticator.swift */; };
+		90D2EA5721A4452E00032373 /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5221A4452E00032373 /* CredentialStore.swift */; };
+		90D2EA5821A4452E00032373 /* CredentialEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5321A4452E00032373 /* CredentialEncryptor.swift */; };
+		90D2EA5921A4452E00032373 /* UserConsentUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5421A4452E00032373 /* UserConsentUI.swift */; };
+		90D2EA5A21A4452E00032373 /* KeySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5521A4452E00032373 /* KeySupport.swift */; };
+		90D2EA5E21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5C21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift */; };
+		90D2EA5F21A4453C00032373 /* InternalAuthenticatorMakeCredentialSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5D21A4453C00032373 /* InternalAuthenticatorMakeCredentialSession.swift */; };
+		90D2EA6221A4467100032373 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6121A4467100032373 /* Client.swift */; };
+		90D2EA6621A4469A00032373 /* ClientGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6421A4469A00032373 /* ClientGetOperation.swift */; };
+		90D2EA6721A4469A00032373 /* ClientCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6521A4469A00032373 /* ClientCreateOperation.swift */; };
+		90D2EA6921A4488200032373 /* SelfAttestation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6821A4488200032373 /* SelfAttestation.swift */; };
+		90D2EA6B21A44B1D00032373 /* PEMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6A21A44B1D00032373 /* PEMTests.swift */; };
+		B91D11376957802B96D6EA6E /* Pods_WebAuthnKitDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D2988A06B4CC546656EEBF2 /* Pods_WebAuthnKitDemo.framework */; };
+		E2142E8C6CCAF5C0CDE022F3 /* Pods_WebAuthnKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FF3E155C7228F98215A96DE /* Pods_WebAuthnKitTests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		90D2EA1A21A425DC00032373 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90D2E9D221A424DD00032373 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 90D2EA0F21A425DC00032373;
+			remoteInfo = WebAuthnKit;
+		};
+		90D2EA1C21A425DD00032373 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90D2E9D221A424DD00032373 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 90D2E9D921A424DD00032373;
+			remoteInfo = WebAuthnKitDemo;
+		};
+		90D2EA2321A425DD00032373 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90D2E9D221A424DD00032373 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 90D2EA0F21A425DC00032373;
+			remoteInfo = WebAuthnKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		90D2EA2C21A425DD00032373 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				90D2EA2621A425DD00032373 /* WebAuthnKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		02DE0FCC8D1FB5B9CFC23CF1 /* Pods-WebAuthnKitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKitTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKitTests/Pods-WebAuthnKitTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1B4E04BF81368CBFD090E67D /* Pods-WebAuthnKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKit/Pods-WebAuthnKit.debug.xcconfig"; sourceTree = "<group>"; };
+		30AF97DF9D9805807720A9E7 /* Pods_WebAuthnKitDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebAuthnKitDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		59424062FA14F4308BAFACBB /* Pods_WebAuthnKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebAuthnKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D2988A06B4CC546656EEBF2 /* Pods_WebAuthnKitDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebAuthnKitDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		613AFAB626CD02E5B4BF4087 /* Pods-WebAuthnKitDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKitDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKitDemo/Pods-WebAuthnKitDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		7D013FA4EF3D6149C39723EF /* Pods-WebAuthnKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKit.release.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKit/Pods-WebAuthnKit.release.xcconfig"; sourceTree = "<group>"; };
+		8296ABA3FE6DEC114151D036 /* Pods_WebAuthnKitDemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebAuthnKitDemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		90D2E9DA21A424DD00032373 /* WebAuthnKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebAuthnKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		90D2E9DD21A424DD00032373 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		90D2E9DF21A424DD00032373 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		90D2E9E221A424DD00032373 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		90D2E9E421A424DD00032373 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		90D2E9E721A424DD00032373 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		90D2E9E921A424DD00032373 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90D2EA1021A425DC00032373 /* WebAuthnKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WebAuthnKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		90D2EA1221A425DC00032373 /* WebAuthnKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebAuthnKit.h; sourceTree = "<group>"; };
+		90D2EA1321A425DC00032373 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90D2EA1821A425DC00032373 /* WebAuthnKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WebAuthnKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		90D2EA1F21A425DD00032373 /* WebAuthnKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAuthnKitTests.swift; sourceTree = "<group>"; };
+		90D2EA2121A425DD00032373 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90D2EA3021A4422D00032373 /* WAKTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WAKTypes.swift; sourceTree = "<group>"; };
+		90D2EA3221A4423200032373 /* WAKLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WAKLogger.swift; sourceTree = "<group>"; };
+		90D2EA3521A442AE00032373 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
+		90D2EA3621A442AE00032373 /* PEM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PEM.swift; sourceTree = "<group>"; };
+		90D2EA3721A442AE00032373 /* COSE.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = COSE.swift; sourceTree = "<group>"; };
+		90D2EA3821A442AE00032373 /* CBOR.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBOR.swift; sourceTree = "<group>"; };
+		90D2EA3921A442AE00032373 /* Base64.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base64.swift; sourceTree = "<group>"; };
+		90D2EA3A21A442AE00032373 /* Bytes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bytes.swift; sourceTree = "<group>"; };
+		90D2EA3B21A442AE00032373 /* UUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UUID.swift; sourceTree = "<group>"; };
+		90D2EA3C21A442AE00032373 /* DER.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DER.swift; sourceTree = "<group>"; };
+		90D2EA4521A443E200032373 /* CBORTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBORTests.swift; sourceTree = "<group>"; };
+		90D2EA4621A443E200032373 /* COSETests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = COSETests.swift; sourceTree = "<group>"; };
+		90D2EA4B21A4449000032373 /* AuthenticatorData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatorData.swift; sourceTree = "<group>"; };
+		90D2EA4C21A4449000032373 /* Attestation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attestation.swift; sourceTree = "<group>"; };
+		90D2EA4D21A4449000032373 /* Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
+		90D2EA5121A4452E00032373 /* InternalAuthenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalAuthenticator.swift; sourceTree = "<group>"; };
+		90D2EA5221A4452E00032373 /* CredentialStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CredentialStore.swift; sourceTree = "<group>"; };
+		90D2EA5321A4452E00032373 /* CredentialEncryptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CredentialEncryptor.swift; sourceTree = "<group>"; };
+		90D2EA5421A4452E00032373 /* UserConsentUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserConsentUI.swift; sourceTree = "<group>"; };
+		90D2EA5521A4452E00032373 /* KeySupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeySupport.swift; sourceTree = "<group>"; };
+		90D2EA5C21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalAuthenticatorGetAssertionSession.swift; sourceTree = "<group>"; };
+		90D2EA5D21A4453C00032373 /* InternalAuthenticatorMakeCredentialSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalAuthenticatorMakeCredentialSession.swift; sourceTree = "<group>"; };
+		90D2EA6121A4467100032373 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		90D2EA6421A4469A00032373 /* ClientGetOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientGetOperation.swift; sourceTree = "<group>"; };
+		90D2EA6521A4469A00032373 /* ClientCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientCreateOperation.swift; sourceTree = "<group>"; };
+		90D2EA6821A4488200032373 /* SelfAttestation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfAttestation.swift; sourceTree = "<group>"; };
+		90D2EA6A21A44B1D00032373 /* PEMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PEMTests.swift; sourceTree = "<group>"; };
+		9FF3E155C7228F98215A96DE /* Pods_WebAuthnKitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebAuthnKitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3B78E73DB43D2411A1E78C3 /* Pods-WebAuthnKitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKitTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKitTests/Pods-WebAuthnKitTests.release.xcconfig"; sourceTree = "<group>"; };
+		B7FCC422FB36271D9963F89C /* Pods-WebAuthnKitDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKitDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKitDemo/Pods-WebAuthnKitDemo.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		90D2E9D721A424DD00032373 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B91D11376957802B96D6EA6E /* Pods_WebAuthnKitDemo.framework in Frameworks */,
+				90D2EA2521A425DD00032373 /* WebAuthnKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90D2EA0D21A425DC00032373 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B57E257E4B9B7C0AF05A39E /* Pods_WebAuthnKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90D2EA1521A425DC00032373 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90D2EA1921A425DC00032373 /* WebAuthnKit.framework in Frameworks */,
+				E2142E8C6CCAF5C0CDE022F3 /* Pods_WebAuthnKitTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		78AD1ABB20F28963F8636521 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5D2988A06B4CC546656EEBF2 /* Pods_WebAuthnKitDemo.framework */,
+				30AF97DF9D9805807720A9E7 /* Pods_WebAuthnKitDemoTests.framework */,
+				8296ABA3FE6DEC114151D036 /* Pods_WebAuthnKitDemoUITests.framework */,
+				59424062FA14F4308BAFACBB /* Pods_WebAuthnKit.framework */,
+				9FF3E155C7228F98215A96DE /* Pods_WebAuthnKitTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8BBB3D44C75DCDAC3A69D26C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				613AFAB626CD02E5B4BF4087 /* Pods-WebAuthnKitDemo.debug.xcconfig */,
+				B7FCC422FB36271D9963F89C /* Pods-WebAuthnKitDemo.release.xcconfig */,
+				1B4E04BF81368CBFD090E67D /* Pods-WebAuthnKit.debug.xcconfig */,
+				7D013FA4EF3D6149C39723EF /* Pods-WebAuthnKit.release.xcconfig */,
+				02DE0FCC8D1FB5B9CFC23CF1 /* Pods-WebAuthnKitTests.debug.xcconfig */,
+				B3B78E73DB43D2411A1E78C3 /* Pods-WebAuthnKitTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		90D2E9D121A424DD00032373 = {
+			isa = PBXGroup;
+			children = (
+				90D2E9DC21A424DD00032373 /* WebAuthnKitDemo */,
+				90D2EA1121A425DC00032373 /* WebAuthnKit */,
+				90D2EA1E21A425DD00032373 /* WebAuthnKitTests */,
+				90D2E9DB21A424DD00032373 /* Products */,
+				8BBB3D44C75DCDAC3A69D26C /* Pods */,
+				78AD1ABB20F28963F8636521 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		90D2E9DB21A424DD00032373 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				90D2E9DA21A424DD00032373 /* WebAuthnKitDemo.app */,
+				90D2EA1021A425DC00032373 /* WebAuthnKit.framework */,
+				90D2EA1821A425DC00032373 /* WebAuthnKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		90D2E9DC21A424DD00032373 /* WebAuthnKitDemo */ = {
+			isa = PBXGroup;
+			children = (
+				90D2E9DD21A424DD00032373 /* AppDelegate.swift */,
+				90D2E9DF21A424DD00032373 /* ViewController.swift */,
+				90D2E9E121A424DD00032373 /* Main.storyboard */,
+				90D2E9E421A424DD00032373 /* Assets.xcassets */,
+				90D2E9E621A424DD00032373 /* LaunchScreen.storyboard */,
+				90D2E9E921A424DD00032373 /* Info.plist */,
+			);
+			path = WebAuthnKitDemo;
+			sourceTree = "<group>";
+		};
+		90D2EA1121A425DC00032373 /* WebAuthnKit */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA2F21A42B8C00032373 /* Headers */,
+				90D2EA2E21A42B8500032373 /* Sources */,
+				90D2EA1321A425DC00032373 /* Info.plist */,
+			);
+			path = WebAuthnKit;
+			sourceTree = "<group>";
+		};
+		90D2EA1E21A425DD00032373 /* WebAuthnKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA4521A443E200032373 /* CBORTests.swift */,
+				90D2EA4621A443E200032373 /* COSETests.swift */,
+				90D2EA1F21A425DD00032373 /* WebAuthnKitTests.swift */,
+				90D2EA2121A425DD00032373 /* Info.plist */,
+				90D2EA6A21A44B1D00032373 /* PEMTests.swift */,
+			);
+			path = WebAuthnKitTests;
+			sourceTree = "<group>";
+		};
+		90D2EA2E21A42B8500032373 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA6021A4466100032373 /* Client */,
+				90D2EA4921A4446C00032373 /* Authenticator */,
+				90D2EA3421A4429E00032373 /* Format */,
+				90D2EA3221A4423200032373 /* WAKLogger.swift */,
+				90D2EA3021A4422D00032373 /* WAKTypes.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		90D2EA2F21A42B8C00032373 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA1221A425DC00032373 /* WebAuthnKit.h */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		90D2EA3421A4429E00032373 /* Format */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA3921A442AE00032373 /* Base64.swift */,
+				90D2EA3A21A442AE00032373 /* Bytes.swift */,
+				90D2EA3821A442AE00032373 /* CBOR.swift */,
+				90D2EA3721A442AE00032373 /* COSE.swift */,
+				90D2EA3C21A442AE00032373 /* DER.swift */,
+				90D2EA3521A442AE00032373 /* JSON.swift */,
+				90D2EA3621A442AE00032373 /* PEM.swift */,
+				90D2EA3B21A442AE00032373 /* UUID.swift */,
+			);
+			path = Format;
+			sourceTree = "<group>";
+		};
+		90D2EA4921A4446C00032373 /* Authenticator */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA4C21A4449000032373 /* Attestation.swift */,
+				90D2EA4D21A4449000032373 /* Authenticator.swift */,
+				90D2EA4B21A4449000032373 /* AuthenticatorData.swift */,
+				90D2EA4A21A4448000032373 /* Internal */,
+			);
+			path = Authenticator;
+			sourceTree = "<group>";
+		};
+		90D2EA4A21A4448000032373 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA5B21A4453100032373 /* Session */,
+				90D2EA5121A4452E00032373 /* InternalAuthenticator.swift */,
+				90D2EA5321A4452E00032373 /* CredentialEncryptor.swift */,
+				90D2EA5221A4452E00032373 /* CredentialStore.swift */,
+				90D2EA5521A4452E00032373 /* KeySupport.swift */,
+				90D2EA5421A4452E00032373 /* UserConsentUI.swift */,
+				90D2EA6821A4488200032373 /* SelfAttestation.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		90D2EA5B21A4453100032373 /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA5C21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift */,
+				90D2EA5D21A4453C00032373 /* InternalAuthenticatorMakeCredentialSession.swift */,
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
+		90D2EA6021A4466100032373 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA6321A4469000032373 /* Operation */,
+				90D2EA6121A4467100032373 /* Client.swift */,
+			);
+			path = Client;
+			sourceTree = "<group>";
+		};
+		90D2EA6321A4469000032373 /* Operation */ = {
+			isa = PBXGroup;
+			children = (
+				90D2EA6521A4469A00032373 /* ClientCreateOperation.swift */,
+				90D2EA6421A4469A00032373 /* ClientGetOperation.swift */,
+			);
+			path = Operation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		90D2EA0B21A425DC00032373 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90D2EA2221A425DD00032373 /* WebAuthnKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		90D2E9D921A424DD00032373 /* WebAuthnKitDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 90D2EA0221A424DE00032373 /* Build configuration list for PBXNativeTarget "WebAuthnKitDemo" */;
+			buildPhases = (
+				E7A72A38B9DB2E919F075322 /* [CP] Check Pods Manifest.lock */,
+				90D2E9D621A424DD00032373 /* Sources */,
+				90D2E9D721A424DD00032373 /* Frameworks */,
+				90D2E9D821A424DD00032373 /* Resources */,
+				A92BC5E86713D9AE928C9707 /* [CP] Embed Pods Frameworks */,
+				35CD88C7C1DB0FCC4D61A501 /* [CP] Copy Pods Resources */,
+				90D2EA2C21A425DD00032373 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				90D2EA2421A425DD00032373 /* PBXTargetDependency */,
+			);
+			name = WebAuthnKitDemo;
+			productName = WebAuthnKitDemo;
+			productReference = 90D2E9DA21A424DD00032373 /* WebAuthnKitDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		90D2EA0F21A425DC00032373 /* WebAuthnKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 90D2EA2B21A425DD00032373 /* Build configuration list for PBXNativeTarget "WebAuthnKit" */;
+			buildPhases = (
+				3B836228C3162FB6D179C169 /* [CP] Check Pods Manifest.lock */,
+				90D2EA0B21A425DC00032373 /* Headers */,
+				90D2EA0C21A425DC00032373 /* Sources */,
+				90D2EA0D21A425DC00032373 /* Frameworks */,
+				90D2EA0E21A425DC00032373 /* Resources */,
+				A0A73FA108A908D0407BF391 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WebAuthnKit;
+			productName = WebAuthnKit;
+			productReference = 90D2EA1021A425DC00032373 /* WebAuthnKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		90D2EA1721A425DC00032373 /* WebAuthnKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 90D2EA2D21A425DD00032373 /* Build configuration list for PBXNativeTarget "WebAuthnKitTests" */;
+			buildPhases = (
+				5EC2431A917BEAB82BB02A86 /* [CP] Check Pods Manifest.lock */,
+				90D2EA1421A425DC00032373 /* Sources */,
+				90D2EA1521A425DC00032373 /* Frameworks */,
+				90D2EA1621A425DC00032373 /* Resources */,
+				922EE798701D89D85DB5E622 /* [CP] Embed Pods Frameworks */,
+				F1E161D742521155F5826FC8 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				90D2EA1B21A425DC00032373 /* PBXTargetDependency */,
+				90D2EA1D21A425DD00032373 /* PBXTargetDependency */,
+			);
+			name = WebAuthnKitTests;
+			productName = WebAuthnKitTests;
+			productReference = 90D2EA1821A425DC00032373 /* WebAuthnKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		90D2E9D221A424DD00032373 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1010;
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = "Lyo Kato";
+				TargetAttributes = {
+					90D2E9D921A424DD00032373 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					90D2EA0F21A425DC00032373 = {
+						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1010;
+					};
+					90D2EA1721A425DC00032373 = {
+						CreatedOnToolsVersion = 10.1;
+						TestTargetID = 90D2E9D921A424DD00032373;
+					};
+				};
+			};
+			buildConfigurationList = 90D2E9D521A424DD00032373 /* Build configuration list for PBXProject "WebAuthnKitDemo" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 90D2E9D121A424DD00032373;
+			productRefGroup = 90D2E9DB21A424DD00032373 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				90D2E9D921A424DD00032373 /* WebAuthnKitDemo */,
+				90D2EA0F21A425DC00032373 /* WebAuthnKit */,
+				90D2EA1721A425DC00032373 /* WebAuthnKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		90D2E9D821A424DD00032373 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90D2E9E821A424DD00032373 /* LaunchScreen.storyboard in Resources */,
+				90D2E9E521A424DD00032373 /* Assets.xcassets in Resources */,
+				90D2E9E321A424DD00032373 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90D2EA0E21A425DC00032373 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90D2EA1621A425DC00032373 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		35CD88C7C1DB0FCC4D61A501 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WebAuthnKitDemo/Pods-WebAuthnKitDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3B836228C3162FB6D179C169 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WebAuthnKit-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5EC2431A917BEAB82BB02A86 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WebAuthnKitTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		922EE798701D89D85DB5E622 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WebAuthnKitTests/Pods-WebAuthnKitTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A0A73FA108A908D0407BF391 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WebAuthnKit/Pods-WebAuthnKit-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A92BC5E86713D9AE928C9707 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-WebAuthnKitDemo/Pods-WebAuthnKitDemo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/EllipticCurveKeyPair/EllipticCurveKeyPair.framework",
+				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyRSA/SwiftyRSA.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CryptoSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EllipticCurveKeyPair.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyRSA.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WebAuthnKitDemo/Pods-WebAuthnKitDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E7A72A38B9DB2E919F075322 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WebAuthnKitDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F1E161D742521155F5826FC8 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WebAuthnKitTests/Pods-WebAuthnKitTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		90D2E9D621A424DD00032373 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90D2E9E021A424DD00032373 /* ViewController.swift in Sources */,
+				90D2E9DE21A424DD00032373 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90D2EA0C21A425DC00032373 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90D2EA4321A442AE00032373 /* UUID.swift in Sources */,
+				90D2EA3D21A442AE00032373 /* JSON.swift in Sources */,
+				90D2EA6921A4488200032373 /* SelfAttestation.swift in Sources */,
+				90D2EA3321A4423200032373 /* WAKLogger.swift in Sources */,
+				90D2EA4121A442AE00032373 /* Base64.swift in Sources */,
+				90D2EA3E21A442AE00032373 /* PEM.swift in Sources */,
+				90D2EA4021A442AE00032373 /* CBOR.swift in Sources */,
+				90D2EA4221A442AE00032373 /* Bytes.swift in Sources */,
+				90D2EA3F21A442AE00032373 /* COSE.swift in Sources */,
+				90D2EA4F21A4449000032373 /* Attestation.swift in Sources */,
+				90D2EA4E21A4449000032373 /* AuthenticatorData.swift in Sources */,
+				90D2EA5921A4452E00032373 /* UserConsentUI.swift in Sources */,
+				90D2EA5721A4452E00032373 /* CredentialStore.swift in Sources */,
+				90D2EA5F21A4453C00032373 /* InternalAuthenticatorMakeCredentialSession.swift in Sources */,
+				90D2EA5A21A4452E00032373 /* KeySupport.swift in Sources */,
+				90D2EA5621A4452E00032373 /* InternalAuthenticator.swift in Sources */,
+				90D2EA6221A4467100032373 /* Client.swift in Sources */,
+				90D2EA5021A4449000032373 /* Authenticator.swift in Sources */,
+				90D2EA6721A4469A00032373 /* ClientCreateOperation.swift in Sources */,
+				90D2EA3121A4422D00032373 /* WAKTypes.swift in Sources */,
+				90D2EA5821A4452E00032373 /* CredentialEncryptor.swift in Sources */,
+				90D2EA5E21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift in Sources */,
+				90D2EA4421A442AE00032373 /* DER.swift in Sources */,
+				90D2EA6621A4469A00032373 /* ClientGetOperation.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90D2EA1421A425DC00032373 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90D2EA2021A425DD00032373 /* WebAuthnKitTests.swift in Sources */,
+				90D2EA4721A443E200032373 /* CBORTests.swift in Sources */,
+				90D2EA6B21A44B1D00032373 /* PEMTests.swift in Sources */,
+				90D2EA4821A443E200032373 /* COSETests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		90D2EA1B21A425DC00032373 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 90D2EA0F21A425DC00032373 /* WebAuthnKit */;
+			targetProxy = 90D2EA1A21A425DC00032373 /* PBXContainerItemProxy */;
+		};
+		90D2EA1D21A425DD00032373 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 90D2E9D921A424DD00032373 /* WebAuthnKitDemo */;
+			targetProxy = 90D2EA1C21A425DD00032373 /* PBXContainerItemProxy */;
+		};
+		90D2EA2421A425DD00032373 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 90D2EA0F21A425DC00032373 /* WebAuthnKit */;
+			targetProxy = 90D2EA2321A425DD00032373 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		90D2E9E121A424DD00032373 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90D2E9E221A424DD00032373 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		90D2E9E621A424DD00032373 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90D2E9E721A424DD00032373 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		90D2EA0021A424DE00032373 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		90D2EA0121A424DE00032373 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		90D2EA0321A424DE00032373 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 613AFAB626CD02E5B4BF4087 /* Pods-WebAuthnKitDemo.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = WebAuthnKitDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		90D2EA0421A424DE00032373 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B7FCC422FB36271D9963F89C /* Pods-WebAuthnKitDemo.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = WebAuthnKitDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		90D2EA2721A425DD00032373 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1B4E04BF81368CBFD090E67D /* Pods-WebAuthnKit.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = WebAuthnKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		90D2EA2821A425DD00032373 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7D013FA4EF3D6149C39723EF /* Pods-WebAuthnKit.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = WebAuthnKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		90D2EA2921A425DD00032373 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 02DE0FCC8D1FB5B9CFC23CF1 /* Pods-WebAuthnKitTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = WebAuthnKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WebAuthnKitDemo.app/WebAuthnKitDemo";
+			};
+			name = Debug;
+		};
+		90D2EA2A21A425DD00032373 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B3B78E73DB43D2411A1E78C3 /* Pods-WebAuthnKitTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = WebAuthnKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WebAuthnKitDemo.app/WebAuthnKitDemo";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		90D2E9D521A424DD00032373 /* Build configuration list for PBXProject "WebAuthnKitDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90D2EA0021A424DE00032373 /* Debug */,
+				90D2EA0121A424DE00032373 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		90D2EA0221A424DE00032373 /* Build configuration list for PBXNativeTarget "WebAuthnKitDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90D2EA0321A424DE00032373 /* Debug */,
+				90D2EA0421A424DE00032373 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		90D2EA2B21A425DD00032373 /* Build configuration list for PBXNativeTarget "WebAuthnKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90D2EA2721A425DD00032373 /* Debug */,
+				90D2EA2821A425DD00032373 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		90D2EA2D21A425DD00032373 /* Build configuration list for PBXNativeTarget "WebAuthnKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90D2EA2921A425DD00032373 /* Debug */,
+				90D2EA2A21A425DD00032373 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 90D2E9D221A424DD00032373 /* Project object */;
+}

@@ -36,7 +36,7 @@ public class UserConsentUI {
 
     public var userHandleDisplayType: UserHandleDisplayType = .number
 
-    init(viewController: UIViewController) {
+    public init(viewController: UIViewController) {
         self.viewController = viewController
     }
 
@@ -197,50 +197,40 @@ public class UserConsentUI {
                                             switch LAError(_nsError: error as NSError) {
                                             case LAError.userCancel:
                                                 WAKLogger.debug("<UserConsentUI> user cancel")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.userFallback:
                                                 WAKLogger.debug("<UserConsentUI> user fallback")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.authenticationFailed:
                                                 WAKLogger.debug("<UserConsentUI> authentication failed")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.passcodeNotSet:
                                                 WAKLogger.debug("<UserConsentUI> passcode not set")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.systemCancel:
                                                 WAKLogger.debug("<UserConsentUI> system cancel")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             default:
                                                 WAKLogger.debug("<UserConsentUI> must not come here")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.unknownError)
-                                                }
+                                                self.dispatchError(resolver, .unknownError)
                                             }
 
                                         } else {
                                             WAKLogger.debug("<UserConsentUI> must not come here")
-                                            DispatchQueue.global().async {
-                                                resolver.reject(AuthenticatorError.unknownError)
-                                            }
+                                            self.dispatchError(resolver, .unknownError)
                                         }
                     })
                 } else {
                     WAKLogger.debug("<UserConsentUI> Device not supported")
-                    DispatchQueue.global().async {
-                        resolver.reject(AuthenticatorError.notAllowedError)
-                    }
+                    self.dispatchError(resolver, .notAllowedError)
                 }
             }
+        }
+    }
+    
+    private func dispatchError(_ resolver: Resolver<()>, _ error: AuthenticatorError) {
+        DispatchQueue.global().async {
+            resolver.reject(error)
         }
     }
 

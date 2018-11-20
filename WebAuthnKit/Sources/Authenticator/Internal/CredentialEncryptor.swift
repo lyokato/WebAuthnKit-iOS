@@ -18,7 +18,7 @@ public class AESGCMCredentialEncryptor: CredentialEncryptor{
 
     private let key: [UInt8]
 
-    init(key: [UInt8]) {
+    public init(key: [UInt8]) {
         self.key = key
     }
     

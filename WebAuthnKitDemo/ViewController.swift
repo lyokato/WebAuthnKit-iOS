@@ -8,23 +8,54 @@
 
 import UIKit
 import WebAuthnKit
+import PromiseKit
 
 class ViewController: UIViewController {
+    
+    var webAuthnClient: WebAuthnClient!
+    var userConsentUI: UserConsentUI!
+    
+    private func setupWebAuthnClient() {
+        
+        var authenticator = InternalAuthenticator(
+            ui:            self.userConsentUI,
+            encryptionKey: "hogehogehogehoge" // 16byte
+        )
+        
+        self.webAuthnClient = WebAuthnClient(
+            origin:        "https://example.org",
+            authenticator: authenticator
+        )
+    }
+    
+    private func startRegistration() {
+        
+        var options = PublicKeyCredentialCreationOptions()
+        options.challenge = "hogehoge"
+        options.user.id = [0x00, 0x01, 0x02, 0x03]
+        options.user.name = "john"
+        options.user.displayName = "John"
+        options.rp.id = "https://example.org"
+        options.rp.name = "MyService"
+
+        firstly {
+            
+            self.webAuthnClient.create(options)
+            
+            }.done { credential in
+                
+                var json = credential.toJSON()
+            
+            }.catch { error in
+                
+        }
+        
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
-        /*
-        if let chooser = KeySupportChooser().choose([COSEAlgorithmIdentifier.rs256.rawValue]) {
-            if let (pub, priv) = chooser.createKeyPair() {
-                print("=============")
-                print(pub)
-                print("=============")
-                print(priv)
-            }
-        }
-         */
+        self.userConsentUI = UserConsentUI(viewController: self)
     }
 
 

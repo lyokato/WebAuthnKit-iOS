@@ -129,6 +129,8 @@ public protocol CredentialStore {
 public class KeychainCredentialStore : CredentialStore {
 
     private static let globalCounterHandle: String = "global-sign-count"
+    
+    public init() {}
 
     public func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource] {
         let keychain = Keychain(service: rpId)

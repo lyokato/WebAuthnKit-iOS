@@ -35,8 +35,9 @@ public class WebAuthnClient: ClientOperationDelegate {
     private var getOperations = [String: ClientGetOperation]()
     private var createOperations = [String: ClientCreateOperation]()
 
-    init(origin:        String,
-         authenticator: Authenticator
+    public init(
+        origin:        String,
+        authenticator: Authenticator
     ) {
         self.origin        = origin
         self.authenticator = authenticator

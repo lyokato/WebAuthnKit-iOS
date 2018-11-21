@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal class Base64 {
+public class Base64 {
 
     public static func encodeBase64URL(_ bytes: [UInt8]) -> String {
         return encodeBase64URL(Data(bytes: bytes))

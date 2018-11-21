@@ -8,7 +8,15 @@
 
 import Foundation
 
-internal class Bytes {
+public class Bytes {
+    
+    public static func fromHex(_ value: String) -> [UInt8] {
+        return Data(hex: value).bytes
+    }
+    
+    public static func fromString(_ value: String) -> [UInt8] {
+        return value.bytes // This is CryptoSwift method
+    }
 
     public static func fromUInt64(_ value: UInt64) -> [UInt8] {
        return [

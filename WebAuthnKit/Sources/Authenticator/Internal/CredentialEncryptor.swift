@@ -18,7 +18,7 @@ public class AESGCMCredentialEncryptor: CredentialEncryptor{
 
     private let key: [UInt8]
 
-    init(key: [UInt8]) {
+    public init(key: [UInt8]) {
         self.key = key
     }
     
@@ -33,6 +33,7 @@ public class AESGCMCredentialEncryptor: CredentialEncryptor{
     }
 
     public func encryptCredentialSource(_ src: PublicKeyCredentialSource) -> Optional<[UInt8]> {
+        WAKLogger.debug("<AESGCMCredentialEncryptor> encryptCredentialSource")
         let iv = newIV()
         if iv.count != 16 {
             WAKLogger.debug("<AESGCMCredentialEncryptor> length of 'iv' should be 16")
@@ -56,6 +57,7 @@ public class AESGCMCredentialEncryptor: CredentialEncryptor{
     }
 
     public func decryptCredentialId(_ credentialId: [UInt8]) -> Optional<PublicKeyCredentialSource> {
+        WAKLogger.debug("<AESGCMCredentialEncryptor> decryptCredentialSource")
         let len = credentialId.count
         if len < 17 {
             WAKLogger.debug("<AESGCMCredentialEncryptor> length of 'credentialId' should be more than 17")

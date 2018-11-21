@@ -188,25 +188,25 @@ class CBORTests: XCTestCase {
     
     func testMap() {
         
-        let val1 = SimpleOrderedDictionary<String, Any>()
+        let val1 = SimpleOrderedDictionary<String>()
         XCTAssertEqual(CBORWriter().putStringKeyMap(val1).getResult().toHexString(), "a0")
         
         let result1 = CBORReader(bytes: Data(hex: "a0").bytes).readStringKeyMap()
         XCTAssertEqual(result1!.count, 0)
         
-        let val2 = SimpleOrderedDictionary<String, Any>()
-        val2.add("a", Int64(1))
+        let val2 = SimpleOrderedDictionary<String>()
+        val2.addInt("a", Int64(1))
         let val3: [Any] = [Int64(2), Int64(3)]
-        val2.add("b", val3)
+        val2.addArray("b", val3)
         XCTAssertEqual(CBORWriter().putStringKeyMap(val2).getResult().toHexString(), "a26161016162820203")
         
         let result2 = CBORReader(bytes: Data(hex: "a26161016162820203").bytes).readStringKeyMap()
         XCTAssertEqual(result2!.count, 2)
         XCTAssertEqual(result2!["a"] as! Int64, Int64(1))
         
-        let val4 = SimpleOrderedDictionary<Int, Any>()
-        val4.add(1, Int64(2))
-        val4.add(3, Int64(4))
+        let val4 = SimpleOrderedDictionary<Int>()
+        val4.addInt(1, Int64(2))
+        val4.addInt(3, Int64(4))
         XCTAssertEqual(CBORWriter().putIntKeyMap(val4).getResult().toHexString(), "a201020304")
         let result3 = CBORReader(bytes: Data(hex: "a201020304").bytes).readIntKeyMap()
         XCTAssertEqual(result3!.count, 2)

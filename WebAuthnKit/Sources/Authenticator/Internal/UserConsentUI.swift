@@ -36,11 +36,30 @@ public class UserConsentUI {
 
     public var userHandleDisplayType: UserHandleDisplayType = .number
 
-    init(viewController: UIViewController) {
+    public init(viewController: UIViewController) {
         self.viewController = viewController
     }
+    
+    public func cancel() {
+        DispatchQueue.main.async {
+            // if let ctx = self.laCtx {
+            //    ctx.invalidate()
+            // }
+            // if let alert = self.popup {
+            //    alert.dismiss(animated: true, completion: nil)
+            // }
+            self.clear()
+        }
+    }
+    
+    private func clear() {
+        // self.laCtx = nil
+        // self.popup = nil
+    }
 
-    public func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
+    internal func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
+        
+        WAKLogger.debug("<UserConsentUI> askUserToCreateNewCredential")
 
         return Promise { resolver in
 
@@ -74,11 +93,13 @@ public class UserConsentUI {
 
     }
 
-    public func requestUserConsent(
+    internal func requestUserConsent(
         rpEntity:            PublicKeyCredentialRpEntity,
         userEntity:          PublicKeyCredentialUserEntity,
         requireVerification: Bool
         ) -> Promise<()> {
+        
+        WAKLogger.debug("<UserConsentUI> requestUserConsent")
 
         let message = self.confirmationPopupMessageBuilder(rpEntity, userEntity)
 
@@ -119,10 +140,12 @@ public class UserConsentUI {
         }
     }
 
-    public func requestUserSelection(
+    internal func requestUserSelection(
         credentials:         [PublicKeyCredentialSource],
         requireVerification: Bool
         ) -> Promise<PublicKeyCredentialSource> {
+        
+        WAKLogger.debug("<UserConsentUI> requestUserSelection")
 
         if requireVerification {
 
@@ -138,9 +161,11 @@ public class UserConsentUI {
         }
     }
 
-    public func requestUserSelectionInternal(
+    internal func requestUserSelectionInternal(
         credentials: [PublicKeyCredentialSource]
     ) -> Promise<PublicKeyCredentialSource> {
+        
+        WAKLogger.debug("<UserConsentUI> requestUserSelectionInternal")
 
         return Promise { resolver in
 
@@ -150,7 +175,7 @@ public class UserConsentUI {
                     title:   self.selectionPopupTitle,
                     message: self.selectionPopupMessage,
                     preferredStyle: .actionSheet)
-
+                
                 credentials.forEach { src in
                     var title = self.getUserHandleDisplay(src.userHandle)
                     if let other = src.otherUI {
@@ -178,6 +203,8 @@ public class UserConsentUI {
     }
 
     private func verifyUser(message: String) -> Promise<()> {
+        
+        WAKLogger.debug("<UserConsentUI> verifyUser")
 
         return Promise { resolver in
 
@@ -197,54 +224,46 @@ public class UserConsentUI {
                                             switch LAError(_nsError: error as NSError) {
                                             case LAError.userCancel:
                                                 WAKLogger.debug("<UserConsentUI> user cancel")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.userFallback:
                                                 WAKLogger.debug("<UserConsentUI> user fallback")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.authenticationFailed:
                                                 WAKLogger.debug("<UserConsentUI> authentication failed")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.passcodeNotSet:
                                                 WAKLogger.debug("<UserConsentUI> passcode not set")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.systemCancel:
                                                 WAKLogger.debug("<UserConsentUI> system cancel")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.notAllowedError)
-                                                }
+                                                self.dispatchError(resolver, .notAllowedError)
                                             default:
                                                 WAKLogger.debug("<UserConsentUI> must not come here")
-                                                DispatchQueue.global().async {
-                                                    resolver.reject(AuthenticatorError.unknownError)
-                                                }
+                                                self.dispatchError(resolver, .unknownError)
                                             }
 
                                         } else {
                                             WAKLogger.debug("<UserConsentUI> must not come here")
-                                            DispatchQueue.global().async {
-                                                resolver.reject(AuthenticatorError.unknownError)
-                                            }
+                                            self.dispatchError(resolver, .unknownError)
                                         }
                     })
                 } else {
-                    WAKLogger.debug("<UserConsentUI> Device not supported")
-                    DispatchQueue.global().async {
-                        resolver.reject(AuthenticatorError.notAllowedError)
-                    }
+                    WAKLogger.debug("<UserConsentUI> device not supported")
+                    self.dispatchError(resolver, .notAllowedError)
                 }
             }
         }
     }
+    
+    private func dispatchError(_ resolver: Resolver<()>, _ error: AuthenticatorError) {
+        WAKLogger.debug("<UserConsentUI> dispatchError")
+        DispatchQueue.global().async {
+            resolver.reject(error)
+        }
+    }
 
     private func getUserHandleDisplay(_ userHandle: [UInt8]) -> String {
+        WAKLogger.debug("<UserConsentUI> getUserHandleDisplay")
         switch self.userHandleDisplayType {
         case .number:
             return Bytes.toUInt64(userHandle).description

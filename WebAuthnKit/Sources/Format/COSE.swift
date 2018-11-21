@@ -34,6 +34,27 @@ public enum COSEAlgorithmIdentifier: Int, Codable {
     case ed256 = -260
     case ed512 = -261
     case ps256 =  -37
+    
+    public static func fromInt(_ num: Int) -> Optional<COSEAlgorithmIdentifier> {
+        switch num {
+        case self.rs256.rawValue:
+            return self.rs256
+        case self.rs384.rawValue:
+            return self.rs384
+        case self.rs512.rawValue:
+            return self.rs512
+        case self.es256.rawValue:
+            return self.es256
+        case self.ed256.rawValue:
+            return self.ed256
+        case self.ed512.rawValue:
+            return self.ed512
+        case self.ps256.rawValue:
+            return self.ps256
+        default:
+            return nil
+        }
+    }
 
     public static func ==(
         lhs: COSEAlgorithmIdentifier,
@@ -170,11 +191,11 @@ internal struct COSEKeyRSA : COSEKey {
 
     public func toBytes() -> [UInt8] {
 
-        let dic = SimpleOrderedDictionary<Int, Any>()
-        dic.add(COSEKeyFieldType.kty, Int64(COSEKeyType.rsa))
-        dic.add(COSEKeyFieldType.alg, Int64(self.alg))
-        dic.add(COSEKeyFieldType.n, self.n)
-        dic.add(COSEKeyFieldType.e, self.e)
+        let dic = SimpleOrderedDictionary<Int>()
+        dic.addInt(COSEKeyFieldType.kty, Int64(COSEKeyType.rsa))
+        dic.addInt(COSEKeyFieldType.alg, Int64(self.alg))
+        dic.addBytes(COSEKeyFieldType.n, self.n)
+        dic.addBytes(COSEKeyFieldType.e, self.e)
 
         return CBORWriter()
             .putIntKeyMap(dic)
@@ -192,12 +213,12 @@ internal struct COSEKeyEC2 : COSEKey {
 
     public func toBytes() -> [UInt8] {
 
-        let dic = SimpleOrderedDictionary<Int, Any>()
-        dic.add(COSEKeyFieldType.kty, Int64(COSEKeyType.ec2))
-        dic.add(COSEKeyFieldType.alg, Int64(self.alg))
-        dic.add(COSEKeyFieldType.crv, Int64(self.crv))
-        dic.add(COSEKeyFieldType.xCoord, self.xCoord)
-        dic.add(COSEKeyFieldType.yCoord, self.yCoord)
+        let dic = SimpleOrderedDictionary<Int>()
+        dic.addInt(COSEKeyFieldType.kty, Int64(COSEKeyType.ec2))
+        dic.addInt(COSEKeyFieldType.alg, Int64(self.alg))
+        dic.addInt(COSEKeyFieldType.crv, Int64(self.crv))
+        dic.addBytes(COSEKeyFieldType.xCoord, self.xCoord)
+        dic.addBytes(COSEKeyFieldType.yCoord, self.yCoord)
         
         return CBORWriter()
             .putIntKeyMap(dic)

@@ -11,11 +11,21 @@ import PromiseKit
 import CryptoSwift
 
 public struct InternalAuthenticatorSetting {
-    var attachment: AuthenticatorAttachment = .platform
-    var transport: AuthenticatorTransport = .internal_
-    var counterStep: UInt32 = 1
-    var allowResidentKey: Bool = true
-    var allowUserVerification: Bool = true
+    public let attachment: AuthenticatorAttachment = .platform
+    public let transport: AuthenticatorTransport = .internal_
+    public var counterStep: UInt32
+    public var allowResidentKey: Bool
+    public var allowUserVerification: Bool
+    
+    public init(
+        counterStep:           UInt32 = 1,
+        allowResidentKey:      Bool = true,
+        allowUserVerification: Bool = true
+    ) {
+        self.counterStep           = counterStep
+        self.allowResidentKey      = allowResidentKey
+        self.allowUserVerification = allowUserVerification
+    }
 }
 
 public class InternalAuthenticator : Authenticator {
@@ -68,7 +78,33 @@ public class InternalAuthenticator : Authenticator {
     
     private let keySupportChooser = KeySupportChooser()
     
-    init(
+    public convenience init(
+        ui:            UserConsentUI,
+        encryptionKey: String
+        ) {
+        
+        let key = encryptionKey.data(using: .utf8)!.bytes
+        
+        self.init(
+            ui:                  ui,
+            credentialEncryptor: AESGCMCredentialEncryptor(key: key),
+            credentialStore:     KeychainCredentialStore()
+        )
+        
+    }
+    
+    public convenience init(
+        ui:            UserConsentUI,
+        encryptionKey: [UInt8]
+    ) {
+       self.init(
+            ui:                  ui,
+            credentialEncryptor: AESGCMCredentialEncryptor(key: encryptionKey),
+            credentialStore:     KeychainCredentialStore()
+        )
+    }
+    
+    public init(
         ui:                  UserConsentUI,
         credentialEncryptor: CredentialEncryptor,
         credentialStore:     CredentialStore
@@ -79,6 +115,7 @@ public class InternalAuthenticator : Authenticator {
     }
 
     public func newMakeCredentialSession() -> AuthenticatorMakeCredentialSession {
+        WAKLogger.debug("<InternalAuthenticator> newMakeCredentialSession")
         return InternalAuthenticatorMakeCredentialSession(
             setting:             self.setting,
             ui:                  self.ui,
@@ -89,6 +126,7 @@ public class InternalAuthenticator : Authenticator {
     }
     
     public func newGetAssertionSession() -> AuthenticatorGetAssertionSession {
+        WAKLogger.debug("<InternalAuthenticator> newGetAssertionSession")
         return InternalAuthenticatorGetAssertionSession(
             setting:             self.setting,
             ui:                  self.ui,

@@ -13,9 +13,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    private func setupUI() {
+        let viewController = ViewController()
+        let mainNavigation = UINavigationController(rootViewController: viewController)
+        self.window!.rootViewController = mainNavigation
+        self.window!.backgroundColor = UIColor.white
+        self.window!.makeKeyAndVisible()
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        setupUI()
         return true
     }
 

@@ -8,6 +8,64 @@
 
 import Foundation
 
+public struct AuthenticatorDataFlags {
+    
+    public let UPMask: UInt8 = 0b00000001
+    public let UVMask: UInt8 = 0b00000100
+    public let ATMask: UInt8 = 0b01000000
+    public let EDMask: UInt8 = 0b10000000
+    
+    public var userPresent: Bool = false
+    public var userVerified: Bool = false
+    public var hasAttestedCredentialData: Bool = false
+    public var hasExtension: Bool = false
+    
+    init(
+        userPresent: Bool,
+        userVerified: Bool,
+        hasAttestedCredentialData: Bool,
+        hasExtension: Bool
+    ) {
+        self.userPresent               = userPresent
+        self.userVerified              = userVerified
+        self.hasAttestedCredentialData = hasAttestedCredentialData
+        self.hasExtension              = hasExtension
+    }
+    
+    init(flags: UInt8) {
+        userPresent               = ((flags & UPMask) == UPMask)
+        userVerified              = ((flags & UVMask) == UVMask)
+        hasAttestedCredentialData = ((flags & ATMask) == ATMask)
+        hasExtension              = ((flags & EDMask) == EDMask)
+        
+        WAKLogger.debug("<AuthenticatorDataFlags> UP:\(userPresent)")
+        WAKLogger.debug("<AuthenticatorDataFlags> UV:\(userVerified)")
+        WAKLogger.debug("<AuthenticatorDataFlags> AT:\(hasAttestedCredentialData)")
+        WAKLogger.debug("<AuthenticatorDataFlags> ED:\(hasExtension)")
+    }
+    
+    public func toByte() -> UInt8 {
+        var flags: UInt8 = 0b00000000
+        if self.userPresent {
+            WAKLogger.debug("<AuthenticatorDataFlags> UP:on")
+            flags = flags | UPMask
+        }
+        if self.userVerified {
+            WAKLogger.debug("<AuthenticatorDataFlags> UV:on")
+            flags = flags | UVMask
+        }
+        if self.hasAttestedCredentialData {
+            WAKLogger.debug("<AuthenticatorDataFlags> AT:on")
+            flags = flags | ATMask
+        }
+        if self.hasExtension {
+            WAKLogger.debug("<AuthenticatorDataFlags> ED on")
+            flags = flags | EDMask
+        }
+        return flags
+    }
+}
+
 public struct AttestedCredentialData {
 
     let aaguid:              [UInt8] // 16byte
@@ -29,28 +87,27 @@ public struct AttestedCredentialData {
 }
 
 public struct AuthenticatorData {
-
+    
     public static func fromBytes(_ bytes: [UInt8]) -> Optional<AuthenticatorData> {
+        WAKLogger.debug("<AuthenticatorData> fromBytes")
         if bytes.count < 37 {
             WAKLogger.debug("<AuthenticatorData> byte-size is not enough")
             return nil
         }
         let rpIdHash: [UInt8] = Array(bytes[0..<32])
 
-        let flags: UInt8 = bytes[32]
-
-        let userPresent               = ((flags & 0b10000000) == 0b10000000)
-        let userVerified              = ((flags & 0b00100000) == 0b00100000)
-        let hasAttestedCredentialData = ((flags & 0b00000010) == 0b00000010)
-        let hasExtension              = ((flags & 0b00000001) == 0b00000001)
+        let flags = AuthenticatorDataFlags(flags: bytes[32])
 
         let signCount = UInt32((UInt32(bytes[33]) << 24) | (UInt32(bytes[34]) << 16) | (UInt32(bytes[35]) << 8) | UInt32(bytes[36]))
 
+        
+        WAKLogger.debug("<AuthenticatorData> sing-count:\(signCount)")
+        
         var pos = 37
 
         var attestedCredentialData: AttestedCredentialData? = nil
 
-        if hasAttestedCredentialData {
+        if flags.hasAttestedCredentialData {
 
             if bytes.count < (pos + 16 + 2) {
                 WAKLogger.debug("<AuthenticatorData> byte-size is not enough")
@@ -93,7 +150,7 @@ public struct AuthenticatorData {
 
         var extensions = SimpleOrderedDictionary<String>()
 
-        if hasExtension {
+        if flags.hasExtension {
 
             let rest = Array(bytes[pos..<bytes.count])
 
@@ -107,8 +164,8 @@ public struct AuthenticatorData {
 
         return AuthenticatorData(
             rpIdHash:               rpIdHash,
-            userPresent:            userPresent,
-            userVerified:           userVerified,
+            userPresent:            flags.userPresent,
+            userVerified:           flags.userVerified,
             signCount:              signCount,
             attestedCredentialData: attestedCredentialData,
             extensions:             extensions
@@ -124,6 +181,7 @@ public struct AuthenticatorData {
     let extensions:             SimpleOrderedDictionary<String>;
 
     public func toBytes() -> [UInt8] {
+        WAKLogger.debug("<AuthenticatorData> toBytes")
 
         if self.rpIdHash.count != 32 {
             fatalError("<AuthenticatorData> rpIdHash should be 32 bytes")
@@ -131,19 +189,13 @@ public struct AuthenticatorData {
 
         var result = self.rpIdHash
 
-        var flags: UInt8 = 0b00000000
-        if self.userPresent {
-            flags = flags | 0b10000000
-        }
-        if self.userVerified {
-            flags = flags | 0b00100000
-        }
-        if self.attestedCredentialData != nil {
-            flags = flags | 0b00000010
-        }
-        if !self.extensions.isEmpty {
-            flags = flags | 0b00000001
-        }
+        let flags: UInt8 = AuthenticatorDataFlags(
+            userPresent:               self.userPresent,
+            userVerified:              self.userVerified,
+            hasAttestedCredentialData: (self.attestedCredentialData != nil),
+            hasExtension:              !self.extensions.isEmpty
+        ).toByte()
+        
         result.append(flags)
 
         result.append(UInt8((signCount & 0xff000000) >> 24))

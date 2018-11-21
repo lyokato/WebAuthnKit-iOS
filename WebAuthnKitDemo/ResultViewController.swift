@@ -44,13 +44,13 @@ class ResultViewController: UIViewController {
         
         
         //self.setupTextView()
-        self.newLabel(text: "RawId (Hex)", top: 60)
+        self.newLabel(text: "Raw Id (Hex)", top: 60)
         self.newTextView(height: 30, top: 90, text: self.rawId)
-        self.newLabel(text: "HashedId", top: 130)
+        self.newLabel(text: "Hashed Id", top: 130)
         self.newTextView(height: 30, top: 160, text: self.hashedId)
-        self.newLabel(text: "ClientDataJSON", top: 200)
+        self.newLabel(text: "Client Data JSON", top: 200)
         self.newTextView(height: 70, top: 230, text: self.clientDataJSON)
-        self.newLabel(text: "AttestationObject (Base64URL)", top: 310)
+        self.newLabel(text: "Attestation Object (Base64URL)", top: 310)
         self.newTextView(height: 400, top: 340, text: self.attestationObject)
         self.setupCloseButton()
     }
@@ -72,6 +72,7 @@ class ResultViewController: UIViewController {
         view.fitScreenW(20)
         view.height(height)
         view.top(top)
+        view.autocapitalizationType = .none
         view.backgroundColor = UIColor.white
         view.textColor = UIColor.black
         self.view.addSubview(view)

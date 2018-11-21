@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal class Bytes {
+public class Bytes {
 
     public static func fromUInt64(_ value: UInt64) -> [UInt8] {
        return [

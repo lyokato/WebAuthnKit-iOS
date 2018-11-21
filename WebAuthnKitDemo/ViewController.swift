@@ -17,6 +17,8 @@ class ViewController: UIViewController {
     
     private func setupWebAuthnClient() {
         
+        self.userConsentUI = UserConsentUI(viewController: self)
+        
         var authenticator = InternalAuthenticator(
             ui:            self.userConsentUI,
             encryptionKey: "hogehogehogehoge" // 16byte
@@ -32,21 +34,24 @@ class ViewController: UIViewController {
         
         var options = PublicKeyCredentialCreationOptions()
         options.challenge = "hogehoge"
-        options.user.id = [0x00, 0x01, 0x02, 0x03]
+        
+        options.user.id = Bytes.fromUInt64(12345)
         options.user.name = "john"
         options.user.displayName = "John"
+        
         options.rp.id = "https://example.org"
         options.rp.name = "MyService"
+        
 
         firstly {
             
             self.webAuthnClient.create(options)
             
-            }.done { credential in
+        }.done { credential in
                 
-                var json = credential.toJSON()
+            var json = credential.toJSON()
             
-            }.catch { error in
+        }.catch { error in
                 
         }
         
@@ -55,7 +60,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.userConsentUI = UserConsentUI(viewController: self)
     }
 
 

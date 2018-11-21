@@ -114,7 +114,7 @@ public class WebAuthnClient: ClientOperationDelegate {
             let (clientData, clientDataJSON, clientDataHash) =
                 self.generateClientData(
                     type:      .webAuthnCreate,
-                    challenge: options.challenge
+                    challenge: Base64.encodeBase64URL(options.challenge)
                 )
 
             let session = self.authenticator.newMakeCredentialSession()
@@ -144,7 +144,7 @@ public class WebAuthnClient: ClientOperationDelegate {
         let (clientData, clientDataJSON, clientDataHash) =
             self.generateClientData(
                 type:      .webAuthnGet,
-                challenge: options.challenge
+                challenge: Base64.encodeBase64URL(options.challenge)
         )
 
         let session = self.authenticator.newGetAssertionSession()

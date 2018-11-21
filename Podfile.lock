@@ -22,6 +22,14 @@ DEPENDENCIES:
   - PromiseKit (~> 6.3.4)
   - SwiftyRSA (~> 1.5.0)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - CryptoSwift
+    - EllipticCurveKeyPair
+    - KeychainAccess
+    - PromiseKit
+    - SwiftyRSA
+
 SPEC CHECKSUMS:
   CryptoSwift: 16e78bebf567bad1c87b2d58f6547f25b74c31aa
   EllipticCurveKeyPair: 0c447d7b6e1de511553e0beed42f2dd21b6bab07
@@ -29,6 +37,6 @@ SPEC CHECKSUMS:
   PromiseKit: 32c36425387e9cfc7f1206f27bfd906d0b53c0d6
   SwiftyRSA: 6e528fb1b1a87d5111c48081083b141d6d65f1cf
 
-PODFILE CHECKSUM: 788558e0168bb13aabfd28f12960f24f1a65ea95
+PODFILE CHECKSUM: 4dcdc6569971168ea857dfc33dc000c460a58db1
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3

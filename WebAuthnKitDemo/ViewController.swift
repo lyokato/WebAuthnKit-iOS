@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         
         var authenticator = InternalAuthenticator(
             ui:            self.userConsentUI,
-            encryptionKey: "hogehogehogehoge" // 16byte
+            encryptionKey: Bytes.fromString("hogehogehogehoge") // 16byte
         )
         
         self.webAuthnClient = WebAuthnClient(
@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     private func startRegistration() {
         
         var options = PublicKeyCredentialCreationOptions()
-        options.challenge = "hogehoge"
+        options.challenge = Bytes.fromString("hogehoge")
         
         options.user.id = Bytes.fromUInt64(12345)
         options.user.name = "john"

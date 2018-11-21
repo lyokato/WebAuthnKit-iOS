@@ -275,7 +275,7 @@ public struct PublicKeyCredentialCreationOptions: Codable {
     
     public var rp: PublicKeyCredentialRpEntity
     public var user: PublicKeyCredentialUserEntity
-    public var challenge: String
+    public var challenge: [UInt8]
     public var pubKeyCredParams: [PublicKeyCredentialParameters]
     public var timeout: UInt64?
     public var excludeCredentials: [PublicKeyCredentialDescriptor]
@@ -286,7 +286,7 @@ public struct PublicKeyCredentialCreationOptions: Codable {
     public init(
         rp: PublicKeyCredentialRpEntity = PublicKeyCredentialRpEntity(),
         user: PublicKeyCredentialUserEntity = PublicKeyCredentialUserEntity(),
-        challenge: String = "",
+        challenge: [UInt8] = [UInt8](),
         pubKeyCredParams: [PublicKeyCredentialParameters] = [PublicKeyCredentialParameters](),
         timeout: UInt64? = nil,
         excludeCredentials: [PublicKeyCredentialDescriptor] = [PublicKeyCredentialDescriptor](),
@@ -314,12 +314,26 @@ public struct PublicKeyCredentialCreationOptions: Codable {
 }
 
 public struct PublicKeyCredentialRequestOptions: Codable {
-    public var challenge: String = ""
-    public var timeout: UInt64?
+    public var challenge: [UInt8]
     public var rpId: String?
-    public var allowCredentials = [PublicKeyCredentialDescriptor]()
-    public var userVerification: UserVerificationRequirement = .preferred
+    public var allowCredentials: [PublicKeyCredentialDescriptor]
+    public var userVerification: UserVerificationRequirement
+    public var timeout: UInt64?
     // let extensions: []
+    
+    public init(
+        challenge: [UInt8] = [UInt8](),
+        rpId: String = "",
+        allowCredentials: [PublicKeyCredentialDescriptor] = [PublicKeyCredentialDescriptor](),
+        userVerification: UserVerificationRequirement = .preferred,
+        timeout: UInt64? = nil
+    ) {
+        self.challenge = challenge
+        self.rpId = rpId
+        self.allowCredentials = allowCredentials
+        self.userVerification = userVerification
+        self.timeout = timeout
+    }
     
     public static func fromJSON(json: String) -> Optional<PublicKeyCredentialRequestOptions> {
         guard let args = JSONHelper<PublicKeyCredentialRequestArgs>.decode(json) else {

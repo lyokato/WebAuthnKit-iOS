@@ -94,7 +94,7 @@ class RegistrationViewController: UIViewController {
         let requireResidentKey = [true, false][self.residentKeyRequired.selectedSegmentIndex]
         
         var options = PublicKeyCredentialCreationOptions()
-        options.challenge = Bytes.fromString(challenge)
+        options.challenge = Bytes.fromHex(challenge)
         options.user.id = Bytes.fromString(userId)
         options.user.name = "john"
         options.user.displayName = "John"
@@ -206,6 +206,7 @@ class RegistrationViewController: UIViewController {
         view.fitScreenW(20)
         view.height(height)
         view.top(top)
+        view.autocorrectionType = .no
         view.autocapitalizationType = .none
         view.backgroundColor = UIColor.white
         view.textColor = UIColor.black

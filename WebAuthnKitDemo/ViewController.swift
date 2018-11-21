@@ -15,7 +15,7 @@ class ViewController: UIViewController {
         
         view.backgroundColor = UIColor.black
         self.view.addSubview(ViewCatalog.createBackground())
-        self.navigationItem.title = "OPERATIONS"
+        self.navigationItem.title = "Operations"
         
         self.setupTitleLabel()
         self.setupRegistrationButton()

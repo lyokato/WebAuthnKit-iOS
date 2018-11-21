@@ -132,7 +132,7 @@ class AuthenticationViewController: UIViewController {
     }
     
     private func showResult(result: String) {
-        let vc = ResultViewController(result: result)
-        self.present(vc, animated: true, completion: nil)
+        //let vc = ResultViewController(result: result)
+        //self.present(vc, animated: true, completion: nil)
     }
 }

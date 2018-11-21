@@ -68,11 +68,7 @@ class RegistrationViewController: UIViewController {
             
         }.done { credential in
 
-            if let json = credential.toJSON() {
-                self.showResult(result: json)
-            } else {
-                self.showErrorPopup(WAKError.unknown)
-            }
+            self.showResult(credential)
 
         }.catch { error in
 
@@ -136,8 +132,20 @@ class RegistrationViewController: UIViewController {
         self.startRegistration()
     }
     
-    private func showResult(result: String) {
-        let vc = ResultViewController(result: result)
+    private func showResult(_ credential: WebAuthnClient.CreateResponse) {
+        
+        let rawId             = credential.rawId.toHexString()
+        let hashedId          = credential.id
+        let clientDataJSON    = credential.response.clientDataJSON
+        let attestationObject = credential.response.attestationObject.toHexString()
+
+        let vc = ResultViewController(
+            rawId:             rawId,
+            hashedId:          hashedId,
+            clientDataJSON:    clientDataJSON,
+            attestationObject: attestationObject
+        )
+        
         self.present(vc, animated: true, completion: nil)
     }
 }

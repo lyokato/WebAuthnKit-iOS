@@ -39,6 +39,23 @@ public class UserConsentUI {
     public init(viewController: UIViewController) {
         self.viewController = viewController
     }
+    
+    public func cancel() {
+        DispatchQueue.main.async {
+            // if let ctx = self.laCtx {
+            //    ctx.invalidate()
+            // }
+            // if let alert = self.popup {
+            //    alert.dismiss(animated: true, completion: nil)
+            // }
+            self.clear()
+        }
+    }
+    
+    private func clear() {
+        // self.laCtx = nil
+        // self.popup = nil
+    }
 
     internal func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
         
@@ -158,7 +175,7 @@ public class UserConsentUI {
                     title:   self.selectionPopupTitle,
                     message: self.selectionPopupMessage,
                     preferredStyle: .actionSheet)
-
+                
                 credentials.forEach { src in
                     var title = self.getUserHandleDisplay(src.userHandle)
                     if let other = src.otherUI {

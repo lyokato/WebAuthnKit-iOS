@@ -240,7 +240,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                     SelfAttestation.create(
                         authData:       authenticatorData,
                         clientDataHash: hash,
-                        alg:            keySupport.selectedAlg.rawValue,
+                        alg:            keySupport.selectedAlg,
                         privateKey:     privateKey
                     ) else {
                         WAKLogger.debug("<MakeCredential> failed to build attestation object")

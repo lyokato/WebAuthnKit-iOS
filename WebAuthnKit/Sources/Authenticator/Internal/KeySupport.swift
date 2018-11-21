@@ -24,16 +24,16 @@ public class KeySupportChooser {
     public init() {}
 
     // TODO support ECDSA
-    public func choose(_ requestedAlgorithms: [Int])
+    public func choose(_ requestedAlgorithms: [COSEAlgorithmIdentifier])
         -> Optional<KeySupport> {
 
         for alg in requestedAlgorithms {
             switch alg {
-            case COSEAlgorithmIdentifier.rs256.rawValue:
+            case COSEAlgorithmIdentifier.rs256:
                 return RSAKeySupport(alg: .rs256)
-            case COSEAlgorithmIdentifier.rs384.rawValue:
+            case COSEAlgorithmIdentifier.rs384:
                 return RSAKeySupport(alg: .rs384)
-            case COSEAlgorithmIdentifier.rs512.rawValue:
+            case COSEAlgorithmIdentifier.rs512:
                 return RSAKeySupport(alg: .rs512)
             default:
                 WAKLogger.debug("<KeySupportChooser> currently this algorithm not supported")

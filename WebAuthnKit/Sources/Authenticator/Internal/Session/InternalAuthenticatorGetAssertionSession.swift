@@ -151,9 +151,15 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 
                 var data = authenticatorDataBytes
                 data.append(contentsOf: hash)
+                
+                guard let alg = COSEAlgorithmIdentifier.fromInt(cred.alg) else {
+                    WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
+                    self.stop(by: .notSupportedError)
+                    return
+                }
 
                 guard let keySupport =
-                    self.keySupportChooser.choose([cred.alg]) else {
+                    self.keySupportChooser.choose([alg]) else {
                         WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
                         self.stop(by: .notSupportedError)
                         return

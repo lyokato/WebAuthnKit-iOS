@@ -34,6 +34,27 @@ public enum COSEAlgorithmIdentifier: Int, Codable {
     case ed256 = -260
     case ed512 = -261
     case ps256 =  -37
+    
+    public static func fromInt(_ num: Int) -> Optional<COSEAlgorithmIdentifier> {
+        switch num {
+        case self.rs256.rawValue:
+            return self.rs256
+        case self.rs384.rawValue:
+            return self.rs384
+        case self.rs512.rawValue:
+            return self.rs512
+        case self.es256.rawValue:
+            return self.es256
+        case self.ed256.rawValue:
+            return self.ed256
+        case self.ed512.rawValue:
+            return self.ed512
+        case self.ps256.rawValue:
+            return self.ps256
+        default:
+            return nil
+        }
+    }
 
     public static func ==(
         lhs: COSEAlgorithmIdentifier,

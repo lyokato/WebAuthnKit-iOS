@@ -14,7 +14,7 @@ class ViewCatalog {
     
     class func createBackground() -> UIView
     {
-        let colorTop = UIColor.fromRGB(0x8b0000).cgColor
+        let colorTop = UIColor.fromRGB(0x00839e).cgColor
         let colorBottom = UIColor.fromRGB(0x000000).cgColor
         let gl = CAGradientLayer()
         gl.colors = [colorTop, colorBottom]
@@ -25,17 +25,6 @@ class ViewCatalog {
         bg.frame = UIScreen.main.bounds
         gl.frame = bg.frame
         
-        /*
-        let lineImage =  ImageHelper.backgroundLineImage
-        let lineCount = Int(UIScreen.main.bounds.size.height / 3)
-        for idx in 0...lineCount {
-            let line = UIImageView(image: lineImage)
-            bg.addSubview(line)
-            let lineTop = CGFloat((1 + 2) * idx)
-            line.move(0, lineTop)
-            line.alpha = 0.3
-        }
-         */
         return bg
     }
     

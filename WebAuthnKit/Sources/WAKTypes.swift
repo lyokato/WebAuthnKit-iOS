@@ -182,9 +182,9 @@ public enum AttestationConveyancePreference: String, Codable {
 
 public struct PublicKeyCredentialParameters : Codable {
     public let type: PublicKeyCredentialType = .publicKey
-    public var alg: Int
+    public var alg: COSEAlgorithmIdentifier
     
-    public init(alg: Int) {
+    public init(alg: COSEAlgorithmIdentifier) {
         self.alg = alg
     }
 }
@@ -257,7 +257,7 @@ public struct AuthenticatorSelectionCriteria: Codable {
     
     public init(
         authenticatorAttachment: AuthenticatorAttachment? = nil,
-        requireResidentKey: Bool = false,
+        requireResidentKey: Bool = true,
         userVerification: UserVerificationRequirement = .preferred
     ) {
         self.authenticatorAttachment = authenticatorAttachment
@@ -305,6 +305,10 @@ public struct PublicKeyCredentialCreationOptions: Codable {
         self.extensions = nil
     }
     
+    public mutating func addPubKeyCredParam(alg: COSEAlgorithmIdentifier) {
+        self.pubKeyCredParams.append(PublicKeyCredentialParameters(alg: alg))
+    }
+    
     public static func fromJSON(json: String) -> Optional<PublicKeyCredentialCreationOptions> {
         guard let args = JSONHelper<PublicKeyCredentialCreationArgs>.decode(json) else {
             return nil
@@ -333,6 +337,16 @@ public struct PublicKeyCredentialRequestOptions: Codable {
         self.allowCredentials = allowCredentials
         self.userVerification = userVerification
         self.timeout = timeout
+    }
+    
+    public mutating func addAllowCredential(
+        credentialId: [UInt8],
+        transports: [AuthenticatorTransport]
+    ) {
+        self.allowCredentials.append(PublicKeyCredentialDescriptor(
+            id:         credentialId,
+            transports: transports
+        ))
     }
     
     public static func fromJSON(json: String) -> Optional<PublicKeyCredentialRequestOptions> {

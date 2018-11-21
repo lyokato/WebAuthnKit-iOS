@@ -13,7 +13,7 @@ public class SelfAttestation {
     public static func create(
         authData:       AuthenticatorData,
         clientDataHash: [UInt8],
-        alg:             Int,
+        alg:             COSEAlgorithmIdentifier,
         privateKey:      String
         ) -> Optional<AttestationObject> {
         

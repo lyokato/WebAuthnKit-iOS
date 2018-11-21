@@ -8,9 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		3B57E257E4B9B7C0AF05A39E /* Pods_WebAuthnKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59424062FA14F4308BAFACBB /* Pods_WebAuthnKit.framework */; };
+		9030FFA021A5369600FB8878 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9030FF9F21A5369600FB8878 /* RegistrationViewController.swift */; };
+		9030FFA221A5377100FB8878 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9030FFA121A5377100FB8878 /* AuthenticationViewController.swift */; };
+		9030FFA421A53A7D00FB8878 /* ResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9030FFA321A53A7D00FB8878 /* ResultViewController.swift */; };
 		90D2E9DE21A424DD00032373 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2E9DD21A424DD00032373 /* AppDelegate.swift */; };
 		90D2E9E021A424DD00032373 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2E9DF21A424DD00032373 /* ViewController.swift */; };
-		90D2E9E321A424DD00032373 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90D2E9E121A424DD00032373 /* Main.storyboard */; };
 		90D2E9E521A424DD00032373 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90D2E9E421A424DD00032373 /* Assets.xcassets */; };
 		90D2E9E821A424DD00032373 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90D2E9E621A424DD00032373 /* LaunchScreen.storyboard */; };
 		90D2EA1921A425DC00032373 /* WebAuthnKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90D2EA1021A425DC00032373 /* WebAuthnKit.framework */; };
@@ -98,10 +100,12 @@
 		613AFAB626CD02E5B4BF4087 /* Pods-WebAuthnKitDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKitDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKitDemo/Pods-WebAuthnKitDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		7D013FA4EF3D6149C39723EF /* Pods-WebAuthnKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKit.release.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKit/Pods-WebAuthnKit.release.xcconfig"; sourceTree = "<group>"; };
 		8296ABA3FE6DEC114151D036 /* Pods_WebAuthnKitDemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebAuthnKitDemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9030FF9F21A5369600FB8878 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
+		9030FFA121A5377100FB8878 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
+		9030FFA321A53A7D00FB8878 /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
 		90D2E9DA21A424DD00032373 /* WebAuthnKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebAuthnKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		90D2E9DD21A424DD00032373 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		90D2E9DF21A424DD00032373 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		90D2E9E221A424DD00032373 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		90D2E9E421A424DD00032373 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		90D2E9E721A424DD00032373 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		90D2E9E921A424DD00032373 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -227,12 +231,14 @@
 			children = (
 				90D2E9DD21A424DD00032373 /* AppDelegate.swift */,
 				90D2E9DF21A424DD00032373 /* ViewController.swift */,
-				90D2E9E121A424DD00032373 /* Main.storyboard */,
 				90D2E9E421A424DD00032373 /* Assets.xcassets */,
 				90D2E9E621A424DD00032373 /* LaunchScreen.storyboard */,
 				90D2E9E921A424DD00032373 /* Info.plist */,
 				90D2EA6C21A476B100032373 /* LayoutHelper.swift */,
 				90D2EA6E21A4772100032373 /* ViewCatalog.swift */,
+				9030FF9F21A5369600FB8878 /* RegistrationViewController.swift */,
+				9030FFA121A5377100FB8878 /* AuthenticationViewController.swift */,
+				9030FFA321A53A7D00FB8878 /* ResultViewController.swift */,
 			);
 			path = WebAuthnKitDemo;
 			sourceTree = "<group>";
@@ -471,7 +477,6 @@
 			files = (
 				90D2E9E821A424DD00032373 /* LaunchScreen.storyboard in Resources */,
 				90D2E9E521A424DD00032373 /* Assets.xcassets in Resources */,
-				90D2E9E321A424DD00032373 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -607,8 +612,11 @@
 			files = (
 				90D2E9E021A424DD00032373 /* ViewController.swift in Sources */,
 				90D2EA6D21A476B100032373 /* LayoutHelper.swift in Sources */,
+				9030FFA421A53A7D00FB8878 /* ResultViewController.swift in Sources */,
 				90D2EA6F21A4772100032373 /* ViewCatalog.swift in Sources */,
 				90D2E9DE21A424DD00032373 /* AppDelegate.swift in Sources */,
+				9030FFA221A5377100FB8878 /* AuthenticationViewController.swift in Sources */,
+				9030FFA021A5369600FB8878 /* RegistrationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,14 +683,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		90D2E9E121A424DD00032373 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				90D2E9E221A424DD00032373 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		90D2E9E621A424DD00032373 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

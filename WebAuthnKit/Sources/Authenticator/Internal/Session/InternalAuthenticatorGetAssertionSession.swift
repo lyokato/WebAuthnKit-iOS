@@ -51,10 +51,13 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
     }
     
     public func start() {
+        WAKLogger.debug("<GetAssertionSession> start")
         if self.stopped {
+            WAKLogger.debug("<GetAssertionSession> alread stopped")
             return
         }
         if self.started {
+            WAKLogger.debug("<GetAssertionSession> alread started")
             return
         }
         self.started = true
@@ -67,14 +70,18 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
     
     // 6.3.4 authenticatorCancel Operation
     public func cancel() {
+        WAKLogger.debug("<GetAssertionSession> cancel")
         self.stop(by: .userCancelled)
     }
     
     private func stop(by reason: AuthenticatorError) {
+        WAKLogger.debug("<GetAssertionSession> stop")
         if !self.started {
+            WAKLogger.debug("<GetAssertionSession> not started")
             return
         }
         if self.stopped  {
+            WAKLogger.debug("<GetAssertionSession> already stopped")
             return
         }
         self.stopped = true
@@ -82,6 +89,10 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
             session: self,
             reason:  reason
         )
+    }
+    
+    private func completed() {
+        self.stopped = true
     }
     
     public func getAssertion(
@@ -92,6 +103,8 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         requireUserVerification:       Bool
         // extensions: [] CBOR MAP
         ) {
+        
+        WAKLogger.debug("<GetAssertionSession> get assertion")
         
         let credSources =
             self.gatherCredentialSources(
@@ -136,7 +149,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                     }
                 }
                 
-                let extensions = SimpleOrderedDictionary<String, Any>()
+                let extensions = SimpleOrderedDictionary<String>()
                 
                 let authenticatorData = AuthenticatorData(
                     rpIdHash:               rpId.bytes.sha256(),
@@ -181,6 +194,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                     assertion.credentailId = cred.id
                 }
                 
+                self.completed()
                 self.delegate?.authenticatorSessionDidDiscoverCredential(
                     session:   self,
                     assertion: assertion

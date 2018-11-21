@@ -191,11 +191,11 @@ internal struct COSEKeyRSA : COSEKey {
 
     public func toBytes() -> [UInt8] {
 
-        let dic = SimpleOrderedDictionary<Int, Any>()
-        dic.add(COSEKeyFieldType.kty, Int64(COSEKeyType.rsa))
-        dic.add(COSEKeyFieldType.alg, Int64(self.alg))
-        dic.add(COSEKeyFieldType.n, self.n)
-        dic.add(COSEKeyFieldType.e, self.e)
+        let dic = SimpleOrderedDictionary<Int>()
+        dic.addInt(COSEKeyFieldType.kty, Int64(COSEKeyType.rsa))
+        dic.addInt(COSEKeyFieldType.alg, Int64(self.alg))
+        dic.addBytes(COSEKeyFieldType.n, self.n)
+        dic.addBytes(COSEKeyFieldType.e, self.e)
 
         return CBORWriter()
             .putIntKeyMap(dic)
@@ -213,12 +213,12 @@ internal struct COSEKeyEC2 : COSEKey {
 
     public func toBytes() -> [UInt8] {
 
-        let dic = SimpleOrderedDictionary<Int, Any>()
-        dic.add(COSEKeyFieldType.kty, Int64(COSEKeyType.ec2))
-        dic.add(COSEKeyFieldType.alg, Int64(self.alg))
-        dic.add(COSEKeyFieldType.crv, Int64(self.crv))
-        dic.add(COSEKeyFieldType.xCoord, self.xCoord)
-        dic.add(COSEKeyFieldType.yCoord, self.yCoord)
+        let dic = SimpleOrderedDictionary<Int>()
+        dic.addInt(COSEKeyFieldType.kty, Int64(COSEKeyType.ec2))
+        dic.addInt(COSEKeyFieldType.alg, Int64(self.alg))
+        dic.addInt(COSEKeyFieldType.crv, Int64(self.crv))
+        dic.addBytes(COSEKeyFieldType.xCoord, self.xCoord)
+        dic.addBytes(COSEKeyFieldType.yCoord, self.yCoord)
         
         return CBORWriter()
             .putIntKeyMap(dic)

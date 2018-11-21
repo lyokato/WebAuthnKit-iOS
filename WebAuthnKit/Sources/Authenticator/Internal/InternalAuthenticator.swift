@@ -115,6 +115,7 @@ public class InternalAuthenticator : Authenticator {
     }
 
     public func newMakeCredentialSession() -> AuthenticatorMakeCredentialSession {
+        WAKLogger.debug("<InternalAuthenticator> newMakeCredentialSession")
         return InternalAuthenticatorMakeCredentialSession(
             setting:             self.setting,
             ui:                  self.ui,
@@ -125,6 +126,7 @@ public class InternalAuthenticator : Authenticator {
     }
     
     public func newGetAssertionSession() -> AuthenticatorGetAssertionSession {
+        WAKLogger.debug("<InternalAuthenticator> newGetAssertionSession")
         return InternalAuthenticatorGetAssertionSession(
             setting:             self.setting,
             ui:                  self.ui,

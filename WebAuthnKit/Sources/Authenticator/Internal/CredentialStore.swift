@@ -36,20 +36,21 @@ public struct PublicKeyCredentialSource {
     }
 
     public func toCBOR() -> Optional<[UInt8]> {
+        WAKLogger.debug("<PublicKeyCredentialSource> toCBOR")
 
         let builder = CBORWriter()
 
-        let dict = SimpleOrderedDictionary<String, Any>()
+        let dict = SimpleOrderedDictionary<String>()
         
-        dict.add("rpId"       , self.rpId)
-        dict.add("privateKey" , self.privateKey)
-        dict.add("userHandle" , self.userHandle)
-        dict.add("alg"        , self.alg)
+        dict.addString("rpId", self.rpId)
+        dict.addString("privateKey", self.privateKey)
+        dict.addBytes("userHandle", self.userHandle)
+        dict.addInt("alg", Int64(self.alg))
 
         if self.isResidentKey {
-            dict.add("signCount", self.signCount)
+            dict.addInt("signCount", Int64(self.signCount))
             if let credId = self.id {
-                dict.add("id", credId)
+                dict.addBytes("id", credId)
             } else {
                 WAKLogger.debug("<PublicKeyCredentialSource> id not found")
                 return nil
@@ -57,13 +58,14 @@ public struct PublicKeyCredentialSource {
         }
 
         if let ui = self.otherUI {
-            dict.add("otherUI", ui)
+            dict.addString("otherUI", ui)
         }
 
         return builder.putStringKeyMap(dict).getResult()
     }
 
     public static func fromCBOR(_ bytes: [UInt8]) -> Optional<PublicKeyCredentialSource> {
+        WAKLogger.debug("<PublicKeyCredentialSource> fromCBOR")
 
         var rpId:       String = ""
         var privateKey: String = ""
@@ -133,6 +135,7 @@ public class KeychainCredentialStore : CredentialStore {
     public init() {}
 
     public func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource] {
+        WAKLogger.debug("<KeychainStore> loadAllCredentialSources")
         let keychain = Keychain(service: rpId)
         return keychain.allKeys().filter { $0 != type(of: self).globalCounterHandle }
             .compactMap {
@@ -151,6 +154,7 @@ public class KeychainCredentialStore : CredentialStore {
     }
 
     public func loadGlobalSignCounter(rpId: String) -> Optional<UInt32> {
+        WAKLogger.debug("<KeychainStore> loadGlobalSignCounter")
         let keychain = Keychain(service: rpId)
         if let result = try? keychain.getString(type(of: self).globalCounterHandle) {
             if let str = result {
@@ -165,6 +169,7 @@ public class KeychainCredentialStore : CredentialStore {
     }
 
     public func saveGlobalSignCounter(rpId: String, count: UInt32) -> Bool {
+        WAKLogger.debug("<KeychainStore> saveGlobalSignCounter")
         let keychain = Keychain(service: rpId)
         do {
             try keychain.set(Bytes.fromUInt32(count).toHexString(),
@@ -178,6 +183,7 @@ public class KeychainCredentialStore : CredentialStore {
 
     public func lookupCredentialSource(rpId: String, credentialId: [UInt8])
         -> Optional<PublicKeyCredentialSource> {
+            WAKLogger.debug("<KeychainStore> lookupCredentialSource")
 
             let handle = credentialId.toHexString()
             let keychain = Keychain(service: rpId)
@@ -196,6 +202,7 @@ public class KeychainCredentialStore : CredentialStore {
     }
 
     public func saveCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool {
+        WAKLogger.debug("<KeychainStore> saveCredentialSource")
 
         guard let credentialId = cred.id else {
             WAKLogger.debug("<KeychainStore> credential id not found")

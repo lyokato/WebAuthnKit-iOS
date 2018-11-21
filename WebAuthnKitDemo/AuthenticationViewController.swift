@@ -61,18 +61,39 @@ class AuthenticationViewController: UIViewController {
             
             self.webAuthnClient.get(options)
             
-            }.done { credential in
+        }.done { assertion in
+
+            if let json = assertion.toJSON() {
+                self.showResult(result: json)
+            } else {
+                self.showErrorPopup(WAKError.unknown)
+            }
+
+        }.catch { error in
                 
-                var json = credential.toJSON()
-                
-            }.catch { error in
-                
+            self.showErrorPopup(error)
         }
         
     }
 
+    private func showErrorPopup(_ error: Error) {
+        
+        let alert = UIAlertController.init(
+            title:          "ERROR",
+            message:        "failed: \(error)",
+            preferredStyle: .alert
+        )
+        
+        let okAction = UIAlertAction.init(title: "OK", style: .default)
+        alert.addAction(okAction)
+
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        WAKLogger.available = true
         
         view.backgroundColor = UIColor.black
         self.view.addSubview(ViewCatalog.createBackground())
@@ -80,6 +101,7 @@ class AuthenticationViewController: UIViewController {
         
         self.setupTitleLabel()
         self.setupStartButton()
+        self.setupWebAuthnClient()
     }
     
     private func setupTitleLabel() {
@@ -106,7 +128,11 @@ class AuthenticationViewController: UIViewController {
     }
     
     @objc func onStartButtonTapped(_ sender: UIButton) {
-        let vc = ResultViewController(result: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        self.startAuthentication()
+    }
+    
+    private func showResult(result: String) {
+        let vc = ResultViewController(result: result)
         self.present(vc, animated: true, completion: nil)
     }
 }

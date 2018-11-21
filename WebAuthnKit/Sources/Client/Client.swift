@@ -45,6 +45,8 @@ public class WebAuthnClient: ClientOperationDelegate {
 
     public func create(_ options: PublicKeyCredentialCreationOptions)
         -> Promise<CreateResponse> {
+            
+            WAKLogger.debug("<WebAuthnClient> create")
 
             return Promise { resolver in
 
@@ -68,6 +70,8 @@ public class WebAuthnClient: ClientOperationDelegate {
 
     public func get(_ options: PublicKeyCredentialRequestOptions)
         -> Promise<GetResponse> {
+            
+            WAKLogger.debug("<WebAuthnClient> get")
 
             return Promise { resolver in
 
@@ -90,6 +94,7 @@ public class WebAuthnClient: ClientOperationDelegate {
     }
 
     public func cancel() {
+        WAKLogger.debug("<WebAuthnClient> cancel")
         self.getOperations.forEach { $0.value.cancel() }
         self.createOperations.forEach { $0.value.cancel() }
     }
@@ -97,6 +102,8 @@ public class WebAuthnClient: ClientOperationDelegate {
     /// this function comforms to https://www.w3.org/TR/webauthn/#createCredential
     public func newCreateOperation(_ options: PublicKeyCredentialCreationOptions)
         -> ClientCreateOperation {
+            
+            WAKLogger.debug("<WebAuthnClient> newCreateOperation")
 
             let lifetimeTimer = self.adjustLifetimeTimer(options.timeout)
             let rpId = self.pickRelyingPartyID(options.rp.id)
@@ -133,6 +140,8 @@ public class WebAuthnClient: ClientOperationDelegate {
 
     public func newGetOperation(_ options: PublicKeyCredentialRequestOptions)
         -> ClientGetOperation {
+            
+        WAKLogger.debug("<WebAuthnClient> newGetOperation")
 
         let lifetimeTimer = self.adjustLifetimeTimer(options.timeout)
         let rpId = self.pickRelyingPartyID(options.rpId)
@@ -161,6 +170,7 @@ public class WebAuthnClient: ClientOperationDelegate {
     }
 
     public func operationDidFinish(opType: ClientOperationType, opId: String) {
+        WAKLogger.debug("<WebAuthnClient> operationDidFinish")
         switch opType {
         case .get:
             self.getOperations.removeValue(forKey: opId)
@@ -176,6 +186,7 @@ public class WebAuthnClient: ClientOperationDelegate {
     /// Set a timer lifetimeTimer to this adjusted value. If the timeout member of options is not present,
     /// then set lifetimeTimer to a client-specific default.
     private func adjustLifetimeTimer(_ timeout: UInt64?) -> UInt64 {
+        WAKLogger.debug("<WebAuthnClient> adjustLifetimeTimer")
         // TODO assert self.maxTimeout > self.minTimeout
         if let t = timeout {
             if (t < self.minTimeout) {
@@ -193,6 +204,9 @@ public class WebAuthnClient: ClientOperationDelegate {
     /// this function comforms to https://www.w3.org/TR/webauthn/#createCredential
     /// 5.1.3 - 7 If options.rpId is not present, then set rpId to effectiveDomain.
     private func pickRelyingPartyID(_ rpId: String?) -> String {
+        
+        WAKLogger.debug("<WebAuthnClient> pickRelyingPartyID")
+        
         if let _rpId = rpId {
             return _rpId
         } else {
@@ -206,6 +220,8 @@ public class WebAuthnClient: ClientOperationDelegate {
         type:      CollectedClientDataType,
         challenge: String
         ) -> (CollectedClientData, String, [UInt8]) {
+        
+        WAKLogger.debug("<WebAuthnClient> generateClientData")
 
         // TODO TokenBinding
         let clientData = CollectedClientData(

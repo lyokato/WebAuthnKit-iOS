@@ -91,7 +91,7 @@ public struct AuthenticatorData {
 
         }
 
-        var extensions = SimpleOrderedDictionary<String, Any>()
+        var extensions = SimpleOrderedDictionary<String>()
 
         if hasExtension {
 
@@ -102,7 +102,7 @@ public struct AuthenticatorData {
                 return nil
             }
 
-            extensions = SimpleOrderedDictionary<String, Any>.fromDictionary(params)
+            extensions = SimpleOrderedDictionary<String>.fromDictionary(params)
         }
 
         return AuthenticatorData(
@@ -121,7 +121,7 @@ public struct AuthenticatorData {
     let userVerified:           Bool
     let signCount:              UInt32
     let attestedCredentialData: AttestedCredentialData?
-    let extensions:             SimpleOrderedDictionary<String, Any>;
+    let extensions:             SimpleOrderedDictionary<String>;
 
     public func toBytes() -> [UInt8] {
 

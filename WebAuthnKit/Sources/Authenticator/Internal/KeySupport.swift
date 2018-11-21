@@ -26,6 +26,7 @@ public class KeySupportChooser {
     // TODO support ECDSA
     public func choose(_ requestedAlgorithms: [COSEAlgorithmIdentifier])
         -> Optional<KeySupport> {
+        WAKLogger.debug("<KeySupportChooser> choose")
 
         for alg in requestedAlgorithms {
             switch alg {
@@ -53,6 +54,7 @@ public class RSAKeySupport : KeySupport {
     public var keySize: Int = 2048
 
     public func canHandle(alg: Int) -> Bool {
+        WAKLogger.debug("<RSAKeySupport> canHandle")
         return type(of: self).algorithms.contains { $0.rawValue == alg }
     }
 
@@ -61,6 +63,7 @@ public class RSAKeySupport : KeySupport {
     }
 
     public func createKeyPair() -> Optional<(String, String)> {
+        WAKLogger.debug("<RSAKeySupport> createKeyPair")
         do {
             let keyPair    = try SwiftyRSA.generateRSAKeyPair(sizeInBits: self.keySize)
             let privateKey = try keyPair.privateKey.pemString()
@@ -73,6 +76,7 @@ public class RSAKeySupport : KeySupport {
     }
 
     public func sign(data: [UInt8], pem: String) -> Optional<[UInt8]> {
+        WAKLogger.debug("<RSAKeySupport> sign")
         do {
             let privateKey = try PrivateKey(pemEncoded: pem)
             let msg = ClearMessage(data: Data(bytes: data))
@@ -85,6 +89,7 @@ public class RSAKeySupport : KeySupport {
     }
 
     public func convertPublicKeyPEMToCOSE(_ pem: String) -> Optional<COSEKey> {
+        WAKLogger.debug("<RSAKeySupport> convertPublicKeyPEMToCOSE")
         return PEM.parseRSAPublicKey(
             pem: pem,
             alg: self.selectedAlg
@@ -92,6 +97,7 @@ public class RSAKeySupport : KeySupport {
     }
 
     private func getDigestType() -> Signature.DigestType {
+        WAKLogger.debug("<RSAKeySupport> getDigestType")
         switch self.selectedAlg {
         case .rs256:
             return .sha256

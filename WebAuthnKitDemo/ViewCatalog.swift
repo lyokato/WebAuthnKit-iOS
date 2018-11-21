@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-
 class ViewCatalog {
     
     class func createBackground() -> UIView
@@ -93,7 +92,6 @@ class ViewCatalog {
     {
         let button = UIButton()
         button.setTitle(text, for: .normal)
-        //button.layer.backgroundColor = UIColor.fromRGB(0x008b8b).CGColor
         button.layer.backgroundColor = UIColor.fromRGB(0x87ceeb).cgColor
         button.layer.cornerRadius = 25.0
         button.titleLabel?.textColor = UIColor.white

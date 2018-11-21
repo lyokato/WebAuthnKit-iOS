@@ -41,6 +41,8 @@ public class UserConsentUI {
     }
 
     internal func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
+        
+        WAKLogger.debug("<UserConsentUI> askUserToCreateNewCredential")
 
         return Promise { resolver in
 
@@ -79,6 +81,8 @@ public class UserConsentUI {
         userEntity:          PublicKeyCredentialUserEntity,
         requireVerification: Bool
         ) -> Promise<()> {
+        
+        WAKLogger.debug("<UserConsentUI> requestUserConsent")
 
         let message = self.confirmationPopupMessageBuilder(rpEntity, userEntity)
 
@@ -123,6 +127,8 @@ public class UserConsentUI {
         credentials:         [PublicKeyCredentialSource],
         requireVerification: Bool
         ) -> Promise<PublicKeyCredentialSource> {
+        
+        WAKLogger.debug("<UserConsentUI> requestUserSelection")
 
         if requireVerification {
 
@@ -141,6 +147,8 @@ public class UserConsentUI {
     internal func requestUserSelectionInternal(
         credentials: [PublicKeyCredentialSource]
     ) -> Promise<PublicKeyCredentialSource> {
+        
+        WAKLogger.debug("<UserConsentUI> requestUserSelectionInternal")
 
         return Promise { resolver in
 
@@ -178,6 +186,8 @@ public class UserConsentUI {
     }
 
     private func verifyUser(message: String) -> Promise<()> {
+        
+        WAKLogger.debug("<UserConsentUI> verifyUser")
 
         return Promise { resolver in
 
@@ -221,7 +231,7 @@ public class UserConsentUI {
                                         }
                     })
                 } else {
-                    WAKLogger.debug("<UserConsentUI> Device not supported")
+                    WAKLogger.debug("<UserConsentUI> device not supported")
                     self.dispatchError(resolver, .notAllowedError)
                 }
             }
@@ -229,12 +239,14 @@ public class UserConsentUI {
     }
     
     private func dispatchError(_ resolver: Resolver<()>, _ error: AuthenticatorError) {
+        WAKLogger.debug("<UserConsentUI> dispatchError")
         DispatchQueue.global().async {
             resolver.reject(error)
         }
     }
 
     private func getUserHandleDisplay(_ userHandle: [UInt8]) -> String {
+        WAKLogger.debug("<UserConsentUI> getUserHandleDisplay")
         switch self.userHandleDisplayType {
         case .number:
             return Bytes.toUInt64(userHandle).description

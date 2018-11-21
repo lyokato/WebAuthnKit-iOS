@@ -88,6 +88,10 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         )
     }
     
+    private func completed() {
+        self.stopped = true
+    }
+    
     private func createNewCredentialId() -> [UInt8] {
         return UUIDHelper.toBytes(UUID())
     }
@@ -103,11 +107,13 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         credTypesAndPubKeyAlgs:          [PublicKeyCredentialParameters] = [PublicKeyCredentialParameters](),
         excludeCredentialDescriptorList: [PublicKeyCredentialDescriptor] = [PublicKeyCredentialDescriptor]()) {
         
+        WAKLogger.debug("<MakeCredentialSession> make credential")
+        
         let requestedAlgs = credTypesAndPubKeyAlgs.map { $0.alg }
         
         guard let keySupport =
             self.keySupportChooser.choose(requestedAlgs) else {
-                WAKLogger.debug("<MakeCredential> insufficient capability (alg), stop session")
+                WAKLogger.debug("<MakeCredentialSession> insufficient capability (alg), stop session")
                 self.stop(by: .notSupportedError)
                 return
         }
@@ -136,13 +142,13 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         }
         
         if requireResidentKey && !self.setting.allowResidentKey {
-            WAKLogger.debug("<MakeCredential> insufficient capability (resident key), stop session")
+            WAKLogger.debug("<MakeCredentialSession> insufficient capability (resident key), stop session")
             self.stop(by: .constraintError)
             return
         }
         
         if requireUserVerification && !self.setting.allowUserVerification {
-            WAKLogger.debug("<MakeCredential> insufficient capability (user verification), stop session")
+            WAKLogger.debug("<MakeCredentialSession> insufficient capability (user verification), stop session")
             self.stop(by: .constraintError)
             return
         }
@@ -181,29 +187,33 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                 
                 if requireResidentKey && self.setting.allowResidentKey {
                     
+                    WAKLogger.debug("<MakeCredentialSession> setup key as resident-key")
+                    
                     credentialId = self.createNewCredentialId()
                     credSource.id = credentialId
                     credSource.isResidentKey = true
                     
                     if !self.credentialStore.saveCredentialSource(credSource) {
-                        WAKLogger.debug("<MakeCredential> failed to save credential source, stop session")
+                        WAKLogger.debug("<MakeCredentialSession> failed to save credential source, stop session")
                         self.stop(by: .unknownError)
                         return
                     }
                     
                 } else {
                     
+                    WAKLogger.debug("<MakeCredentialSession> setup key as encrypted-key")
+                    
                     if let encrypted =
                         self.credentialEncryptor.encryptCredentialSource(credSource) {
                         credentialId = encrypted
                     } else {
-                        WAKLogger.debug("<MakeCredential> failed to encrypt credential source, stop session")
+                        WAKLogger.debug("<MakeCredentialSession> failed to encrypt credential source, stop session")
                         self.stop(by: .unknownError)
                         return
                     }
                     
                     guard let count = self.credentialStore.loadGlobalSignCounter(rpId: rpEntity.id!) else {
-                        WAKLogger.debug("<MakeCredential> failed to load global count")
+                        WAKLogger.debug("<MakeCredentialSession> failed to load global count")
                         self.stop(by: .unknownError)
                         return
                     }
@@ -211,7 +221,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                     signCount = count + self.setting.counterStep
                     
                     if !self.credentialStore.saveGlobalSignCounter(rpId: rpEntity.id!, count: signCount) {
-                        WAKLogger.debug("<MakeCredential> failed to save global count")
+                        WAKLogger.debug("<MakeCredentialSession> failed to save global count")
                         self.stop(by: .unknownError)
                         return
                     }
@@ -219,7 +229,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                 }
                 
                 // TODO Extension Processing
-                let extensions = SimpleOrderedDictionary<String, Any>()
+                let extensions = SimpleOrderedDictionary<String>()
                 
                 let attestedCredData = AttestedCredentialData(
                     aaguid:              UUIDHelper.zeroBytes,
@@ -243,11 +253,12 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                         alg:            keySupport.selectedAlg,
                         privateKey:     privateKey
                     ) else {
-                        WAKLogger.debug("<MakeCredential> failed to build attestation object")
+                        WAKLogger.debug("<MakeCredentialSession> failed to build attestation object")
                         self.stop(by: .unknownError)
                         return
                 }
                 
+                self.completed()
                 self.delegate?.authenticatorSessionDidMakeCredential(
                     session:     self,
                     attestation: attestation
@@ -269,6 +280,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
     // 6.3.1 Lookup Credential Source By Credential ID Algoreithm
     private func lookupCredentialSource(rpId: String, credentialId: [UInt8])
         -> Optional<PublicKeyCredentialSource> {
+            WAKLogger.debug("<MakeCredentialSession> lookupCredentialSource")
             if let src = self.credentialStore.lookupCredentialSource(
                 rpId:         rpId,
                 credentialId: credentialId) {

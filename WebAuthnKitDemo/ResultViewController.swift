@@ -31,11 +31,22 @@ class ResultViewController: UIViewController {
         self.view.addSubview(ViewCatalog.createBackground())
         self.navigationItem.title = "Result"
         
+        self.setupTextView()
         self.setupCloseButton()
     }
     
     private func setupTextView() {
+        let view = ViewCatalog.createTextView()
+        view.text = self.result
+        view.fitScreenW(20)
+        view.height(self.view.bounds.height - 50 - 50 - 50 - 20)
+        view.top(50)
+        view.backgroundColor = UIColor.white
+        view.textColor = UIColor.black
         
+        self.view.addSubview(view)
+        
+        view.centerizeScreenH()
     }
     
     private func setupCloseButton() {
@@ -44,7 +55,7 @@ class ResultViewController: UIViewController {
         button.addTarget(self, action: #selector(type(of: self).onCloseButtonTapped(_:)), for: .touchUpInside)
         button.fitScreenW(20)
         button.centerizeScreenH()
-        button.top(100)
+        button.top(self.view.bounds.height - 50 - 50)
         
         button.layer.backgroundColor = UIColor.fromRGB(0xff4500).cgColor
         view.addSubview(button)

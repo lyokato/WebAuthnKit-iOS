@@ -15,7 +15,7 @@ class ViewController: UIViewController {
         
         view.backgroundColor = UIColor.black
         self.view.addSubview(ViewCatalog.createBackground())
-        self.navigationItem.title = "Choose Mode"
+        self.navigationItem.title = "OPERATIONS"
         
         self.setupTitleLabel()
         self.setupRegistrationButton()
@@ -57,7 +57,7 @@ class ViewController: UIViewController {
     }
     
     private func setupTitleLabel() {
-        let label = ViewCatalog.createLabel(text: "WebAuthenDemo")
+        let label = ViewCatalog.createLabel(text: "WebAuthenKit Demo")
         label.height(30)
         label.fitScreenW(10)
         label.centerizeScreenH()

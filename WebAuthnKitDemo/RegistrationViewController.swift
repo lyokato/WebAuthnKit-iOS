@@ -137,7 +137,7 @@ class RegistrationViewController: UIViewController {
         let rawId             = credential.rawId.toHexString()
         let hashedId          = credential.id
         let clientDataJSON    = credential.response.clientDataJSON
-        let attestationObject = credential.response.attestationObject.toHexString()
+        let attestationObject = Base64.encodeBase64URL(credential.response.attestationObject)
 
         let vc = ResultViewController(
             rawId:             rawId,

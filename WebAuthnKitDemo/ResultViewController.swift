@@ -50,7 +50,7 @@ class ResultViewController: UIViewController {
         self.newTextView(height: 30, top: 160, text: self.hashedId)
         self.newLabel(text: "ClientDataJSON", top: 200)
         self.newTextView(height: 70, top: 230, text: self.clientDataJSON)
-        self.newLabel(text: "AttestationObject (Hex)", top: 310)
+        self.newLabel(text: "AttestationObject (Base64URL)", top: 310)
         self.newTextView(height: 400, top: 340, text: self.attestationObject)
         self.setupCloseButton()
     }

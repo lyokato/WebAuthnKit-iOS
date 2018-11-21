@@ -40,7 +40,7 @@ public class UserConsentUI {
         self.viewController = viewController
     }
 
-    public func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
+    internal func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
 
         return Promise { resolver in
 
@@ -74,7 +74,7 @@ public class UserConsentUI {
 
     }
 
-    public func requestUserConsent(
+    internal func requestUserConsent(
         rpEntity:            PublicKeyCredentialRpEntity,
         userEntity:          PublicKeyCredentialUserEntity,
         requireVerification: Bool
@@ -119,7 +119,7 @@ public class UserConsentUI {
         }
     }
 
-    public func requestUserSelection(
+    internal func requestUserSelection(
         credentials:         [PublicKeyCredentialSource],
         requireVerification: Bool
         ) -> Promise<PublicKeyCredentialSource> {
@@ -138,7 +138,7 @@ public class UserConsentUI {
         }
     }
 
-    public func requestUserSelectionInternal(
+    internal func requestUserSelectionInternal(
         credentials: [PublicKeyCredentialSource]
     ) -> Promise<PublicKeyCredentialSource> {
 

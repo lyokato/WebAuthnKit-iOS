@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     private func setupWebAuthnClient() {
         
         self.userConsentUI = UserConsentUI(viewController: self)
+        self.userConsentUI.
         
         var authenticator = InternalAuthenticator(
             ui:            self.userConsentUI,

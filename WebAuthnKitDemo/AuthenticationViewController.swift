@@ -51,6 +51,7 @@ class AuthenticationViewController: UIViewController {
             self.showErrorPopup(FormError.missing("challenge"))
             return
         }
+        
         if challenge.isEmpty {
             self.showErrorPopup(FormError.empty("challenge"))
             return
@@ -60,6 +61,7 @@ class AuthenticationViewController: UIViewController {
             self.showErrorPopup(FormError.missing("rpId"))
             return
         }
+        
         if rpId.isEmpty {
             self.showErrorPopup(FormError.empty("rpId"))
             return
@@ -69,7 +71,7 @@ class AuthenticationViewController: UIViewController {
             UserVerificationRequirement.required,
             UserVerificationRequirement.preferred,
             UserVerificationRequirement.discouraged
-            ][self.userVerification.selectedSegmentIndex]
+        ][self.userVerification.selectedSegmentIndex]
         
         var options = PublicKeyCredentialRequestOptions()
         options.challenge = Bytes.fromHex(challenge)

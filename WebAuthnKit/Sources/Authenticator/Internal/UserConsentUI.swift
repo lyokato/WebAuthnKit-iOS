@@ -148,14 +148,14 @@ public class UserConsentUI {
         WAKLogger.debug("<UserConsentUI> requestUserSelection")
 
         if requireVerification {
-
+            WAKLogger.debug("<UserConsentUI> verification required")
             let message = self.selectionPopupMessage
             return self.verifyUser(message: message).then {
                 return self.requestUserSelectionInternal(credentials: credentials)
             }
 
         } else {
-
+           WAKLogger.debug("<UserConsentUI> verification not required")
            return self.requestUserSelectionInternal(credentials: credentials)
 
         }
@@ -177,10 +177,13 @@ public class UserConsentUI {
                     preferredStyle: .actionSheet)
                 
                 credentials.forEach { src in
+                    
                     var title = self.getUserHandleDisplay(src.userHandle)
+                    
                     if let other = src.otherUI {
                         title = "\(title) (\(other))"
                     }
+                    
                     let chooseAction = UIAlertAction.init(title: title, style: .destructive) { _ in
                         DispatchQueue.global().async {
                             resolver.fulfill(src)

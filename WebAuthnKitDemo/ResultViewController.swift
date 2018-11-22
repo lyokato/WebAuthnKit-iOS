@@ -78,10 +78,6 @@ class ResultViewController: UIViewController {
         if self.signature.isEmpty {
             self.newLabel(text: "Attestation Object (Base64URL)", top: 290)
             self.newTextView(height: 200, top: 320, text: self.attestationObject)
-            self.newLabel(text: "Signature (Hex)", top: 530)
-            self.newTextView(height: 30, top: 560, text: self.signature)
-            self.newLabel(text: "User Handle", top: 600)
-            self.newTextView(height: 30, top: 630, text: self.userHandle)
         } else {
             WAKLogger.debug("SIGNATURE_SIZE: \(self.signature.count)")
             self.newLabel(text: "Authenticator Data (Base64URL)", top: 290)

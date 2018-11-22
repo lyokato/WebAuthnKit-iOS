@@ -96,10 +96,23 @@ class RegistrationViewController: UIViewController {
         var options = PublicKeyCredentialCreationOptions()
         options.challenge = Bytes.fromHex(challenge)
         options.user.id = Bytes.fromString(userId)
-        options.user.name = "john"
-        options.user.displayName = "John"
+        
+        if let displayName = self.displayNameText.text {
+            if !displayName.isEmpty {
+                options.user.name        = displayName
+                options.user.displayName = displayName
+            }
+        }
+        
+        if let iconURL = self.iconURLText.text {
+            if !iconURL.isEmpty {
+                options.user.icon = iconURL
+            }
+        }
+        
         options.rp.id = rpId
-        options.rp.name = "MyService"
+        options.rp.name = rpId
+        
         options.attestation = attestation
         options.addPubKeyCredParam(alg: .rs256)
         options.authenticatorSelection = AuthenticatorSelectionCriteria(
@@ -138,6 +151,8 @@ class RegistrationViewController: UIViewController {
     }
     
     var userIdText:            UITextView!
+    var displayNameText:       UITextView!
+    var iconURLText:           UITextView!
     var rpIdText:              UITextView!
     var challengeText:         UITextView!
     var userVerification:      UISegmentedControl!
@@ -153,25 +168,45 @@ class RegistrationViewController: UIViewController {
         self.view.addSubview(ViewCatalog.createBackground())
         self.navigationItem.title = "Registration"
         
-        let offset: CGFloat = 50
+        var offset: CGFloat = 110
         
-        self.newLabel(text: "User Id", top: offset + 60)
-        self.userIdText = self.newTextView(height: 30, top: offset + 90, text: "")
+        self.newLabel(text: "User Id", top: offset)
+        self.userIdText = self.newTextView(height: 30, top: offset + 30, text: "lyokato")
         
-        self.newLabel(text: "Relying Party Id", top: offset + 130)
-        self.rpIdText = self.newTextView(height: 30, top: offset + 160, text: "https://example.org")
+        offset = offset + 70
         
-        self.newLabel(text: "Challenge (Hex)", top: offset + 200)
-        self.challengeText = self.newTextView(height: 30, top: offset + 230, text: "aed9c789543b")
+        self.newLabel(text: "User Display Name (Optional)", top: offset)
+        self.displayNameText = self.newTextView(height: 30, top: offset + 30, text: "Lyo Kato")
         
-        self.newLabel(text: "User Verification", top: offset + 280)
-        self.userVerification = self.newSegmentedControl(top: offset + 310, list: ["Required", "Preferred", "Discouraged"])
+        offset = offset + 70
         
-        self.newLabel(text: "Attestation Conveyance", top: offset + 360)
-        self.attestationConveyance = self.newSegmentedControl(top: offset + 390, list: ["Direct", "Indirect", "None"])
+        self.newLabel(text: "User ICON URL (Optional)", top: offset)
+        self.iconURLText = self.newTextView(height: 30, top: offset + 30, text: "https://www.gravatar.com/avatar/0b63462eb18efbfb764b0c226abff4a0?s=440&d=retro")
 
-        self.newLabel(text: "Resident Key Required", top: offset + 440)
-        self.residentKeyRequired = self.newSegmentedControl(top: offset + 470, list: ["Required", "Not Required"])
+        offset = offset + 70
+        
+        self.newLabel(text: "Relying Party Id", top: offset)
+        self.rpIdText = self.newTextView(height: 30, top: offset + 30, text: "https://example.org")
+        
+        offset = offset + 70
+        
+        self.newLabel(text: "Challenge (Hex)", top: offset)
+        self.challengeText = self.newTextView(height: 30, top: offset + 30, text: "aed9c789543b")
+        
+        offset = offset + 80
+        
+        self.newLabel(text: "User Verification", top: offset)
+        self.userVerification = self.newSegmentedControl(top: offset + 30, list: ["Required", "Preferred", "Discouraged"])
+        
+        offset = offset + 80
+        
+        self.newLabel(text: "Attestation Conveyance", top: offset)
+        self.attestationConveyance = self.newSegmentedControl(top: offset + 30, list: ["Direct", "Indirect", "None"])
+        
+        offset = offset + 80
+
+        self.newLabel(text: "Resident Key Required", top: offset)
+        self.residentKeyRequired = self.newSegmentedControl(top: offset + 30, list: ["Required", "Not Required"])
 
         self.setupStartButton()
         self.setupWebAuthnClient()

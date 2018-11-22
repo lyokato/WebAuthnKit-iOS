@@ -161,7 +161,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                 requireVerification: requireUserVerification
             )
             
-            }.done {
+            }.done { (overwrite: Bool, keyName: String) in
                 
                 // got user consent
                 guard let (publicKey, privateKey) = keySupport.createKeyPair() else {
@@ -181,6 +181,8 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                     userHandle: userEntity.id,
                     alg:        keySupport.selectedAlg.rawValue
                 )
+                
+                credSource.otherUI = keyName
                 
                 var credentialId = [UInt8]()
                 var signCount: UInt32 = 0

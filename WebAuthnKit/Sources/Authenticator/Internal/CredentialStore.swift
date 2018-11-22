@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Security
 import KeychainAccess
 import CryptoSwift
 
@@ -139,6 +140,16 @@ public class KeychainCredentialStore : CredentialStore {
     private static let globalCounterHandle: String = "global-sign-count"
     
     public init() {}
+    
+    private func newRandom() -> Optional<[UInt8]> {
+        var randomBytes = [UInt8](repeating: 0, count: 16)
+        if SecRandomCopyBytes(kSecRandomDefault, 16, &randomBytes) == errSecSuccess {
+            return randomBytes
+        } else {
+            WAKLogger.debug("<KeychainStore> failed to create random")
+            return nil
+        }
+    }
 
     public func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource] {
         WAKLogger.debug("<KeychainStore> loadAllCredentialSources")

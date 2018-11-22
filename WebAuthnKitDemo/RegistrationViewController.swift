@@ -104,7 +104,7 @@ class RegistrationViewController: UIViewController {
             }
         }
         
-        if let iconURL = self.iconURLText.text {
+        if let iconURL = self.userIconURLText.text {
             if !iconURL.isEmpty {
                 options.user.icon = iconURL
             }
@@ -112,6 +112,12 @@ class RegistrationViewController: UIViewController {
         
         options.rp.id = rpId
         options.rp.name = rpId
+        
+        if let iconURL = self.rpIconURLText.text {
+            if !iconURL.isEmpty {
+                options.rp.icon = iconURL
+            }
+        }
         
         options.attestation = attestation
         options.addPubKeyCredParam(alg: .rs256)
@@ -152,7 +158,8 @@ class RegistrationViewController: UIViewController {
     
     var userIdText:            UITextView!
     var displayNameText:       UITextView!
-    var iconURLText:           UITextView!
+    var userIconURLText:       UITextView!
+    var rpIconURLText:         UITextView!
     var rpIdText:              UITextView!
     var challengeText:         UITextView!
     var userVerification:      UISegmentedControl!
@@ -168,7 +175,7 @@ class RegistrationViewController: UIViewController {
         self.view.addSubview(ViewCatalog.createBackground())
         self.navigationItem.title = "Registration"
         
-        var offset: CGFloat = 110
+        var offset: CGFloat = 100
         
         self.newLabel(text: "User Id", top: offset)
         self.userIdText = self.newTextView(height: 30, top: offset + 30, text: "lyokato")
@@ -181,12 +188,17 @@ class RegistrationViewController: UIViewController {
         offset = offset + 70
         
         self.newLabel(text: "User ICON URL (Optional)", top: offset)
-        self.iconURLText = self.newTextView(height: 30, top: offset + 30, text: "https://www.gravatar.com/avatar/0b63462eb18efbfb764b0c226abff4a0?s=440&d=retro")
+        self.userIconURLText = self.newTextView(height: 30, top: offset + 30, text: "https://www.gravatar.com/avatar/0b63462eb18efbfb764b0c226abff4a0?s=440&d=retro")
 
         offset = offset + 70
         
         self.newLabel(text: "Relying Party Id", top: offset)
         self.rpIdText = self.newTextView(height: 30, top: offset + 30, text: "https://example.org")
+        
+        offset = offset + 70
+        
+        self.newLabel(text: "Relying Party Icon", top: offset)
+        self.rpIconURLText = self.newTextView(height: 30, top: offset + 30, text: "https://developers.google.com/identity/images/g-logo.png")
         
         offset = offset + 70
         

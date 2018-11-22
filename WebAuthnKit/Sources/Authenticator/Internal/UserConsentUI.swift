@@ -35,9 +35,14 @@ public class UserConsentUI {
     public var selectionPopupMessage: String = "Choose key with which you want to login with"
 
     public var userHandleDisplayType: UserHandleDisplayType = .utf8string
+    
+    private let tempBackground: UIView
 
     public init(viewController: UIViewController) {
         self.viewController = viewController
+        self.tempBackground = UIView()
+        self.tempBackground.backgroundColor = UIColor.black
+        self.tempBackground.alpha = 0
     }
     
     public func cancel() {
@@ -97,45 +102,62 @@ public class UserConsentUI {
         rpEntity:            PublicKeyCredentialRpEntity,
         userEntity:          PublicKeyCredentialUserEntity,
         requireVerification: Bool
-        ) -> Promise<()> {
+        ) -> Promise<(Bool, String)> {
         
         WAKLogger.debug("<UserConsentUI> requestUserConsent")
-
-        let message = self.confirmationPopupMessageBuilder(rpEntity, userEntity)
-
+        
+        let promise = Promise<(Bool, String)> { resolver in
+            
+            DispatchQueue.main.async {
+            
+                let vc = KeyRegistrationViewController(
+                    resolver:                   resolver,
+                    user:                       userEntity,
+                    rp:                         rpEntity,
+                    askUserDuplicationHandling: false,
+                    showRpInformation:          true
+                )
+                
+                self.viewController.present(vc, animated: true, completion: nil)
+            }
+            
+        }
+        
         if requireVerification {
+            
+            return promise.then {
+                
+                return self.verifyUser(message:$0.1, params: $0)
+                
+            }
 
-            return self.verifyUser(message: message)
 
         } else {
-
-            return Promise { resolver in
-
-                DispatchQueue.main.async {
-
-                    let alert = UIAlertController.init(
-                        title:          self.confirmationPopupTitle,
-                        message:        message,
-                        preferredStyle: .actionSheet
-                    )
-
-                    let okAction = UIAlertAction.init(title: "OK", style: .default) { _ in
-                        DispatchQueue.global().async {
-                            resolver.fulfill(())
-                        }
-                    }
-
-                    let cancelAction = UIAlertAction.init(title: "Cancel", style: .cancel) { _ in
-                        DispatchQueue.global().async {
-                            resolver.reject(AuthenticatorError.notAllowedError)
-                        }
-                    }
-
-                    alert.addAction(okAction)
-                    alert.addAction(cancelAction)
-
-                    self.viewController.present(alert, animated: true, completion: nil)
-                }
+            
+            return promise
+            
+        }
+    }
+    
+    private func showBackground() {
+        self.viewController.view.addSubview(self.tempBackground)
+        self.tempBackground.frame = self.viewController.view.frame
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
+            self.tempBackground.alpha = 0.3
+        }, completion: nil)
+    }
+    
+    private func hideBackground<T>(_ params: T) -> Promise<T> {
+        return Promise<T> { resolver in
+            if self.tempBackground.superview != nil {
+                UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
+                    self.tempBackground.alpha = 0.0
+                }, completion: { _ in
+                    self.tempBackground.removeFromSuperview()
+                    resolver.fulfill(params)
+                })
+            } else {
+                resolver.fulfill(params)
             }
         }
     }
@@ -150,7 +172,7 @@ public class UserConsentUI {
         if requireVerification {
             WAKLogger.debug("<UserConsentUI> verification required")
             let message = self.selectionPopupMessage
-            return self.verifyUser(message: message).then {
+            return self.verifyUser(message: message, params: ()).then {
                 return self.requestUserSelectionInternal(credentials: credentials)
             }
 
@@ -205,11 +227,11 @@ public class UserConsentUI {
         }
     }
 
-    private func verifyUser(message: String) -> Promise<()> {
+    private func verifyUser<T>(message: String, params: T) -> Promise<T> {
         
         WAKLogger.debug("<UserConsentUI> verifyUser")
 
-        return Promise { resolver in
+        return Promise<T> { resolver in
 
             DispatchQueue.main.async {
 
@@ -221,7 +243,7 @@ public class UserConsentUI {
                                        reply: { success, error in
                                         if success {
                                             DispatchQueue.global().async {
-                                                resolver.fulfill(())
+                                                resolver.fulfill(params)
                                             }
                                         } else if let error = error {
                                             switch LAError(_nsError: error as NSError) {
@@ -258,7 +280,7 @@ public class UserConsentUI {
         }
     }
     
-    private func dispatchError(_ resolver: Resolver<()>, _ error: AuthenticatorError) {
+    private func dispatchError<T>(_ resolver: Resolver<T>, _ error: AuthenticatorError) {
         WAKLogger.debug("<UserConsentUI> dispatchError")
         DispatchQueue.global().async {
             resolver.reject(error)

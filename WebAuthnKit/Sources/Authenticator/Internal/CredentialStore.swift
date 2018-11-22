@@ -11,7 +11,7 @@ import KeychainAccess
 import CryptoSwift
 
 public struct PublicKeyCredentialSource {
-
+    
     var type:       PublicKeyCredentialType = .publicKey
     var signCount:  UInt32 = 0
     var id:         [UInt8]? // credential id
@@ -94,10 +94,10 @@ public struct PublicKeyCredentialSource {
             WAKLogger.debug("<PublicKeyCredentialSource> userHandle not found")
             return nil
         }
-        if let alg = dict["alg"] as? Int {
-            algId = alg
+        if let alg = dict["alg"] as? Int64 {
+            algId = Int(alg)
         } else {
-            WAKLogger.debug("<PublicKeyCredentialSource> userHandle not found")
+            WAKLogger.debug("<PublicKeyCredentialSource> alg not found")
             return nil
         }
         var src = PublicKeyCredentialSource(
@@ -109,12 +109,18 @@ public struct PublicKeyCredentialSource {
         if let id = dict["id"] as? [UInt8] {
             src.id = id
             src.isResidentKey = true
+        } else {
+            WAKLogger.debug("<PublicKeyCredentialSource> id not found")
         }
-        if let signCount = dict["signCount"] as? UInt32 {
-            src.signCount = signCount
+        if let signCount = dict["signCount"] as? Int64 {
+            src.signCount = UInt32(signCount)
+        } else {
+            WAKLogger.debug("<PublicKeyCredentialSource> signCount not found")
         }
         if let otherUI = dict["otherUI"] as? String {
             src.otherUI = otherUI
+        } else {
+            WAKLogger.debug("<PublicKeyCredentialSource> otherUI not found")
         }
         return src
     }

@@ -13,7 +13,7 @@ import PromiseKit
 import CryptoSwift
 
 public enum UserHandleDisplayType {
-    case utf8String
+    case utf8string
     case number
 }
 
@@ -34,7 +34,7 @@ public class UserConsentUI {
     public var selectionPopupTitle: String = "Login Key Selection"
     public var selectionPopupMessage: String = "Choose key with which you want to login with"
 
-    public var userHandleDisplayType: UserHandleDisplayType = .number
+    public var userHandleDisplayType: UserHandleDisplayType = .utf8string
 
     public init(viewController: UIViewController) {
         self.viewController = viewController
@@ -267,7 +267,7 @@ public class UserConsentUI {
         switch self.userHandleDisplayType {
         case .number:
             return Bytes.toUInt64(userHandle).description
-        case .utf8String:
+        case .utf8string:
             if let result = String(data: Data(bytes: userHandle), encoding: .utf8) {
                 return result
             } else {

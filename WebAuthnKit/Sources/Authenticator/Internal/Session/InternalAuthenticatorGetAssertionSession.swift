@@ -190,7 +190,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 
                 assertion.userHandle = cred.userHandle
                 
-                if allowCredentialDescriptorList.count > 1 {
+                if allowCredentialDescriptorList.count != 1 {
                     assertion.credentailId = cred.id
                 }
                 

@@ -244,9 +244,12 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
         
         var credentialId: [UInt8]
         if let savedId = self.savedCredentialId {
+            WAKLogger.debug("<GetOperation> use saved credentialId")
            credentialId = savedId
         } else {
+            WAKLogger.debug("<GetOperation> use credentialId from authenticator")
             guard let resultId = assertion.credentailId else {
+                WAKLogger.debug("<GetOperation> credentialId not found")
                 self.dispatchError(.unknown)
                 return
             }

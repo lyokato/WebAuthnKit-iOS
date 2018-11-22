@@ -14,20 +14,45 @@ import CryptoSwift
 class ResultViewController: UIViewController {
     
     var rawId: String
-    var hashedId: String
+    var credId: String
     var clientDataJSON: String
     var attestationObject: String
     
+    var authenticatorData: String
+    var signature: String
+    var userHandle: String
+    
     init(
         rawId: String,
-        hashedId: String,
+        credId: String,
+        clientDataJSON: String,
+        authenticatorData: String,
+        signature: String,
+        userHandle: String
+        ) {
+        self.rawId = rawId
+        self.credId = credId
+        self.clientDataJSON = clientDataJSON
+        self.attestationObject = ""
+        self.authenticatorData = authenticatorData
+        self.signature = signature
+        self.userHandle = userHandle
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(
+        rawId: String,
+        credId: String,
         clientDataJSON: String,
         attestationObject: String
     ) {
         self.rawId = rawId
-        self.hashedId = hashedId
+        self.credId = credId
         self.clientDataJSON = clientDataJSON
         self.attestationObject = attestationObject
+        self.authenticatorData = ""
+        self.signature = ""
+        self.userHandle = ""
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -42,16 +67,30 @@ class ResultViewController: UIViewController {
         self.view.addSubview(ViewCatalog.createBackground())
         self.navigationItem.title = "Result"
         
-        
         //self.setupTextView()
         self.newLabel(text: "Raw Id (Hex)", top: 60)
         self.newTextView(height: 30, top: 90, text: self.rawId)
-        self.newLabel(text: "Hashed Id", top: 130)
-        self.newTextView(height: 30, top: 160, text: self.hashedId)
+        self.newLabel(text: "Credential Id (Base64URL)", top: 130)
+        self.newTextView(height: 30, top: 160, text: self.credId)
         self.newLabel(text: "Client Data JSON", top: 200)
-        self.newTextView(height: 70, top: 230, text: self.clientDataJSON)
-        self.newLabel(text: "Attestation Object (Base64URL)", top: 310)
-        self.newTextView(height: 400, top: 340, text: self.attestationObject)
+        self.newTextView(height: 50, top: 230, text: self.clientDataJSON)
+        
+        if self.signature.isEmpty {
+            self.newLabel(text: "Attestation Object (Base64URL)", top: 290)
+            self.newTextView(height: 200, top: 320, text: self.attestationObject)
+            self.newLabel(text: "Signature (Hex)", top: 530)
+            self.newTextView(height: 30, top: 560, text: self.signature)
+            self.newLabel(text: "User Handle", top: 600)
+            self.newTextView(height: 30, top: 630, text: self.userHandle)
+        } else {
+            WAKLogger.debug("SIGNATURE_SIZE: \(self.signature.count)")
+            self.newLabel(text: "Authenticator Data (Base64URL)", top: 290)
+            self.newTextView(height: 50, top: 320, text: self.authenticatorData)
+            self.newLabel(text: "Signature (Hex)", top: 380)
+            self.newTextView(height: 150, top: 410, text: self.signature)
+            self.newLabel(text: "User Handle", top: 570)
+            self.newTextView(height: 30, top: 600, text: self.userHandle)
+        }
         self.setupCloseButton()
     }
     

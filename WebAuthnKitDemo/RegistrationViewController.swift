@@ -234,13 +234,13 @@ class RegistrationViewController: UIViewController {
     private func showResult(_ credential: WebAuthnClient.CreateResponse) {
         
         let rawId             = credential.rawId.toHexString()
-        let hashedId          = credential.id
+        let credId            = credential.id
         let clientDataJSON    = credential.response.clientDataJSON
         let attestationObject = Base64.encodeBase64URL(credential.response.attestationObject)
 
         let vc = ResultViewController(
             rawId:             rawId,
-            hashedId:          hashedId,
+            credId:            credId,
             clientDataJSON:    clientDataJSON,
             attestationObject: attestationObject
         )

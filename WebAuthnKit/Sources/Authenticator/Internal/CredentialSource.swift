@@ -11,10 +11,16 @@ import CryptoSwift
 
 public struct PublicKeyCredentialSource {
     
+    public var keyLabel: String {
+        get {
+            let userHex = self.userHandle.toHexString()
+            return "\(self.rpId)/\(userHex)"
+        }
+    }
+    
     var type:       PublicKeyCredentialType = .publicKey
     var signCount:  UInt32 = 0
     var id:         [UInt8]? // credential id
-    var privateKey: String
     var rpId:       String
     var userHandle: [UInt8]
     var alg:        Int = COSEAlgorithmIdentifier.rs256.rawValue
@@ -24,12 +30,10 @@ public struct PublicKeyCredentialSource {
     
     init(
         rpId:       String,
-        privateKey: String,
         userHandle: [UInt8],
         alg:        Int
         ) {
         self.rpId       = rpId
-        self.privateKey = privateKey
         self.userHandle = userHandle
         self.alg        = alg
     }
@@ -42,7 +46,6 @@ public struct PublicKeyCredentialSource {
         let dict = SimpleOrderedDictionary<String>()
         
         dict.addString("rpId", self.rpId)
-        dict.addString("privateKey", self.privateKey)
         dict.addBytes("userHandle", self.userHandle)
         dict.addInt("alg", Int64(self.alg))
         
@@ -67,7 +70,6 @@ public struct PublicKeyCredentialSource {
         WAKLogger.debug("<PublicKeyCredentialSource> fromCBOR")
         
         var rpId:       String = ""
-        var privateKey: String = ""
         var userHandle: [UInt8];
         var algId:      Int = 0
         
@@ -75,12 +77,6 @@ public struct PublicKeyCredentialSource {
             return nil
         }
         
-        if let foundKey = dict["privateKey"] as? String {
-            privateKey = foundKey
-        } else {
-            WAKLogger.debug("<PublicKeyCredentialSource> private-key not found")
-            return nil
-        }
         if let foundRpId = dict["rpId"] as? String {
             rpId = foundRpId
         } else {
@@ -101,7 +97,6 @@ public struct PublicKeyCredentialSource {
         }
         var src = PublicKeyCredentialSource(
             rpId:       rpId,
-            privateKey: privateKey,
             userHandle: userHandle,
             alg:        algId
         )

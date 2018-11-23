@@ -11,6 +11,7 @@ import XCTest
 @testable import WebAuthnKit
 @testable import CryptoSwift
 @testable import SwiftyRSA
+@testable import EllipticCurveKeyPair
 
 class COSETests: XCTestCase {
 
@@ -21,6 +22,32 @@ class COSETests: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
+    }
+    
+    func testEC2() {
+        let publicAccessControl = EllipticCurveKeyPair.AccessControl(
+            protection: kSecAttrAccessibleAlwaysThisDeviceOnly,
+            flags:      []
+        )
+        let privateAccessControl = EllipticCurveKeyPair.AccessControl(
+            protection: kSecAttrAccessibleAlwaysThisDeviceOnly,
+            flags:      [.privateKeyUsage]
+        )
+        let config = EllipticCurveKeyPair.Config(
+            publicLabel: "example.org/foobar/public1",
+            privateLabel: "example.org/foobar/private1",
+            operationPrompt: "",
+            publicKeyAccessControl: publicAccessControl,
+            privateKeyAccessControl: privateAccessControl,
+            token: .keychain
+        )
+        let pair = EllipticCurveKeyPair.Manager(config: config)
+        do {
+            let publicKey = try pair.publicKey().data().DER
+            XCTAssertEqual(publicKey.count, 91)
+        } catch let error {
+           XCTAssertEqual(error.localizedDescription, "bar")
+        }
     }
 
     func testRsaCoseKey() {

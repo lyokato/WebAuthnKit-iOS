@@ -161,7 +161,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                 requireVerification: requireUserVerification
             )
             
-            }.done { (overwrite: Bool, keyName: String) in
+            }.done { keyName in
                 
                 // got user consent
                 guard let (publicKey, privateKey) = keySupport.createKeyPair() else {
@@ -186,6 +186,11 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                 
                 var credentialId = [UInt8]()
                 var signCount: UInt32 = 0
+                
+                self.credentialStore.deleteAllCredentialSources(
+                    rpId:       credSource.rpId,
+                    userHandle: credSource.userHandle
+                )
                 
                 if requireResidentKey && self.setting.allowResidentKey {
                     

@@ -9,15 +9,8 @@
 import UIKit
 import PromiseKit
 
-public enum ResidentKeyDuplicationPolicy {
-    case allow
-    case overwrite
-    case ask
-}
-
 public protocol KeyDetailViewDelegate: class {
     func userDidRequestToCreateNewKey(keyName: String)
-    func userDidRequestToOverwriteKey(keyName: String)
     func userDidCancel()
 }
 
@@ -28,23 +21,20 @@ class KeyDetailView: UIView, UITextFieldDelegate {
     let user: PublicKeyCredentialUserEntity
     let rp:   PublicKeyCredentialRpEntity
     
-    let askUserDuplicationHandling: Bool
-    let showRpInformation:          Bool
+    let showRpInformation: Bool
     
     var keyNameField: UITextField!
     
     init(
         user: PublicKeyCredentialUserEntity,
         rp:   PublicKeyCredentialRpEntity,
-        askUserDuplicationHandling: Bool,
-        showRpInformation:          Bool
+        showRpInformation: Bool
     ) {
         
         self.user = user
         self.rp   = rp
         
-        self.askUserDuplicationHandling = askUserDuplicationHandling
-        self.showRpInformation          = showRpInformation
+        self.showRpInformation = showRpInformation
         
         super.init(frame: CGRect.zero)
         
@@ -222,61 +212,54 @@ class KeyDetailView: UIView, UITextFieldDelegate {
             offset = offset + rpIconSize + 10
         }
 
-        
-        if self.askUserDuplicationHandling {
-            // label: you already have key for this service & user, are you sure to create new key?
-            // buttons: [Cancel] [Overwrite] [Create]
-        } else {
-            
-            let buttonMargin: CGFloat = 0
-            let buttonWidth = (viewWidth - buttonMargin * 3) / 2.0
-            let buttonHeight: CGFloat = 50
-            let cancelButton = UIButton()
-            
-            cancelButton.frame = CGRect(
-                x: buttonMargin,
-                y: offset,
-                width: buttonWidth + 1,
-                height: buttonHeight
-            )
-            cancelButton.setTitle("Cancel", for: .normal)
-            cancelButton.setTitleColor(UIColor.red, for: .normal)
-            //cancelButton.layer.backgroundColor = UIColor.white.cgColor
-            cancelButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
-            cancelButton.layer.borderWidth = 1.0
-            cancelButton.titleLabel?.textColor = self.tintColor
-            cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .light)
-            cancelButton.addTarget(
-                self,
-                action: #selector(KeyDetailView.onCancelButtonTapped(_:)),
-                for: .touchUpInside
-            )
-            self.addSubview(cancelButton)
+        let buttonMargin: CGFloat = 0
+        let buttonWidth = (viewWidth - buttonMargin * 3) / 2.0
+        let buttonHeight: CGFloat = 50
+        let cancelButton = UIButton()
 
-            let createButton = UIButton()
-            createButton.frame = CGRect(
-                x: buttonMargin * 2 + buttonWidth,
-                y: offset,
-                width: buttonWidth,
-                height: buttonHeight
-            )
-            createButton.setTitleColor(UIColor.blue, for: .normal)
-            createButton.setTitle("Create", for: .normal)
-            //createButton.layer.backgroundColor = UIColor.white.cgColor
-            createButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
-            createButton.layer.borderWidth = 1.0
-            createButton.titleLabel?.textColor = self.tintColor
-            createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .medium)
-            createButton.addTarget(
-                self,
-                action: #selector(KeyDetailView.onCreateButtonTapped(_:)),
-                for: .touchUpInside
-            )
-            self.addSubview(createButton)
-            
-            offset = offset + buttonHeight
-        }
-        
+        cancelButton.frame = CGRect(
+            x: buttonMargin,
+            y: offset,
+            width: buttonWidth + 1,
+            height: buttonHeight
+        )
+        cancelButton.setTitle("Cancel", for: .normal)
+        cancelButton.setTitleColor(UIColor.red, for: .normal)
+        //cancelButton.layer.backgroundColor = UIColor.white.cgColor
+        cancelButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
+        cancelButton.layer.borderWidth = 1.0
+        cancelButton.titleLabel?.textColor = self.tintColor
+        cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .light)
+        cancelButton.addTarget(
+            self,
+            action: #selector(KeyDetailView.onCancelButtonTapped(_:)),
+            for: .touchUpInside
+        )
+        self.addSubview(cancelButton)
+
+        let createButton = UIButton()
+        createButton.frame = CGRect(
+            x: buttonMargin * 2 + buttonWidth,
+            y: offset,
+            width: buttonWidth,
+            height: buttonHeight
+        )
+        createButton.setTitleColor(UIColor.blue, for: .normal)
+        createButton.setTitle("Create", for: .normal)
+        //createButton.layer.backgroundColor = UIColor.white.cgColor
+        createButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
+        createButton.layer.borderWidth = 1.0
+        createButton.titleLabel?.textColor = self.tintColor
+        createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .medium)
+        createButton.addTarget(
+            self,
+            action: #selector(KeyDetailView.onCreateButtonTapped(_:)),
+            for: .touchUpInside
+        )
+        self.addSubview(createButton)
+
+        offset = offset + buttonHeight
+
         self.frame = CGRect(
             x: 0,
             y: 0,
@@ -319,13 +302,6 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         self.delegate?.userDidRequestToCreateNewKey(keyName: self.getCurrentKeyName())
     }
 
-    @objc func onOverwriteButtonTapped(_ sender: UIButton) {
-        if self.keyNameField.isFirstResponder {
-            self.keyNameField.resignFirstResponder()
-        }
-        self.delegate?.userDidRequestToOverwriteKey(keyName: self.getCurrentKeyName())
-    }
-    
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if self.keyNameField.isFirstResponder {
             self.keyNameField.resignFirstResponder()
@@ -347,18 +323,16 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
     
     public weak var delegate: UserConsentViewControllerDelegate?
     
-    let resolver: Resolver<(Bool, String)>
+    let resolver: Resolver<String>
     let user: PublicKeyCredentialUserEntity
     let rp: PublicKeyCredentialRpEntity
     
-    let askUserDuplicationHandling: Bool
     let showRpInformation: Bool
     
     init(
-        resolver: Resolver<(Bool, String)>,
+        resolver: Resolver<String>,
         user: PublicKeyCredentialUserEntity,
         rp: PublicKeyCredentialRpEntity,
-        askUserDuplicationHandling: Bool,
         showRpInformation: Bool
     ) {
         
@@ -366,7 +340,6 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
         self.user = user
         self.rp = rp
         
-        self.askUserDuplicationHandling = askUserDuplicationHandling
         self.showRpInformation = showRpInformation
         super.init(nibName: nil, bundle: nil)
         self.modalPresentationStyle = .overCurrentContext
@@ -386,7 +359,6 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
         self.detailView = KeyDetailView(
             user: self.user,
             rp: self.rp,
-            askUserDuplicationHandling: self.askUserDuplicationHandling,
             showRpInformation: self.showRpInformation
         )
         self.detailView.delegate = self
@@ -404,17 +376,10 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
         }
     }
     
-    public func userDidRequestToOverwriteKey(keyName: String) {
-        self.delegate?.consentViewControllerWillDismiss(viewController: self)
-        dismiss(animated: true) {
-           self.resolver.fulfill((true, keyName))
-        }
-    }
-    
     public func userDidRequestToCreateNewKey(keyName: String) {
         self.delegate?.consentViewControllerWillDismiss(viewController: self)
         dismiss(animated: true) {
-           self.resolver.fulfill((false, keyName))
+           self.resolver.fulfill(keyName)
         }
     }
     

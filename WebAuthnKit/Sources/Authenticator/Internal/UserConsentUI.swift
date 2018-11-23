@@ -12,11 +12,6 @@ import LocalAuthentication
 import PromiseKit
 import CryptoSwift
 
-public enum UserHandleDisplayType {
-    case utf8string
-    case number
-}
-
 public protocol UserConsentViewControllerDelegate: class {
     func consentViewControllerWillDismiss(viewController: UIViewController)
 }
@@ -38,8 +33,6 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     public var selectionPopupTitle: String = "Login Key Selection"
     public var selectionPopupMessage: String = "Choose key with which you want to login with"
 
-    public var userHandleDisplayType: UserHandleDisplayType = .utf8string
-    
     private let tempBackground: UIView
 
     public init(viewController: UIViewController) {
@@ -107,20 +100,19 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         rpEntity:            PublicKeyCredentialRpEntity,
         userEntity:          PublicKeyCredentialUserEntity,
         requireVerification: Bool
-        ) -> Promise<(Bool, String)> {
+        ) -> Promise<String> {
         
         WAKLogger.debug("<UserConsentUI> requestUserConsent")
         
-        let promise = Promise<(Bool, String)> { resolver in
+        let promise = Promise<String> { resolver in
             
             DispatchQueue.main.async {
             
                 let vc = KeyRegistrationViewController(
-                    resolver:                   resolver,
-                    user:                       userEntity,
-                    rp:                         rpEntity,
-                    askUserDuplicationHandling: false,
-                    showRpInformation:          true
+                    resolver:          resolver,
+                    user:              userEntity,
+                    rp:                rpEntity,
+                    showRpInformation: true
                 )
                 
                 vc.delegate = self
@@ -135,7 +127,7 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         
         if requireVerification {
             return promise.then {
-                return self.verifyUser(message:$0.1, params: $0)
+                return self.verifyUser(message:$0, params: $0)
             }
         } else {
             return promise
@@ -202,11 +194,7 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                 
                 credentials.forEach { src in
                     
-                    var title = self.getUserHandleDisplay(src.userHandle)
-                    
-                    if let other = src.otherUI {
-                        title = "\(title) (\(other))"
-                    }
+                    let title = src.otherUI ?? "no name"
                     
                     let chooseAction = UIAlertAction.init(title: title, style: .destructive) { _ in
                         DispatchQueue.global().async {
@@ -289,17 +277,4 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         }
     }
 
-    private func getUserHandleDisplay(_ userHandle: [UInt8]) -> String {
-        WAKLogger.debug("<UserConsentUI> getUserHandleDisplay")
-        switch self.userHandleDisplayType {
-        case .number:
-            return Bytes.toUInt64(userHandle).description
-        case .utf8string:
-            if let result = String(data: Data(bytes: userHandle), encoding: .utf8) {
-                return result
-            } else {
-                return "--"
-            }
-        }
-    }
 }

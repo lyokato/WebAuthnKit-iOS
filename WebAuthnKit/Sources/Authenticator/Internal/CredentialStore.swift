@@ -133,6 +133,8 @@ public protocol CredentialStore {
     func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource]
     func loadGlobalSignCounter(rpId: String) -> Optional<UInt32>
     func saveGlobalSignCounter(rpId: String, count: UInt32) -> Bool
+    func deleteCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool
+    func deleteAllCredentialSources(rpId: String, userHandle: [UInt8]) 
 }
 
 public class KeychainCredentialStore : CredentialStore {
@@ -150,7 +152,7 @@ public class KeychainCredentialStore : CredentialStore {
             return nil
         }
     }
-
+    
     public func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource] {
         WAKLogger.debug("<KeychainStore> loadAllCredentialSources")
         let keychain = Keychain(service: rpId)
@@ -168,6 +170,17 @@ public class KeychainCredentialStore : CredentialStore {
                    return nil
                 }
         }
+    }
+    
+    public func deleteAllCredentialSources(rpId: String, userHandle: [UInt8]) {
+        self.loadAllCredentialSources(rpId: rpId, userHandle: userHandle).forEach {
+            _ = self.deleteCredentialSource($0)
+        }
+    }
+    
+    public func loadAllCredentialSources(rpId: String, userHandle: [UInt8]) -> [PublicKeyCredentialSource] {
+        WAKLogger.debug("<KeychainStore> loadAllCredentialSources with userHandle")
+        return self.loadAllCredentialSources(rpId: rpId).filter { $0.userHandle.elementsEqual(userHandle) }
     }
 
     public func loadGlobalSignCounter(rpId: String) -> Optional<UInt32> {
@@ -216,6 +229,33 @@ public class KeychainCredentialStore : CredentialStore {
                 WAKLogger.debug("<KeychainStore> failed to load data for key:\(handle)")
                 return nil
             }
+    }
+    
+    public func deleteCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool {
+        
+        WAKLogger.debug("<KeychainStore> deleteCredentialSource")
+        
+        guard let credentialId = cred.id else {
+            WAKLogger.debug("<KeychainStore> credential id not found")
+            return false
+        }
+        
+        if !cred.isResidentKey {
+            WAKLogger.debug("<KeychainStore> credential is not a resident key")
+            return false
+        }
+        
+        let handle = credentialId.toHexString()
+        let keychain = Keychain(service: cred.rpId)
+        
+        do {
+            try keychain.remove(handle)
+            return true
+        } catch let error {
+            WAKLogger.debug("<KeychainStore> failed to delete credential-source: \(error)")
+            return false
+        }
+
     }
 
     public func saveCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool {

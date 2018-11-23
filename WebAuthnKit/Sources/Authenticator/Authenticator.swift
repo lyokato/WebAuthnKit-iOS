@@ -97,8 +97,8 @@ public protocol Authenticator {
     var transport: AuthenticatorTransport { get }
     
     var counterStep: UInt32 { set get }
-    var allowResidentKey: Bool { set get }
-    var allowUserVerification: Bool { set get }
+    var allowResidentKey: Bool { get }
+    var allowUserVerification: Bool { get }
     
     func newMakeCredentialSession() -> AuthenticatorMakeCredentialSession
     func newGetAssertionSession() -> AuthenticatorGetAssertionSession

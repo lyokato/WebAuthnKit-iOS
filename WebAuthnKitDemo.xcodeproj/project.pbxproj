@@ -37,7 +37,6 @@
 		90D2EA5021A4449000032373 /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4D21A4449000032373 /* Authenticator.swift */; };
 		90D2EA5621A4452E00032373 /* InternalAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5121A4452E00032373 /* InternalAuthenticator.swift */; };
 		90D2EA5721A4452E00032373 /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5221A4452E00032373 /* CredentialStore.swift */; };
-		90D2EA5821A4452E00032373 /* CredentialEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5321A4452E00032373 /* CredentialEncryptor.swift */; };
 		90D2EA5921A4452E00032373 /* UserConsentUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5421A4452E00032373 /* UserConsentUI.swift */; };
 		90D2EA5A21A4452E00032373 /* KeySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5521A4452E00032373 /* KeySupport.swift */; };
 		90D2EA5E21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA5C21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift */; };
@@ -133,7 +132,6 @@
 		90D2EA4D21A4449000032373 /* Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 		90D2EA5121A4452E00032373 /* InternalAuthenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalAuthenticator.swift; sourceTree = "<group>"; };
 		90D2EA5221A4452E00032373 /* CredentialStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CredentialStore.swift; sourceTree = "<group>"; };
-		90D2EA5321A4452E00032373 /* CredentialEncryptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CredentialEncryptor.swift; sourceTree = "<group>"; };
 		90D2EA5421A4452E00032373 /* UserConsentUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserConsentUI.swift; sourceTree = "<group>"; };
 		90D2EA5521A4452E00032373 /* KeySupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeySupport.swift; sourceTree = "<group>"; };
 		90D2EA5C21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalAuthenticatorGetAssertionSession.swift; sourceTree = "<group>"; };
@@ -326,7 +324,6 @@
 				9030FFA521A69FA200FB8878 /* UI */,
 				90D2EA5B21A4453100032373 /* Session */,
 				90D2EA5121A4452E00032373 /* InternalAuthenticator.swift */,
-				90D2EA5321A4452E00032373 /* CredentialEncryptor.swift */,
 				90D2EA5221A4452E00032373 /* CredentialStore.swift */,
 				90D2EA5521A4452E00032373 /* KeySupport.swift */,
 				90D2EA5421A4452E00032373 /* UserConsentUI.swift */,
@@ -702,7 +699,6 @@
 				90D2EA5021A4449000032373 /* Authenticator.swift in Sources */,
 				90D2EA6721A4469A00032373 /* ClientCreateOperation.swift in Sources */,
 				90D2EA3121A4422D00032373 /* WAKTypes.swift in Sources */,
-				90D2EA5821A4452E00032373 /* CredentialEncryptor.swift in Sources */,
 				90D2EA5E21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift in Sources */,
 				90D2EA6621A4469A00032373 /* ClientGetOperation.swift in Sources */,
 			);
@@ -877,7 +873,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 64Y46T8HF5;
 				INFOPLIST_FILE = WebAuthnKitDemo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -894,7 +893,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 64Y46T8HF5;
 				INFOPLIST_FILE = WebAuthnKitDemo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -916,7 +918,11 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = WebAuthnKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -942,7 +948,11 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = WebAuthnKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -960,7 +970,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = WebAuthnKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -976,7 +990,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = WebAuthnKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;

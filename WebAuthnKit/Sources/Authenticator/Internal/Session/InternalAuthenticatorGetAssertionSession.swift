@@ -28,10 +28,9 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         }
     }
     
-    private let ui:                  UserConsentUI
-    private let credentialStore:     CredentialStore
-    private let credentialEncryptor: CredentialEncryptor
-    private let keySupportChooser:   KeySupportChooser
+    private let ui:                UserConsentUI
+    private let credentialStore:   CredentialStore
+    private let keySupportChooser: KeySupportChooser
     
     private var started = false
     private var stopped = false
@@ -39,13 +38,11 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
     init(
         setting:             InternalAuthenticatorSetting,
         ui:                  UserConsentUI,
-        credentialEncryptor: CredentialEncryptor,
         credentialStore:     CredentialStore,
         keySupportChooser:   KeySupportChooser
     ) {
         self.setting             = setting
         self.ui                  = ui
-        self.credentialEncryptor = credentialEncryptor
         self.credentialStore     = credentialStore
         self.keySupportChooser   = keySupportChooser
     }
@@ -129,26 +126,14 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 
                 var newSignCount: UInt32 = 0
                 
-                if cred.isResidentKey {
-                    var copiedCred = cred
-                    copiedCred.signCount = cred.signCount + self.setting.counterStep
-                    newSignCount = copiedCred.signCount
-                    if !self.credentialStore.saveCredentialSource(copiedCred) {
-                        self.stop(by: .unknownError)
-                        return
-                    }
-                } else {
-                    guard let signCount = self.credentialStore.loadGlobalSignCounter(rpId: rpId) else {
-                        self.stop(by: .unknownError)
-                        return
-                    }
-                    newSignCount = signCount + self.setting.counterStep
-                    if !self.credentialStore.saveGlobalSignCounter(rpId: rpId, count: newSignCount) {
-                        self.stop(by: .unknownError)
-                        return
-                    }
+                var copiedCred = cred
+                copiedCred.signCount = cred.signCount + self.setting.counterStep
+                newSignCount = copiedCred.signCount
+                if !self.credentialStore.saveCredentialSource(copiedCred) {
+                    self.stop(by: .unknownError)
+                    return
                 }
-                
+
                 let extensions = SimpleOrderedDictionary<String>()
                 
                 let authenticatorData = AuthenticatorData(
@@ -213,23 +198,6 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         
     }
     
-    // 6.3.1 Lookup Credential Source By Credential ID Algoreithm
-    private func lookupCredentialSource(rpId: String, credentialId: [UInt8])
-        -> Optional<PublicKeyCredentialSource> {
-            if let src = self.credentialStore.lookupCredentialSource(
-                rpId:         rpId,
-                credentialId: credentialId) {
-                return src
-            } else {
-                guard var src = self.credentialEncryptor.decryptCredentialId(credentialId) else {
-                    return nil
-                }
-                src.id = credentialId
-                src.isResidentKey = false
-                return src
-            }
-    }
-    
     private func gatherCredentialSources(
         rpId: String,
         allowCredentialDescriptorList: [PublicKeyCredentialDescriptor]
@@ -239,7 +207,10 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
             return self.credentialStore.loadAllCredentialSources(rpId: rpId)
         } else {
             return allowCredentialDescriptorList.compactMap {
-                return self.lookupCredentialSource(rpId: rpId, credentialId: $0.id)
+                return self.credentialStore.lookupCredentialSource(
+                    rpId:         rpId,
+                    credentialId: $0.id
+                )
             }
         }
     }

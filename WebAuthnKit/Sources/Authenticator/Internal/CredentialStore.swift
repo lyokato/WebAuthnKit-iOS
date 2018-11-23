@@ -15,8 +15,6 @@ public protocol CredentialStore {
     func lookupCredentialSource(rpId: String, credentialId: [UInt8]) -> Optional<PublicKeyCredentialSource>
     func saveCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool
     func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource]
-    func loadGlobalSignCounter(rpId: String) -> Optional<UInt32>
-    func saveGlobalSignCounter(rpId: String, count: UInt32) -> Bool
     func deleteCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool
     func deleteAllCredentialSources(rpId: String, userHandle: [UInt8])
     func findOrCreateEncryptionKey() -> Optional<[UInt8]>
@@ -24,7 +22,6 @@ public protocol CredentialStore {
 
 public class KeychainCredentialStore : CredentialStore {
 
-    private static let globalCounterHandle: String = "global-sign-count"
     private static let webAuthnKitService: String = "webauthnkit"
     private static let encryptionKeyHandle: String = "encryption-key"
     
@@ -85,8 +82,7 @@ public class KeychainCredentialStore : CredentialStore {
     public func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource] {
         WAKLogger.debug("<KeychainStore> loadAllCredentialSources")
         let keychain = Keychain(service: rpId)
-        return keychain.allKeys().filter { $0 != type(of: self).globalCounterHandle }
-            .compactMap {
+        return keychain.allKeys().compactMap {
                 if let result = try? keychain.getData($0) {
                     if let bytes = result?.bytes {
                         return PublicKeyCredentialSource.fromCBOR(bytes)
@@ -110,34 +106,6 @@ public class KeychainCredentialStore : CredentialStore {
     public func loadAllCredentialSources(rpId: String, userHandle: [UInt8]) -> [PublicKeyCredentialSource] {
         WAKLogger.debug("<KeychainStore> loadAllCredentialSources with userHandle")
         return self.loadAllCredentialSources(rpId: rpId).filter { $0.userHandle.elementsEqual(userHandle) }
-    }
-
-    public func loadGlobalSignCounter(rpId: String) -> Optional<UInt32> {
-        WAKLogger.debug("<KeychainStore> loadGlobalSignCounter")
-        let keychain = Keychain(service: rpId)
-        if let result = try? keychain.getString(type(of: self).globalCounterHandle) {
-            if let str = result {
-                return Bytes.toUInt32([UInt8](hex: str))
-            } else {
-                return UInt32(0)
-            }
-        } else {
-            WAKLogger.debug("<KeychainStore> failed to load global-sign-count")
-            return nil
-        }
-    }
-
-    public func saveGlobalSignCounter(rpId: String, count: UInt32) -> Bool {
-        WAKLogger.debug("<KeychainStore> saveGlobalSignCounter")
-        let keychain = Keychain(service: rpId)
-        do {
-            try keychain.set(Bytes.fromUInt32(count).toHexString(),
-                             key: type(of: self).globalCounterHandle)
-            return true
-        } catch let error {
-            WAKLogger.debug("<KeychainStore> failed to save global-sign-count: \(error)")
-            return false
-        }
     }
 
     public func lookupCredentialSource(rpId: String, credentialId: [UInt8])
@@ -164,17 +132,7 @@ public class KeychainCredentialStore : CredentialStore {
         
         WAKLogger.debug("<KeychainStore> deleteCredentialSource")
         
-        guard let credentialId = cred.id else {
-            WAKLogger.debug("<KeychainStore> credential id not found")
-            return false
-        }
-        
-        if !cred.isResidentKey {
-            WAKLogger.debug("<KeychainStore> credential is not a resident key")
-            return false
-        }
-        
-        let handle = credentialId.toHexString()
+        let handle = cred.id.toHexString()
         let keychain = Keychain(service: cred.rpId)
         
         do {
@@ -190,17 +148,7 @@ public class KeychainCredentialStore : CredentialStore {
     public func saveCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool {
         WAKLogger.debug("<KeychainStore> saveCredentialSource")
 
-        guard let credentialId = cred.id else {
-            WAKLogger.debug("<KeychainStore> credential id not found")
-            return false
-        }
-
-        if !cred.isResidentKey {
-            WAKLogger.debug("<KeychainStore> credential is not a resident key")
-            return false
-        }
-
-        let handle = credentialId.toHexString()
+        let handle = cred.id.toHexString()
         let keychain = Keychain(service: cred.rpId)
 
         if let bytes = cred.toCBOR() {

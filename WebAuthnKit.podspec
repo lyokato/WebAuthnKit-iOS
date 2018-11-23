@@ -37,7 +37,6 @@ Pod::Spec.new do |s|
   s.dependency "EllipticCurveKeyPair", "~> 2.0-beta1"
   s.dependency "KeychainAccess", "~> 3.1.2"
   s.dependency "CryptoSwift", "~> 0.13.0"
-  s.dependency "SwiftyRSA", "~> 1.5.0"
 
   s.swift_version = "4.2"
 

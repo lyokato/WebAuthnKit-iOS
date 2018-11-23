@@ -8,7 +8,6 @@
 
 import Foundation
 import CryptoSwift
-import SwiftyRSA
 import EllipticCurveKeyPair
 
 public protocol KeySupport {

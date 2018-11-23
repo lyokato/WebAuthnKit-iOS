@@ -25,13 +25,11 @@
 		90D2EA3121A4422D00032373 /* WAKTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3021A4422D00032373 /* WAKTypes.swift */; };
 		90D2EA3321A4423200032373 /* WAKLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3221A4423200032373 /* WAKLogger.swift */; };
 		90D2EA3D21A442AE00032373 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3521A442AE00032373 /* JSON.swift */; };
-		90D2EA3E21A442AE00032373 /* PEM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3621A442AE00032373 /* PEM.swift */; };
 		90D2EA3F21A442AE00032373 /* COSE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3721A442AE00032373 /* COSE.swift */; };
 		90D2EA4021A442AE00032373 /* CBOR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3821A442AE00032373 /* CBOR.swift */; };
 		90D2EA4121A442AE00032373 /* Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3921A442AE00032373 /* Base64.swift */; };
 		90D2EA4221A442AE00032373 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3A21A442AE00032373 /* Bytes.swift */; };
 		90D2EA4321A442AE00032373 /* UUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3B21A442AE00032373 /* UUID.swift */; };
-		90D2EA4421A442AE00032373 /* DER.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA3C21A442AE00032373 /* DER.swift */; };
 		90D2EA4721A443E200032373 /* CBORTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4521A443E200032373 /* CBORTests.swift */; };
 		90D2EA4821A443E200032373 /* COSETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4621A443E200032373 /* COSETests.swift */; };
 		90D2EA4E21A4449000032373 /* AuthenticatorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA4B21A4449000032373 /* AuthenticatorData.swift */; };
@@ -48,7 +46,6 @@
 		90D2EA6621A4469A00032373 /* ClientGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6421A4469A00032373 /* ClientGetOperation.swift */; };
 		90D2EA6721A4469A00032373 /* ClientCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6521A4469A00032373 /* ClientCreateOperation.swift */; };
 		90D2EA6921A4488200032373 /* SelfAttestation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6821A4488200032373 /* SelfAttestation.swift */; };
-		90D2EA6B21A44B1D00032373 /* PEMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6A21A44B1D00032373 /* PEMTests.swift */; };
 		90D2EA6D21A476B100032373 /* LayoutHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6C21A476B100032373 /* LayoutHelper.swift */; };
 		90D2EA6F21A4772100032373 /* ViewCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6E21A4772100032373 /* ViewCatalog.swift */; };
 		90D2EA7321A7B2F700032373 /* ImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA7221A7B2F700032373 /* ImageHelper.swift */; };
@@ -124,13 +121,11 @@
 		90D2EA3021A4422D00032373 /* WAKTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WAKTypes.swift; sourceTree = "<group>"; };
 		90D2EA3221A4423200032373 /* WAKLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WAKLogger.swift; sourceTree = "<group>"; };
 		90D2EA3521A442AE00032373 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
-		90D2EA3621A442AE00032373 /* PEM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PEM.swift; sourceTree = "<group>"; };
 		90D2EA3721A442AE00032373 /* COSE.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = COSE.swift; sourceTree = "<group>"; };
 		90D2EA3821A442AE00032373 /* CBOR.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBOR.swift; sourceTree = "<group>"; };
 		90D2EA3921A442AE00032373 /* Base64.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base64.swift; sourceTree = "<group>"; };
 		90D2EA3A21A442AE00032373 /* Bytes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bytes.swift; sourceTree = "<group>"; };
 		90D2EA3B21A442AE00032373 /* UUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UUID.swift; sourceTree = "<group>"; };
-		90D2EA3C21A442AE00032373 /* DER.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DER.swift; sourceTree = "<group>"; };
 		90D2EA4521A443E200032373 /* CBORTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBORTests.swift; sourceTree = "<group>"; };
 		90D2EA4621A443E200032373 /* COSETests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = COSETests.swift; sourceTree = "<group>"; };
 		90D2EA4B21A4449000032373 /* AuthenticatorData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatorData.swift; sourceTree = "<group>"; };
@@ -147,7 +142,6 @@
 		90D2EA6421A4469A00032373 /* ClientGetOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientGetOperation.swift; sourceTree = "<group>"; };
 		90D2EA6521A4469A00032373 /* ClientCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientCreateOperation.swift; sourceTree = "<group>"; };
 		90D2EA6821A4488200032373 /* SelfAttestation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfAttestation.swift; sourceTree = "<group>"; };
-		90D2EA6A21A44B1D00032373 /* PEMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PEMTests.swift; sourceTree = "<group>"; };
 		90D2EA6C21A476B100032373 /* LayoutHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutHelper.swift; sourceTree = "<group>"; };
 		90D2EA6E21A4772100032373 /* ViewCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCatalog.swift; sourceTree = "<group>"; };
 		90D2EA7221A7B2F700032373 /* ImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHelper.swift; sourceTree = "<group>"; };
@@ -278,7 +272,6 @@
 				90D2EA4621A443E200032373 /* COSETests.swift */,
 				90D2EA1F21A425DD00032373 /* WebAuthnKitTests.swift */,
 				90D2EA2121A425DD00032373 /* Info.plist */,
-				90D2EA6A21A44B1D00032373 /* PEMTests.swift */,
 			);
 			path = WebAuthnKitTests;
 			sourceTree = "<group>";
@@ -310,9 +303,7 @@
 				90D2EA3A21A442AE00032373 /* Bytes.swift */,
 				90D2EA3821A442AE00032373 /* CBOR.swift */,
 				90D2EA3721A442AE00032373 /* COSE.swift */,
-				90D2EA3C21A442AE00032373 /* DER.swift */,
 				90D2EA3521A442AE00032373 /* JSON.swift */,
-				90D2EA3621A442AE00032373 /* PEM.swift */,
 				90D2EA3B21A442AE00032373 /* UUID.swift */,
 			);
 			path = Format;
@@ -582,7 +573,6 @@
 				"${BUILT_PRODUCTS_DIR}/EllipticCurveKeyPair/EllipticCurveKeyPair.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyRSA/SwiftyRSA.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -590,7 +580,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EllipticCurveKeyPair.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyRSA.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -608,7 +597,6 @@
 				"${BUILT_PRODUCTS_DIR}/EllipticCurveKeyPair/EllipticCurveKeyPair.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyRSA/SwiftyRSA.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -616,7 +604,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EllipticCurveKeyPair.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyRSA.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -699,7 +686,6 @@
 				90D2EA3321A4423200032373 /* WAKLogger.swift in Sources */,
 				9030FFA721A6A04F00FB8878 /* KeyRegistrationViewController.swift in Sources */,
 				90D2EA4121A442AE00032373 /* Base64.swift in Sources */,
-				90D2EA3E21A442AE00032373 /* PEM.swift in Sources */,
 				90D2EA4021A442AE00032373 /* CBOR.swift in Sources */,
 				90D2EA4221A442AE00032373 /* Bytes.swift in Sources */,
 				90D2EA3F21A442AE00032373 /* COSE.swift in Sources */,
@@ -718,7 +704,6 @@
 				90D2EA3121A4422D00032373 /* WAKTypes.swift in Sources */,
 				90D2EA5821A4452E00032373 /* CredentialEncryptor.swift in Sources */,
 				90D2EA5E21A4453C00032373 /* InternalAuthenticatorGetAssertionSession.swift in Sources */,
-				90D2EA4421A442AE00032373 /* DER.swift in Sources */,
 				90D2EA6621A4469A00032373 /* ClientGetOperation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -729,7 +714,6 @@
 			files = (
 				90D2EA2021A425DD00032373 /* WebAuthnKitTests.swift in Sources */,
 				90D2EA4721A443E200032373 /* CBORTests.swift in Sources */,
-				90D2EA6B21A44B1D00032373 /* PEMTests.swift in Sources */,
 				90D2EA4821A443E200032373 /* COSETests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -893,10 +877,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 64Y46T8HF5;
 				INFOPLIST_FILE = WebAuthnKitDemo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -913,10 +894,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 64Y46T8HF5;
 				INFOPLIST_FILE = WebAuthnKitDemo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -938,11 +916,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = WebAuthnKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -968,11 +942,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = WebAuthnKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -990,11 +960,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = WebAuthnKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -1010,11 +976,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = WebAuthnKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.redmage.WebAuthnKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;

@@ -78,32 +78,15 @@ public class InternalAuthenticator : Authenticator {
     
     private let keySupportChooser = KeySupportChooser()
     
-    public convenience init(
-        ui:            UserConsentUI,
-        encryptionKey: String
-        ) {
-        
-        let key = encryptionKey.data(using: .utf8)!.bytes
-        
+    public convenience init(ui: UserConsentUI) {
+        let store = KeychainCredentialStore()
         self.init(
             ui:                  ui,
-            credentialEncryptor: AESGCMCredentialEncryptor(key: key),
-            credentialStore:     KeychainCredentialStore()
-        )
-        
-    }
-    
-    public convenience init(
-        ui:            UserConsentUI,
-        encryptionKey: [UInt8]
-    ) {
-       self.init(
-            ui:                  ui,
-            credentialEncryptor: AESGCMCredentialEncryptor(key: encryptionKey),
-            credentialStore:     KeychainCredentialStore()
+            credentialEncryptor: AESGCMCredentialEncryptor(credentialStore: store),
+            credentialStore:     store
         )
     }
-    
+
     public init(
         ui:                  UserConsentUI,
         credentialEncryptor: CredentialEncryptor,

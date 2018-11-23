@@ -34,10 +34,7 @@ class AuthenticationViewController: UIViewController {
         self.userConsentUI.selectionPopupTitle = "Key Selection"
         self.userConsentUI.selectionPopupMessage = "Key Selection"
         
-        let authenticator = InternalAuthenticator(
-            ui:            self.userConsentUI,
-            encryptionKey: Bytes.fromString("hogehogehogehoge") // 16byte
-        )
+        let authenticator = InternalAuthenticator(ui: self.userConsentUI)
         
         self.webAuthnClient = WebAuthnClient(
             origin:        "https://example.org",

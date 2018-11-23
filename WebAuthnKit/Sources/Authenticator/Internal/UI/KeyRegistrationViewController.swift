@@ -87,7 +87,7 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         self.clipsToBounds = true
         
         let verticalMargin: CGFloat  = 20
-        let horizontalMargin: CGFloat = 60
+        let horizontalMargin: CGFloat = 50
         
         let rpIconSize: CGFloat = 25
         let userIconSize: CGFloat = 75
@@ -110,36 +110,37 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         )
         titleLabel.backgroundColor = UIColor.clear
         titleLabel.textColor = UIColor.black
-        titleLabel.text = "Create new key?"
+        titleLabel.text = "New Login Key"
         titleLabel.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
         titleLabel.textAlignment = .center
         self.addSubview(titleLabel)
         
-        offset = offset + titleHeight + 10
-
-        if self.showRpInformation {
-            
-            let rpMargin: CGFloat = 10
-
-            let rpNameLabel = UILabel(frame: CGRect.zero)
-            
-            rpNameLabel.frame = CGRect(
-                x: rpMargin,
-                y: offset,
-                width: viewWidth - rpMargin * 2,
-                height: 20
-            )
-            
-            rpNameLabel.backgroundColor = UIColor.clear
-            rpNameLabel.text = "[ " + self.rp.name + " ]"
-            rpNameLabel.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
-            rpNameLabel.textAlignment = .center
-            
-            self.addSubview(rpNameLabel)
-            
-            offset = offset + rpIconSize + 10
-        }
+        offset = offset + titleHeight + 16
         
+        let keyNameFieldHeight: CGFloat = 30
+
+        self.keyNameField = UITextField(frame: CGRect.zero)
+        keyNameField.frame = CGRect(
+            x: 20,
+            //y: keyNameMargin * 2 + keyNameLabelHeight,
+            y: offset,
+            width: viewWidth - 40,
+            height: keyNameFieldHeight
+        )
+        self.keyNameField.borderStyle = .none
+        self.keyNameField.delegate = self
+        self.keyNameField.layer.backgroundColor = UIColor.white.cgColor
+        self.keyNameField.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
+        self.keyNameField.layer.cornerRadius = 5.0
+        self.keyNameField.text = self.createDefaultKeyName()
+        self.keyNameField.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
+        self.addSubview(self.keyNameField)
+        
+        offset = offset + keyNameFieldHeight + 16
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: keyNameFieldHeight))
+        self.keyNameField.leftView = paddingView
+        self.keyNameField.leftViewMode = .always
 
         if let iconURLString = self.user.icon {
             if let iconURL = URL(string: iconURLString) {
@@ -181,7 +182,6 @@ class KeyDetailView: UIView, UITextFieldDelegate {
                 WAKLogger.debug("<KeyDetailView> user.icon is not a valid URL: \(iconURLString)")
             }
         }
-        
 
         let displayNameHeight: CGFloat = 20
         let displayNameLabel = UILabel(frame: CGRect.zero)
@@ -197,49 +197,32 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         displayNameLabel.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
         self.addSubview(displayNameLabel)
         
-        offset = offset + displayNameHeight + 6
+        offset = offset + displayNameHeight + 10
         
-        let keyNameLabelHeight: CGFloat = 20
-        let keyNameLabel = UILabel(frame: CGRect.zero)
-        keyNameLabel.frame = CGRect(
-            x: wideLabelMargin,
-            y: offset,
-            width: viewWidth - wideLabelMargin * 2,
-            height: keyNameLabelHeight
-        )
-        keyNameLabel.backgroundColor = UIColor.clear
-        keyNameLabel.text = "Enter key name"
-        keyNameLabel.textAlignment = .center
-        keyNameLabel.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
-        self.addSubview(keyNameLabel)
-        
-        offset = offset + keyNameLabelHeight + 10
-        
-        let keyNameFieldHeight: CGFloat = 30
-        
-        self.keyNameField = UITextField(frame: CGRect.zero)
-        keyNameField.frame = CGRect(
-            x: 20,
-            y: offset,
-            width: viewWidth - 40,
-            height: keyNameFieldHeight
-        )
-        self.keyNameField.borderStyle = .none
-        self.keyNameField.delegate = self
-        self.keyNameField.layer.backgroundColor = UIColor.white.cgColor
-        self.keyNameField.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
-        self.keyNameField.layer.cornerRadius = 5.0
-        self.keyNameField.text = self.createDefaultKeyName()
-        self.keyNameField.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
-        self.addSubview(self.keyNameField)
+        if self.showRpInformation {
+            
+            let rpMargin: CGFloat = 10
+            
+            let rpNameLabel = UILabel(frame: CGRect.zero)
+            
+            rpNameLabel.frame = CGRect(
+                x: rpMargin,
+                y: offset,
+                width: viewWidth - rpMargin * 2,
+                height: 20
+            )
+            
+            rpNameLabel.backgroundColor = UIColor.clear
+            rpNameLabel.text = "[ " + self.rp.name + " ]"
+            rpNameLabel.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
+            rpNameLabel.textAlignment = .center
+            
+            self.addSubview(rpNameLabel)
+            
+            offset = offset + rpIconSize + 10
+        }
 
-        offset = offset + keyNameFieldHeight + 16
         
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: keyNameFieldHeight))
-        self.keyNameField.leftView = paddingView
-        self.keyNameField.leftViewMode = .always
-
-
         if self.askUserDuplicationHandling {
             // label: you already have key for this service & user, are you sure to create new key?
             // buttons: [Cancel] [Overwrite] [Create]

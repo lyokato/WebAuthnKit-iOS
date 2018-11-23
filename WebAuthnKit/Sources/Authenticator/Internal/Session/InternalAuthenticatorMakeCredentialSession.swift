@@ -12,7 +12,7 @@ import CryptoSwift
 
 public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCredentialSession {
     
-    public var delegate: AuthenticatorMakeCredentialSessionDelegate?
+    public weak var delegate: AuthenticatorMakeCredentialSessionDelegate?
     
     private let setting: InternalAuthenticatorSetting
     

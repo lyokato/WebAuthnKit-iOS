@@ -13,7 +13,8 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
     
     public let id = UUID().uuidString
     public let type = ClientOperationType.get
-    public var delegate: ClientOperationDelegate?
+    
+    public weak var delegate: ClientOperationDelegate?
 
     private let options:        PublicKeyCredentialRequestOptions
     private let rpId:           String

@@ -28,14 +28,14 @@ public struct AuthenticatorAssertionResult {
     }
 }
 
-public protocol AuthenticatorMakeCredentialSessionDelegate {
+public protocol AuthenticatorMakeCredentialSessionDelegate: class {
     func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession)
     func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorMakeCredentialSession)
     func authenticatorSessionDidStopOperation(session: AuthenticatorMakeCredentialSession, reason: AuthenticatorError)
     func authenticatorSessionDidMakeCredential(session: AuthenticatorMakeCredentialSession, attestation: AttestationObject)
 }
 
-public protocol AuthenticatorGetAssertionSessionDelegate {
+public protocol AuthenticatorGetAssertionSessionDelegate: class {
     func authenticatorSessionDidBecomeAvailable(session: AuthenticatorGetAssertionSession)
     func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorGetAssertionSession)
     func authenticatorSessionDidStopOperation(session: AuthenticatorGetAssertionSession, reason: AuthenticatorError)

@@ -17,7 +17,11 @@ public enum UserHandleDisplayType {
     case number
 }
 
-public class UserConsentUI {
+public protocol UserConsentViewControllerDelegate: class {
+    func consentViewControllerWillDismiss(viewController: UIViewController)
+}
+
+public class UserConsentUI: UserConsentViewControllerDelegate {
 
     public typealias MessageBuilder = ((PublicKeyCredentialRpEntity ,PublicKeyCredentialUserEntity) -> String)
 
@@ -41,6 +45,7 @@ public class UserConsentUI {
     public init(viewController: UIViewController) {
         self.viewController = viewController
         self.tempBackground = UIView()
+        self.tempBackground.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.tempBackground.backgroundColor = UIColor.black
         self.tempBackground.alpha = 0
     }
@@ -118,47 +123,44 @@ public class UserConsentUI {
                     showRpInformation:          true
                 )
                 
+                vc.delegate = self
+                
+                self.showBackground()
+                
                 self.viewController.present(vc, animated: true, completion: nil)
+                
             }
             
         }
         
         if requireVerification {
-            
             return promise.then {
-                
                 return self.verifyUser(message:$0.1, params: $0)
-                
             }
-
-
         } else {
-            
             return promise
-            
         }
+    }
+    
+    public func consentViewControllerWillDismiss(viewController: UIViewController) {
+        self.hideBackground()
     }
     
     private func showBackground() {
         self.viewController.view.addSubview(self.tempBackground)
         self.tempBackground.frame = self.viewController.view.frame
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
-            self.tempBackground.alpha = 0.3
+            self.tempBackground.alpha = 0.4
         }, completion: nil)
     }
     
-    private func hideBackground<T>(_ params: T) -> Promise<T> {
-        return Promise<T> { resolver in
-            if self.tempBackground.superview != nil {
-                UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
-                    self.tempBackground.alpha = 0.0
-                }, completion: { _ in
-                    self.tempBackground.removeFromSuperview()
-                    resolver.fulfill(params)
-                })
-            } else {
-                resolver.fulfill(params)
-            }
+    private func hideBackground() {
+        if self.tempBackground.superview != nil {
+            UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
+                self.tempBackground.alpha = 0.0
+            }, completion: { _ in
+                self.tempBackground.removeFromSuperview()
+            })
         }
     }
 

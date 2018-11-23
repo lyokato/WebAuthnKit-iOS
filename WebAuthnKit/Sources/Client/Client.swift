@@ -15,7 +15,7 @@ public enum ClientOperationType {
    case create
 }
 
-public protocol ClientOperationDelegate {
+public protocol ClientOperationDelegate: class {
     func operationDidFinish(opType: ClientOperationType, opId: String)
 }
 

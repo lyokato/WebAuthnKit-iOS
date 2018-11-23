@@ -13,7 +13,8 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     
     public let id = UUID().uuidString
     public let type = ClientOperationType.create
-    public var delegate: ClientOperationDelegate?
+    
+    public weak var delegate: ClientOperationDelegate?
 
     private let options:        PublicKeyCredentialCreationOptions
     private let rpId:           String

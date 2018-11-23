@@ -15,7 +15,7 @@ public enum ResidentKeyDuplicationPolicy {
     case ask
 }
 
-public protocol KeyDetailViewDelegate {
+public protocol KeyDetailViewDelegate: class {
     func userDidRequestToCreateNewKey(keyName: String)
     func userDidRequestToOverwriteKey(keyName: String)
     func userDidCancel()
@@ -23,7 +23,7 @@ public protocol KeyDetailViewDelegate {
 
 class KeyDetailView: UIView, UITextFieldDelegate {
     
-    var delegate: KeyDetailViewDelegate?
+    weak var delegate: KeyDetailViewDelegate?
     
     let user: PublicKeyCredentialUserEntity
     let rp:   PublicKeyCredentialRpEntity
@@ -345,6 +345,8 @@ class KeyDetailView: UIView, UITextFieldDelegate {
 
 public class KeyRegistrationViewController : UIViewController, KeyDetailViewDelegate {
     
+    public weak var delegate: UserConsentViewControllerDelegate?
+    
     let resolver: Resolver<(Bool, String)>
     let user: PublicKeyCredentialUserEntity
     let rp: PublicKeyCredentialRpEntity
@@ -396,18 +398,21 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
     }
     
     public func userDidCancel() {
+        self.delegate?.consentViewControllerWillDismiss(viewController: self)
         dismiss(animated: true) {
            self.resolver.reject(WAKError.cancelled)
         }
     }
     
     public func userDidRequestToOverwriteKey(keyName: String) {
+        self.delegate?.consentViewControllerWillDismiss(viewController: self)
         dismiss(animated: true) {
            self.resolver.fulfill((true, keyName))
         }
     }
     
     public func userDidRequestToCreateNewKey(keyName: String) {
+        self.delegate?.consentViewControllerWillDismiss(viewController: self)
         dismiss(animated: true) {
            self.resolver.fulfill((false, keyName))
         }

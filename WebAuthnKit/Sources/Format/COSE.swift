@@ -18,10 +18,19 @@ internal struct COSEKeyFieldType {
     static let e:      Int = -2
 }
 
+internal struct COSEKeyCurveType {
+    static let p256:    Int = 1
+    static let p384:    Int = 2
+    static let p521:    Int = 3
+    static let x25519:  Int = 4
+    static let x448:    Int = 5
+    static let ed25519: Int = 6
+    static let ed448:   Int = 7
+}
+
 internal struct COSEKeyType {
     static let ec2: UInt8 = 2
     static let rsa: UInt8 = 3
-
 }
 
 public enum COSEAlgorithmIdentifier: Int, Codable {
@@ -31,6 +40,8 @@ public enum COSEAlgorithmIdentifier: Int, Codable {
     case rs384 = -258
     case rs512 = -259
     case es256 =   -7
+    case es384 =  -35
+    case es512 =  -36
     case ed256 = -260
     case ed512 = -261
     case ps256 =  -37
@@ -45,6 +56,10 @@ public enum COSEAlgorithmIdentifier: Int, Codable {
             return self.rs512
         case self.es256.rawValue:
             return self.es256
+        case self.es384.rawValue:
+            return self.es384
+        case self.es512.rawValue:
+            return self.es512
         case self.ed256.rawValue:
             return self.ed256
         case self.ed512.rawValue:
@@ -62,6 +77,10 @@ public enum COSEAlgorithmIdentifier: Int, Codable {
 
         switch (lhs, rhs) {
         case (.es256, .es256):
+            return true
+        case (.es384, .es384):
+            return true
+        case (.es512, .es512):
             return true
         case (.rs256, .rs256):
             return true

@@ -163,26 +163,19 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
             
             }.done { keyName in
                 
-                // got user consent
-                guard let (publicKey, privateKey) = keySupport.createKeyPair() else {
-                    self.stop(by: .unknownError)
-                    return
-                }
-                
-                guard let publicKeyCOSE =
-                    keySupport.convertPublicKeyPEMToCOSE(publicKey) else {
-                        self.stop(by: .unknownError)
-                        return
-                }
-                
                 var credSource = PublicKeyCredentialSource(
                     rpId:       rpEntity.id!,
-                    privateKey: privateKey,
                     userHandle: userEntity.id,
                     alg:        keySupport.selectedAlg.rawValue
                 )
                 
                 credSource.otherUI = keyName
+                
+                // got user consent
+                guard let publicKeyCOSE = keySupport.createKeyPair(label: credSource.keyLabel) else {
+                    self.stop(by: .unknownError)
+                    return
+                }
                 
                 var credentialId = [UInt8]()
                 var signCount: UInt32 = 0
@@ -258,7 +251,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                         authData:       authenticatorData,
                         clientDataHash: hash,
                         alg:            keySupport.selectedAlg,
-                        privateKey:     privateKey
+                        keyLabel:       credSource.keyLabel
                     ) else {
                         WAKLogger.debug("<MakeCredentialSession> failed to build attestation object")
                         self.stop(by: .unknownError)

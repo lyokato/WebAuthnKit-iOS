@@ -117,7 +117,7 @@ class RegistrationViewController: UIViewController {
         }
         
         options.attestation = attestation
-        options.addPubKeyCredParam(alg: .rs256)
+        options.addPubKeyCredParam(alg: .es256)
         options.authenticatorSelection = AuthenticatorSelectionCriteria(
             requireResidentKey: requireResidentKey,
             userVerification: verification

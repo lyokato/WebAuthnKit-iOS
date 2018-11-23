@@ -13,8 +13,8 @@ public class SelfAttestation {
     public static func create(
         authData:       AuthenticatorData,
         clientDataHash: [UInt8],
-        alg:             COSEAlgorithmIdentifier,
-        privateKey:      String
+        alg:            COSEAlgorithmIdentifier,
+        keyLabel:       String
         ) -> Optional<AttestationObject> {
         
         WAKLogger.debug("<SelfAttestation> create")
@@ -29,8 +29,8 @@ public class SelfAttestation {
         }
         
         guard let sig = keySupport.sign(
-            data: dataToBeSigned,
-            pem:  privateKey
+            data:  dataToBeSigned,
+            label: keyLabel
         ) else {
             WAKLogger.debug("<AttestationHelper> failed to sign")
             return nil

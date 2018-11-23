@@ -178,7 +178,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                         return
                 }
                 
-                guard let signature = keySupport.sign(data: data, pem: cred.privateKey) else {
+                guard let signature = keySupport.sign(data: data, label: cred.keyLabel) else {
                     self.stop(by: .unknownError)
                     return
                 }

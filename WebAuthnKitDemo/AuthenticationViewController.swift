@@ -131,22 +131,30 @@ class AuthenticationViewController: UIViewController {
         self.view.addSubview(ViewCatalog.createBackground())
         self.navigationItem.title = "Authentication"
 
-        let offset: CGFloat = 60
-        self.newLabel(text: "Relying Party Id", top: offset + 60)
-        self.rpIdText = self.newTextView(height: 30, top: offset + 90, text: "https://example.org")
+        var offset: CGFloat = 100
         
-        self.newLabel(text: "Challenge (Hex)", top: offset + 130)
-        self.challengeText = self.newTextView(height: 30, top: offset + 160, text: "aed9c789543b")
+        self.newLabel(text: "Relying Party Id", top: offset)
+        self.rpIdText = self.newTextView(height: 30, top: offset + 30, text: "https://example.org")
+
+        offset = offset + 70
         
-        self.newLabel(text: "User Verification", top: offset + 210)
-        self.userVerification = self.newSegmentedControl(top: offset + 240, list: ["Required", "Preferred", "Discouraged"])
+        self.newLabel(text: "Challenge (Hex)", top: offset)
+        self.challengeText = self.newTextView(height: 30, top: offset + 30, text: "aed9c789543b")
         
-        self.newLabel(text: "Credential Id (Hex) (Optional)", top: offset + 290)
-        self.credentialIdText = self.newTextView(height: 90, top: offset + 320, text: "")
+        offset = offset + 70
+        
+        self.newLabel(text: "User Verification", top: offset)
+        self.userVerification = self.newSegmentedControl(top: offset + 30, list: ["Required", "Preferred", "Discouraged"])
+        
+        offset = offset + 70
+        
+        self.newLabel(text: "Credential Id (Hex) (Optional)", top: offset)
+        self.credentialIdText = self.newTextView(height: 120, top: offset + 30, text: "")
         
 
-        self.setupStartButton()
         self.setupWebAuthnClient()
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Start", style: .plain, target: self, action: #selector(AuthenticationViewController.onStartButtonTapped))
     }
     
     private func newLabel(text: String, top: CGFloat) {
@@ -177,6 +185,7 @@ class AuthenticationViewController: UIViewController {
         view.text = text
         view.fitScreenW(20)
         view.height(height)
+        view.layer.cornerRadius = 5.0
         view.top(top)
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
@@ -185,18 +194,6 @@ class AuthenticationViewController: UIViewController {
         self.view.addSubview(view)
         view.centerizeScreenH()
         return view
-    }
-    
-    private func setupStartButton() {
-        let button = ViewCatalog.createButton(text: "START")
-        button.height(50)
-        button.addTarget(self, action: #selector(type(of: self).onStartButtonTapped(_:)), for: .touchUpInside)
-        button.fitScreenW(20)
-        button.centerizeScreenH()
-        button.top(self.view.bounds.height - 50 - 50)
-        
-        button.layer.backgroundColor = UIColor.fromRGB(0xff4500).cgColor
-        view.addSubview(button)
     }
     
     @objc func onStartButtonTapped(_ sender: UIButton) {

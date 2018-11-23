@@ -182,7 +182,7 @@ class RegistrationViewController: UIViewController {
         
         offset = offset + 70
         
-        self.newLabel(text: "User Display Name (Optional)", top: offset)
+        self.newLabel(text: "User Display Name", top: offset)
         self.displayNameText = self.newTextView(height: 30, top: offset + 30, text: "Lyo Kato")
         
         offset = offset + 70
@@ -253,6 +253,7 @@ class RegistrationViewController: UIViewController {
         view.text = text
         view.fitScreenW(20)
         view.height(height)
+        view.layer.cornerRadius = 5.0
         view.top(top)
         view.autocorrectionType = .no
         view.autocapitalizationType = .none

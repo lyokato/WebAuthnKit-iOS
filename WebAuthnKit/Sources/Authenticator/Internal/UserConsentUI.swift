@@ -226,9 +226,11 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
             DispatchQueue.main.async {
 
                 let ctx = LAContext()
-
-                if ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
-                    ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
+                var authError: NSError?
+                //if ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
+                //    ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
+                if ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &authError) {
+                    ctx.evaluatePolicy(.deviceOwnerAuthentication,
                                        localizedReason: message,
                                        reply: { success, error in
                                         if success {
@@ -237,11 +239,11 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                                             }
                                         } else if let error = error {
                                             switch LAError(_nsError: error as NSError) {
-                                            case LAError.userCancel:
-                                                WAKLogger.debug("<UserConsentUI> user cancel")
-                                                self.dispatchError(resolver, .notAllowedError)
                                             case LAError.userFallback:
                                                 WAKLogger.debug("<UserConsentUI> user fallback")
+                                                self.dispatchError(resolver, .notAllowedError)
+                                            case LAError.userCancel:
+                                                WAKLogger.debug("<UserConsentUI> user cancel")
                                                 self.dispatchError(resolver, .notAllowedError)
                                             case LAError.authenticationFailed:
                                                 WAKLogger.debug("<UserConsentUI> authentication failed")
@@ -263,7 +265,8 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                                         }
                     })
                 } else {
-                    WAKLogger.debug("<UserConsentUI> device not supported")
+                    let reason = authError?.localizedDescription ?? ""
+                    WAKLogger.debug("<UserConsentUI> device not supported: \(reason)")
                     self.dispatchError(resolver, .notAllowedError)
                 }
             }

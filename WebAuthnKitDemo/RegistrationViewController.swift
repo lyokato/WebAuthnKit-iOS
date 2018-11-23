@@ -220,8 +220,9 @@ class RegistrationViewController: UIViewController {
         self.newLabel(text: "Resident Key Required", top: offset)
         self.residentKeyRequired = self.newSegmentedControl(top: offset + 30, list: ["Required", "Not Required"])
 
-        self.setupStartButton()
         self.setupWebAuthnClient()
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Start", style: .plain, target: self, action: #selector(RegistrationViewController.onStartButtonTapped))
     }
     
     private func newLabel(text: String, top: CGFloat) {
@@ -261,20 +262,8 @@ class RegistrationViewController: UIViewController {
         view.centerizeScreenH()
         return view
     }
-    
-    private func setupStartButton() {
-        let button = ViewCatalog.createButton(text: "START")
-        button.height(50)
-        button.addTarget(self, action: #selector(type(of: self).onStartButtonTapped(_:)), for: .touchUpInside)
-        button.fitScreenW(20)
-        button.centerizeScreenH()
-        button.top(self.view.bounds.height - 50 - 50)
-        
-        button.layer.backgroundColor = UIColor.fromRGB(0xff4500).cgColor
-        view.addSubview(button)
-    }
-    
-    @objc func onStartButtonTapped(_ sender: UIButton) {
+
+    @objc func onStartButtonTapped() {
         self.startRegistration()
     }
     

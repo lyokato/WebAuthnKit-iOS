@@ -21,7 +21,7 @@ public protocol KeyDetailViewDelegate {
     func userDidCancel()
 }
 
-public class KeyDetailView: UIView {
+class KeyDetailView: UIView, UITextFieldDelegate {
     
     var delegate: KeyDetailViewDelegate?
     
@@ -213,7 +213,7 @@ public class KeyDetailView: UIView {
         keyNameLabel.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
         self.addSubview(keyNameLabel)
         
-        offset = offset + keyNameLabelHeight + 6
+        offset = offset + keyNameLabelHeight + 10
         
         let keyNameFieldHeight: CGFloat = 30
         
@@ -225,13 +225,14 @@ public class KeyDetailView: UIView {
             height: keyNameFieldHeight
         )
         self.keyNameField.borderStyle = .none
+        self.keyNameField.delegate = self
         self.keyNameField.layer.backgroundColor = UIColor.white.cgColor
         self.keyNameField.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
         self.keyNameField.layer.cornerRadius = 5.0
         self.keyNameField.text = self.createDefaultKeyName()
         self.keyNameField.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
         self.addSubview(self.keyNameField)
-        
+
         offset = offset + keyNameFieldHeight + 16
         
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: keyNameFieldHeight))
@@ -252,7 +253,7 @@ public class KeyDetailView: UIView {
             cancelButton.frame = CGRect(
                 x: buttonMargin,
                 y: offset,
-                width: buttonWidth,
+                width: buttonWidth + 1,
                 height: buttonHeight
             )
             cancelButton.setTitle("Cancel", for: .normal)
@@ -322,15 +323,39 @@ public class KeyDetailView: UIView {
     }
     
     @objc func onCancelButtonTapped(_ sender: UIButton) {
+        if self.keyNameField.isFirstResponder {
+            self.keyNameField.resignFirstResponder()
+        }
         self.delegate?.userDidCancel()
     }
     
     @objc func onCreateButtonTapped(_ sender: UIButton) {
+        if self.keyNameField.isFirstResponder {
+            self.keyNameField.resignFirstResponder()
+        }
         self.delegate?.userDidRequestToCreateNewKey(keyName: self.getCurrentKeyName())
     }
 
     @objc func onOverwriteButtonTapped(_ sender: UIButton) {
+        if self.keyNameField.isFirstResponder {
+            self.keyNameField.resignFirstResponder()
+        }
         self.delegate?.userDidRequestToOverwriteKey(keyName: self.getCurrentKeyName())
+    }
+    
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if self.keyNameField.isFirstResponder {
+            self.keyNameField.resignFirstResponder()
+        }
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 
 }

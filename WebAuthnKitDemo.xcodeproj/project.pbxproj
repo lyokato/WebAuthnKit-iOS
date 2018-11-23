@@ -52,6 +52,7 @@
 		90D2EA6D21A476B100032373 /* LayoutHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6C21A476B100032373 /* LayoutHelper.swift */; };
 		90D2EA6F21A4772100032373 /* ViewCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA6E21A4772100032373 /* ViewCatalog.swift */; };
 		90D2EA7321A7B2F700032373 /* ImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA7221A7B2F700032373 /* ImageHelper.swift */; };
+		90D2EA7521A82ED800032373 /* CredentialSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2EA7421A82ED800032373 /* CredentialSource.swift */; };
 		B91D11376957802B96D6EA6E /* Pods_WebAuthnKitDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D2988A06B4CC546656EEBF2 /* Pods_WebAuthnKitDemo.framework */; };
 		E2142E8C6CCAF5C0CDE022F3 /* Pods_WebAuthnKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FF3E155C7228F98215A96DE /* Pods_WebAuthnKitTests.framework */; };
 /* End PBXBuildFile section */
@@ -150,6 +151,7 @@
 		90D2EA6C21A476B100032373 /* LayoutHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutHelper.swift; sourceTree = "<group>"; };
 		90D2EA6E21A4772100032373 /* ViewCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCatalog.swift; sourceTree = "<group>"; };
 		90D2EA7221A7B2F700032373 /* ImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHelper.swift; sourceTree = "<group>"; };
+		90D2EA7421A82ED800032373 /* CredentialSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialSource.swift; sourceTree = "<group>"; };
 		9FF3E155C7228F98215A96DE /* Pods_WebAuthnKitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebAuthnKitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3B78E73DB43D2411A1E78C3 /* Pods-WebAuthnKitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKitTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKitTests/Pods-WebAuthnKitTests.release.xcconfig"; sourceTree = "<group>"; };
 		B7FCC422FB36271D9963F89C /* Pods-WebAuthnKitDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebAuthnKitDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-WebAuthnKitDemo/Pods-WebAuthnKitDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 				90D2EA5521A4452E00032373 /* KeySupport.swift */,
 				90D2EA5421A4452E00032373 /* UserConsentUI.swift */,
 				90D2EA6821A4488200032373 /* SelfAttestation.swift */,
+				90D2EA7421A82ED800032373 /* CredentialSource.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -708,6 +711,7 @@
 				90D2EA5F21A4453C00032373 /* InternalAuthenticatorMakeCredentialSession.swift in Sources */,
 				90D2EA5A21A4452E00032373 /* KeySupport.swift in Sources */,
 				90D2EA5621A4452E00032373 /* InternalAuthenticator.swift in Sources */,
+				90D2EA7521A82ED800032373 /* CredentialSource.swift in Sources */,
 				90D2EA6221A4467100032373 /* Client.swift in Sources */,
 				90D2EA5021A4449000032373 /* Authenticator.swift in Sources */,
 				90D2EA6721A4469A00032373 /* ClientCreateOperation.swift in Sources */,

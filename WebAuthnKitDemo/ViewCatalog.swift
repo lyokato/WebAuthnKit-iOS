@@ -24,6 +24,16 @@ class ViewCatalog {
         bg.frame = UIScreen.main.bounds
         gl.frame = bg.frame
         
+        let lineImage =  ImageHelper.backgroundLineImage
+        let lineCount = Int(UIScreen.main.bounds.size.height / 3)
+        for idx in 0...lineCount {
+            let line = UIImageView(image: lineImage)
+            bg.addSubview(line)
+            let lineTop = CGFloat((1 + 2) * idx)
+            line.move(0, lineTop)
+            line.alpha = 0.3
+        }
+        
         return bg
     }
     

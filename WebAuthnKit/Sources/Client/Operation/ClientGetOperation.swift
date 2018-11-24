@@ -265,7 +265,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
                 clientDataJSON:    self.clientDataJSON,
                 authenticatorData: assertion.authenticatorData,
                 signature:         assertion.signature,
-                userHandler:       assertion.userHandle
+                userHandle:        assertion.userHandle
             )
         )
 

@@ -85,11 +85,24 @@ class AuthenticationViewController: UIViewController, UITextFieldDelegate {
         }
         //options.timeout = UInt64(120)
         
+        print("==========================================")
+        print("challenge: " + Base64.encodeBase64URL(options.challenge))
+        print("==========================================")
+
         firstly {
             
             self.webAuthnClient.get(options)
             
         }.done { assertion in
+            
+            print("==========================================")
+            print("credentialId: " + assertion.id)
+            print("rawId: " + Base64.encodeBase64URL(assertion.rawId))
+            print("authenticatorData: " + Base64.encodeBase64URL(assertion.response.authenticatorData))
+            print("signature: " + Base64.encodeBase64URL(assertion.response.signature))
+            print("userHandle: " + Base64.encodeBase64URL(assertion.response.userHandle!))
+            print("clientDataJSON: " + Base64.encodeBase64URL(assertion.response.clientDataJSON.data(using: .utf8)!))
+            print("==========================================")
 
             self.showResult(assertion)
 
@@ -202,7 +215,7 @@ class AuthenticationViewController: UIViewController, UITextFieldDelegate {
     
     private func showResult(_ result: WebAuthnClient.GetResponse) {
         
-        let user: [UInt8] = result.response.userHandler ?? []
+        let user: [UInt8] = result.response.userHandle ?? []
         let userName = String(data: Data(bytes: user), encoding: .utf8) ?? ""
         
         let vc = ResultViewController(

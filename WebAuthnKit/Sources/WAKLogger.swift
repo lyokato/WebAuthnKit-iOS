@@ -14,7 +14,10 @@ public class WAKLogger {
 
     public static func debug(_ msg: String) {
         if available {
-            print(msg)
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyyMMddHHmmss"
+            let dateString = formatter.string(from: Date())
+            print("\(dateString) [WebAuthnKit]" + msg)
         }
     }
 }

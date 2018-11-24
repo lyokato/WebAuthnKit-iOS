@@ -62,7 +62,7 @@ public struct AuthenticatorAssertionResponse: AuthenticatorResponse {
     public var clientDataJSON: String
     public var authenticatorData: [UInt8]
     public var signature: [UInt8]
-    public var userHandler: [UInt8]?
+    public var userHandle: [UInt8]?
 }
 
 public struct PublicKeyCredential<T: AuthenticatorResponse>: Codable {
@@ -309,6 +309,11 @@ public struct PublicKeyCredentialCreationOptions: Codable {
         self.pubKeyCredParams.append(PublicKeyCredentialParameters(alg: alg))
     }
     
+    public func toJSON() -> Optional<String> {
+        let obj = PublicKeyCredentialCreationArgs(publicKey: self)
+        return JSONHelper<PublicKeyCredentialCreationArgs>.encode(obj)
+    }
+    
     public static func fromJSON(json: String) -> Optional<PublicKeyCredentialCreationOptions> {
         guard let args = JSONHelper<PublicKeyCredentialCreationArgs>.decode(json) else {
             return nil
@@ -347,6 +352,11 @@ public struct PublicKeyCredentialRequestOptions: Codable {
             id:         credentialId,
             transports: transports
         ))
+    }
+    
+    public func toJSON() -> Optional<String> {
+        let obj = PublicKeyCredentialRequestArgs(publicKey: self)
+        return JSONHelper<PublicKeyCredentialRequestArgs>.encode(obj)
     }
     
     public static func fromJSON(json: String) -> Optional<PublicKeyCredentialRequestOptions> {

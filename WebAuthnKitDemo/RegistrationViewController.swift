@@ -123,6 +123,12 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
             userVerification: verification
         )
         // options.timeout = UInt64(120)
+        
+        print("==========================================")
+        print("rp.id: " + (options.rp.id ?? "nil"))
+        print("user.id: " + Base64.encodeBase64URL(options.user.id))
+        print("challenge: " + Base64.encodeBase64URL(options.challenge))
+        print("==========================================")
 
         firstly {
             
@@ -130,6 +136,12 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
             
         }.done { credential in
 
+            print("==========================================")
+            print("credentialId: " + credential.id)
+            print("rawId: " + Base64.encodeBase64URL(credential.rawId))
+            print("attestationObject: " + Base64.encodeBase64URL(credential.response.attestationObject))
+            print("clientDataJSON: " + Base64.encodeBase64URL(credential.response.clientDataJSON.data(using: .utf8)!))
+            print("==========================================")
             self.showResult(credential)
 
         }.catch { error in

@@ -11,7 +11,7 @@ import WebAuthnKit
 import PromiseKit
 import CryptoSwift
 
-class AuthenticationViewController: UIViewController {
+class AuthenticationViewController: UIViewController, UITextFieldDelegate {
     
     var webAuthnClient: WebAuthnClient!
     var userConsentUI: UserConsentUI!
@@ -114,9 +114,9 @@ class AuthenticationViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    var credentialIdText: UITextView!
-    var rpIdText:         UITextView!
-    var challengeText:    UITextView!
+    var credentialIdText: UITextField!
+    var rpIdText:         UITextField!
+    var challengeText:    UITextField!
     var userVerification: UISegmentedControl!
     
     override func viewDidLoad() {
@@ -131,12 +131,12 @@ class AuthenticationViewController: UIViewController {
         var offset: CGFloat = 100
         
         self.newLabel(text: "Relying Party Id", top: offset)
-        self.rpIdText = self.newTextView(height: 30, top: offset + 30, text: "https://example.org")
+        self.rpIdText = self.newTextField(height: 30, top: offset + 30, text: "https://example.org")
 
         offset = offset + 70
         
         self.newLabel(text: "Challenge (Hex)", top: offset)
-        self.challengeText = self.newTextView(height: 30, top: offset + 30, text: "aed9c789543b")
+        self.challengeText = self.newTextField(height: 30, top: offset + 30, text: "aed9c789543b")
         
         offset = offset + 70
         
@@ -146,7 +146,7 @@ class AuthenticationViewController: UIViewController {
         offset = offset + 70
         
         self.newLabel(text: "Credential Id (Hex) (Optional)", top: offset)
-        self.credentialIdText = self.newTextView(height: 120, top: offset + 30, text: "")
+        self.credentialIdText = self.newTextField(height: 30, top: offset + 30, text: "")
         
 
         self.setupWebAuthnClient()
@@ -177,19 +177,22 @@ class AuthenticationViewController: UIViewController {
         return seg
     }
     
-    private func newTextView(height: CGFloat, top: CGFloat, text: String) -> UITextView {
-        let view = ViewCatalog.createTextView()
+    private func newTextField(height: CGFloat, top: CGFloat, text: String) -> UITextField {
+        let view = ViewCatalog.createTextField(placeholder: "", leftPadding: 10, height: height)
         view.text = text
         view.fitScreenW(20)
         view.height(height)
         view.layer.cornerRadius = 5.0
         view.top(top)
+        view.delegate = self
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
         view.backgroundColor = UIColor.white
         view.textColor = UIColor.black
+        view.delegate = self
         self.view.addSubview(view)
         view.centerizeScreenH()
+        view.font = UIFont.systemFont(ofSize: 14)
         return view
     }
     
@@ -213,5 +216,32 @@ class AuthenticationViewController: UIViewController {
         
         self.present(vc, animated: true, completion: nil)
         
+    }
+    
+    private func resignAllTextViews() {
+        [
+            rpIdText,
+            challengeText,
+            credentialIdText
+            ].forEach { textField in
+                if let tf = textField {
+                    if tf.isFirstResponder {
+                        tf.resignFirstResponder()
+                    }
+                }
+        }
+    }
+    
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.resignAllTextViews()
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

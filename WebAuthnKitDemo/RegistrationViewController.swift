@@ -16,7 +16,7 @@ public enum FormError : Error {
     case empty(String)
 }
 
-class RegistrationViewController: UIViewController {
+class RegistrationViewController: UIViewController, UITextFieldDelegate {
     
     var webAuthnClient: WebAuthnClient!
     var userConsentUI: UserConsentUI!
@@ -153,12 +153,12 @@ class RegistrationViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    var userIdText:            UITextView!
-    var displayNameText:       UITextView!
-    var userIconURLText:       UITextView!
-    var rpIconURLText:         UITextView!
-    var rpIdText:              UITextView!
-    var challengeText:         UITextView!
+    var userIdText:            UITextField!
+    var displayNameText:       UITextField!
+    var userIconURLText:       UITextField!
+    var rpIconURLText:         UITextField!
+    var rpIdText:              UITextField!
+    var challengeText:         UITextField!
     var userVerification:      UISegmentedControl!
     var attestationConveyance: UISegmentedControl!
     var residentKeyRequired:   UISegmentedControl!
@@ -175,32 +175,32 @@ class RegistrationViewController: UIViewController {
         var offset: CGFloat = 100
         
         self.newLabel(text: "User Id", top: offset)
-        self.userIdText = self.newTextView(height: 30, top: offset + 30, text: "lyokato")
+        self.userIdText = self.newTextField(height: 30, top: offset + 30, text: "lyokato")
         
         offset = offset + 70
         
         self.newLabel(text: "User Display Name", top: offset)
-        self.displayNameText = self.newTextView(height: 30, top: offset + 30, text: "Lyo Kato")
+        self.displayNameText = self.newTextField(height: 30, top: offset + 30, text: "Lyo Kato")
         
         offset = offset + 70
         
         self.newLabel(text: "User ICON URL (Optional)", top: offset)
-        self.userIconURLText = self.newTextView(height: 30, top: offset + 30, text: "https://www.gravatar.com/avatar/0b63462eb18efbfb764b0c226abff4a0?s=440&d=retro")
+        self.userIconURLText = self.newTextField(height: 30, top: offset + 30, text: "https://www.gravatar.com/avatar/0b63462eb18efbfb764b0c226abff4a0?s=440&d=retro")
 
         offset = offset + 70
         
         self.newLabel(text: "Relying Party Id", top: offset)
-        self.rpIdText = self.newTextView(height: 30, top: offset + 30, text: "https://example.org")
+        self.rpIdText = self.newTextField(height: 30, top: offset + 30, text: "https://example.org")
         
         offset = offset + 70
         
         self.newLabel(text: "Relying Party Icon", top: offset)
-        self.rpIconURLText = self.newTextView(height: 30, top: offset + 30, text: "https://developers.google.com/identity/images/g-logo.png")
+        self.rpIconURLText = self.newTextField(height: 30, top: offset + 30, text: "https://developers.google.com/identity/images/g-logo.png")
         
         offset = offset + 70
         
         self.newLabel(text: "Challenge (Hex)", top: offset)
-        self.challengeText = self.newTextView(height: 30, top: offset + 30, text: "aed9c789543b")
+        self.challengeText = self.newTextField(height: 30, top: offset + 30, text: "aed9c789543b")
         
         offset = offset + 80
         
@@ -245,19 +245,21 @@ class RegistrationViewController: UIViewController {
         return seg
     }
     
-    private func newTextView(height: CGFloat, top: CGFloat, text: String) -> UITextView {
-        let view = ViewCatalog.createTextView()
+    private func newTextField(height: CGFloat, top: CGFloat, text: String) -> UITextField {
+        let view = ViewCatalog.createTextField(placeholder: "", leftPadding: 10, height: height)
         view.text = text
         view.fitScreenW(20)
         view.height(height)
         view.layer.cornerRadius = 5.0
         view.top(top)
+        view.delegate = self
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
         view.backgroundColor = UIColor.white
         view.textColor = UIColor.black
         self.view.addSubview(view)
         view.centerizeScreenH()
+        view.font = UIFont.systemFont(ofSize: 14)
         return view
     }
 
@@ -281,5 +283,36 @@ class RegistrationViewController: UIViewController {
         
         self.present(vc, animated: true, completion: nil)
     }
+    
+    private func resignAllTextViews() {
+        [
+            userIdText,
+            displayNameText,
+            userIconURLText,
+            rpIconURLText,
+            rpIdText,
+            challengeText
+        ].forEach { textField in
+            if let tv = textField {
+                if tv.isFirstResponder {
+                    tv.resignFirstResponder()
+                }
+            }
+        }
+    }
+    
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.resignAllTextViews()
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
 }
 

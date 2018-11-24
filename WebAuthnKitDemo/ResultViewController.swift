@@ -11,7 +11,7 @@ import WebAuthnKit
 import PromiseKit
 import CryptoSwift
 
-class ResultViewController: UIViewController {
+class ResultViewController: UIViewController, UITextFieldDelegate {
     
     var rawId: String
     var credId: String
@@ -59,6 +59,15 @@ class ResultViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    var rawIdText: UITextField?
+    var credIdText: UITextField?
+    var userHandleText: UITextField?
+    
+    var clientDataJSONText: UITextView?
+    var attestationObjectText: UITextView?
+    var authenticatorDataText: UITextView?
+    var signatureText: UITextView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,25 +76,27 @@ class ResultViewController: UIViewController {
         self.view.addSubview(ViewCatalog.createBackground())
         self.navigationItem.title = "Result"
         
-        //self.setupTextView()
         self.newLabel(text: "Raw Id (Hex)", top: 60)
-        self.newTextView(height: 30, top: 90, text: self.rawId)
+        self.rawIdText = self.newTextField(height: 30, top: 90, text: self.rawId)
         self.newLabel(text: "Credential Id (Base64URL)", top: 130)
-        self.newTextView(height: 30, top: 160, text: self.credId)
+        self.credIdText = self.newTextField(height: 30, top: 160, text: self.credId)
         self.newLabel(text: "Client Data JSON", top: 200)
-        self.newTextView(height: 50, top: 230, text: self.clientDataJSON)
+        self.clientDataJSONText = self.newTextView(height: 50, top: 230, text: self.clientDataJSON)
         
         if self.signature.isEmpty {
             self.newLabel(text: "Attestation Object (Base64URL)", top: 290)
-            self.newTextView(height: 200, top: 320, text: self.attestationObject)
+            self.attestationObjectText =
+                self.newTextView(height: 200, top: 320, text: self.attestationObject)
         } else {
             WAKLogger.debug("SIGNATURE_SIZE: \(self.signature.count)")
             self.newLabel(text: "Authenticator Data (Base64URL)", top: 290)
-            self.newTextView(height: 50, top: 320, text: self.authenticatorData)
+            self.authenticatorDataText =
+                self.newTextView(height: 50, top: 320, text: self.authenticatorData)
             self.newLabel(text: "Signature (Hex)", top: 380)
-            self.newTextView(height: 150, top: 410, text: self.signature)
+            self.signatureText = self.newTextView(height: 150, top: 410, text: self.signature)
             self.newLabel(text: "User Handle", top: 570)
-            self.newTextView(height: 30, top: 600, text: self.userHandle)
+            self.userHandleText =
+                self.newTextField(height: 30, top: 600, text: self.userHandle)
         }
         self.setupCloseButton()
     }
@@ -101,17 +112,38 @@ class ResultViewController: UIViewController {
         view.addSubview(label)
     }
     
-    private func newTextView(height: CGFloat, top: CGFloat, text: String) {
+    private func newTextField(height: CGFloat, top: CGFloat, text: String) -> UITextField {
+        let view = ViewCatalog.createTextField(placeholder: "", leftPadding: 10, height: height)
+        view.text = text
+        view.fitScreenW(20)
+        view.height(height)
+        view.layer.cornerRadius = 5.0
+        view.top(top)
+        view.delegate = self
+        view.autocorrectionType = .no
+        view.autocapitalizationType = .none
+        view.backgroundColor = UIColor.white
+        view.textColor = UIColor.black
+        view.delegate = self
+        self.view.addSubview(view)
+        view.centerizeScreenH()
+        view.font = UIFont.systemFont(ofSize: 12)
+        return view
+    }
+    
+    private func newTextView(height: CGFloat, top: CGFloat, text: String) -> UITextView {
         let view = ViewCatalog.createTextView()
         view.text = text
         view.fitScreenW(20)
         view.height(height)
         view.top(top)
+        view.layer.cornerRadius = 5.0
         view.autocapitalizationType = .none
         view.backgroundColor = UIColor.white
         view.textColor = UIColor.black
         self.view.addSubview(view)
         view.centerizeScreenH()
+        return view
     }
     
     private func setupCloseButton() {
@@ -128,5 +160,36 @@ class ResultViewController: UIViewController {
     
     @objc func onCloseButtonTapped(_ sender: UIButton) {
        dismiss(animated: true, completion: nil)
+    }
+    
+    private func resignAllTextViews() {
+        [
+            self.rawIdText,
+            self.credIdText,
+            self.clientDataJSONText,
+            self.attestationObjectText,
+            self.authenticatorDataText,
+            self.signatureText,
+            self.userHandleText
+            ].forEach { textField in
+                if let tv = textField {
+                    if tv.isFirstResponder {
+                        tv.resignFirstResponder()
+                    }
+                }
+        }
+    }
+    
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.resignAllTextViews()
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

@@ -259,7 +259,7 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
         view.textColor = UIColor.black
         self.view.addSubview(view)
         view.centerizeScreenH()
-        view.font = UIFont.systemFont(ofSize: 14)
+        view.font = UIFont.systemFont(ofSize: 12)
         return view
     }
 

@@ -20,7 +20,6 @@ This library provides you a way to handle W3C Web Authentication API (a.k.a. Web
   s.source = { :git => "https://github.com/lyokato/WebAuthnKit.git", :tag => "#{s.version}" }
 
   s.source_files  = "WebAuthnKit/Sources/**/*.swift"
-  s.public_header_files = "WebAuthnKit/Headers/**/*.h"
 
   # s.resource  = "icon.png"
   # s.resources = "Resources/*.png"

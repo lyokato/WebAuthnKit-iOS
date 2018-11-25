@@ -24,6 +24,7 @@ public class UserConsentUIConfig {
     public var keySelectionSelectButtonText: String = "Select"
     
     public var showRPInformation: Bool = true
+    public var alwaysShowKeySelection: Bool = true
 
     public init() {}
 

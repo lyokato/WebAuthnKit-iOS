@@ -152,32 +152,49 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         ) -> Promise<PublicKeyCredentialSource> {
         
         WAKLogger.debug("<UserConsentUI> requestUserSelection")
-        let promise = Promise<PublicKeyCredentialSource> { resolver in
-            
-            DispatchQueue.main.async {
-                
-                let vc = KeySelectionViewController(
-                    resolver: resolver,
-                    config:   self.config,
-                    sources:  sources
-                )
-                
-                vc.delegate = self
-                
-                self.showBackground()
-                
-                self.viewController.present(vc, animated: true, completion: nil)
-                
-            }
-            
-        }
         
+        let promise = self.userSelectionTask(sources: sources)
+            
         if requireVerification {
             return promise.then {
                 return self.verifyUser(message: "Use-Key Authentication", params: $0)
             }
         } else {
             return promise
+        }
+    }
+    
+    private func userSelectionTask(sources: [PublicKeyCredentialSource]) -> Promise<PublicKeyCredentialSource> {
+        
+        if sources.count == 1 && !self.config.alwaysShowKeySelection {
+            
+            return Promise<PublicKeyCredentialSource> { resolver in
+                DispatchQueue.main.async {
+                    resolver.fulfill(sources[0])
+                }
+            }
+            
+        } else {
+            
+            return Promise<PublicKeyCredentialSource> { resolver in
+                
+                DispatchQueue.main.async {
+                    
+                    let vc = KeySelectionViewController(
+                        resolver: resolver,
+                        config:   self.config,
+                        sources:  sources.reversed()
+                    )
+                    
+                    vc.delegate = self
+                    
+                    self.showBackground()
+                    
+                    self.viewController.present(vc, animated: true, completion: nil)
+                    
+                }
+                
+            }
         }
     }
     

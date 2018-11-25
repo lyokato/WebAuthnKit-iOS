@@ -281,6 +281,7 @@
 		90D2EA2E21A42B8500032373 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				90D2EA1221A425DC00032373 /* WebAuthnKit.h */,
 				90D2EA6021A4466100032373 /* Client */,
 				90D2EA4921A4446C00032373 /* Authenticator */,
 				90D2EA3421A4429E00032373 /* Format */,
@@ -293,7 +294,6 @@
 		90D2EA2F21A42B8C00032373 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				90D2EA1221A425DC00032373 /* WebAuthnKit.h */,
 			);
 			path = Headers;
 			sourceTree = "<group>";

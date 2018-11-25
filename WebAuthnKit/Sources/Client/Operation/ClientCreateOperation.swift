@@ -13,7 +13,8 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     
     public let id = UUID().uuidString
     public let type = ClientOperationType.create
-    public var delegate: ClientOperationDelegate?
+    
+    public weak var delegate: ClientOperationDelegate?
 
     private let options:        PublicKeyCredentialCreationOptions
     private let rpId:           String
@@ -48,6 +49,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     }
 
     public func start() -> Promise<WebAuthnClient.CreateResponse> {
+        WAKLogger.debug("<CreateOperation> start")
         return Promise { resolver in
             DispatchQueue.global().async {
                 if self.stopped {
@@ -76,12 +78,14 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     }
 
     public func cancel() {
+        WAKLogger.debug("<CreateOperation> cancel")
         DispatchQueue.global().async {
             self.stop(by: .cancelled)
         }
     }
 
     private func stop() {
+        WAKLogger.debug("<CreateOperation> stop")
         if self.resolver == nil {
             WAKLogger.debug("<CreateOperation> not started")
             return
@@ -99,11 +103,13 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     // MARK: Private Methods
 
     private func stop(by error: WAKError) {
+        WAKLogger.debug("<CreateOperation> stop by \(error)")
         self.stop()
         self.dispatchError(error)
     }
 
     private func dispatchError(_ error: WAKError) {
+        WAKLogger.debug("<CreateOperation> dispatchError")
         DispatchQueue.main.async {
             if let resolver = self.resolver {
                 resolver.reject(error)
@@ -113,7 +119,9 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     }
 
     private func startLifetimeTimer() {
+        WAKLogger.debug("<CreateOperation> startLifetimeTimer: \(self.lifetimeTimer) sec")
         if self.timer != nil {
+            WAKLogger.debug("<CreateOperation> timer already started")
             return
         }
         self.timer = Timer.scheduledTimer(
@@ -126,15 +134,18 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     }
 
     private func stopLifetimeTimer() {
+        WAKLogger.debug("<CreateOperation> stopLifetimeTimer")
         self.timer?.invalidate()
         self.timer = nil
     }
 
     @objc func lifetimeTimerTimeout() {
+        WAKLogger.debug("<CreateOperation> timeout")
         self.stop(by: .timeout)
     }
 
     private func judgeUserVerificationExecution(_ session: AuthenticatorMakeCredentialSession) -> Bool {
+        WAKLogger.debug("<CreateOperation> judgeUserVerificationExecution")
         let userVerificationRequest =
             self.options.authenticatorSelection?.userVerification ?? .discouraged
         switch userVerificationRequest {
@@ -151,6 +162,8 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
 
     /// 5.1.3 - 20
     public func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession) {
+        
+        WAKLogger.debug("<CreateOperation> authenticator become available")
 
         if self.stopped {
             WAKLogger.debug("<CreateOperation> already stopped")
@@ -219,6 +232,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     }
 
     public func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorMakeCredentialSession) {
+        WAKLogger.debug("<CreateOperation> authenticator become unavailable")
         self.stop(by: .notAllowed)
     }
 
@@ -226,6 +240,8 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
         session:     AuthenticatorMakeCredentialSession,
         attestation: AttestationObject
     ) {
+        WAKLogger.debug("<CreateOperation> authenticator made credential")
+        
         guard let attestedCred =
             attestation.authData.attestedCredentialData else {
             WAKLogger.debug("<CreateOperation> attested credential data not found")
@@ -290,6 +306,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
         session: AuthenticatorMakeCredentialSession,
         reason:  AuthenticatorError
     ) {
+        WAKLogger.debug("<CreateOperation> authenticator stopped operation")
         switch reason {
         case .invalidStateError:
             self.stop(by: .invalidState)

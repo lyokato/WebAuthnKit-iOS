@@ -13,11 +13,11 @@ public class AttestationObject {
     
     let fmt: String
     let authData: AuthenticatorData
-    let attStmt: [String: Any]
+    let attStmt: SimpleOrderedDictionary<String>
     
     init(fmt:      String,
          authData: AuthenticatorData,
-         attStmt:  [String: Any]) {
+         attStmt:  SimpleOrderedDictionary<String>) {
         
         self.fmt      = fmt
         self.authData = authData
@@ -29,7 +29,7 @@ public class AttestationObject {
         return AttestationObject(
             fmt: "none",
             authData: self.authData,
-            attStmt: [String: Any]()
+            attStmt: SimpleOrderedDictionary<String>()
         )
     }
     
@@ -37,10 +37,10 @@ public class AttestationObject {
         if self.fmt != "packed" {
             return false
         }
-        if let _ = self.attStmt["x5c"] {
+        if let _ = self.attStmt.get("x5c") {
             return false
         }
-        if let _ = self.attStmt["ecdaaKeyId"] {
+        if let _ = self.attStmt.get("ecdaaKeyId") {
             return false
         }
         guard let attestedCred = self.authData.attestedCredentialData else {
@@ -54,10 +54,10 @@ public class AttestationObject {
     
     public func toBytes() -> Optional<[UInt8]> {
         
-        let dict = SimpleOrderedDictionary<String, Any>()
-        dict.add("authData", self.authData.toBytes())
-        dict.add("fmt", "packed")
-        dict.add("attStmt", self.attStmt)
+        let dict = SimpleOrderedDictionary<String>()
+        dict.addBytes("authData", self.authData.toBytes())
+        dict.addString("fmt", "packed")
+        dict.addStringKeyMap("attStmt", self.attStmt)
 
         return CBORWriter()
             .putStringKeyMap(dict)

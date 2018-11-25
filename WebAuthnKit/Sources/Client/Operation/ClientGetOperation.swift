@@ -13,7 +13,8 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
     
     public let id = UUID().uuidString
     public let type = ClientOperationType.get
-    public var delegate: ClientOperationDelegate?
+    
+    public weak var delegate: ClientOperationDelegate?
 
     private let options:        PublicKeyCredentialRequestOptions
     private let rpId:           String
@@ -49,6 +50,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
     }
 
     public func start() -> Promise<WebAuthnClient.GetResponse> {
+        WAKLogger.debug("<GetOperation> start")
         return Promise { resolver in
             DispatchQueue.global().async {
                 
@@ -96,12 +98,14 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
     }
     
     public func cancel() {
+        WAKLogger.debug("<GetOperation> cancel")
         DispatchQueue.global().async {
             self.stop(by: .cancelled)
         }
     }
 
     private func stop() {
+        WAKLogger.debug("<GetOperation> stop")
         if self.resolver == nil {
             WAKLogger.debug("<GetOperation> not started")
             return
@@ -115,10 +119,9 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
         self.session.cancel()
         self.delegate?.operationDidFinish(opType: self.type, opId: self.id)
     }
-
-    // MARK: Private Methods
-
+    
     private func startLifetimeTimer() {
+        WAKLogger.debug("<GetOperation> startLifetimeTimer \(self.lifetimeTimer) sec")
         if self.timer != nil {
             return
         }
@@ -132,11 +135,13 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
     }
 
     private func stop(by error: WAKError) {
+        WAKLogger.debug("<GetOperation> stop by")
         self.stop()
         self.dispatchError(error)
     }
 
     private func dispatchError(_ error: WAKError) {
+        WAKLogger.debug("<GetOperation> dispatchError")
         DispatchQueue.main.async {
             if let resolver = self.resolver {
                 resolver.reject(error)
@@ -146,15 +151,18 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
     }
 
     private func stopLifetimeTimer() {
+        WAKLogger.debug("<GetOperation> stopLifetimeTimer")
         self.timer?.invalidate()
         self.timer = nil
     }
 
     @objc func lifetimeTimerTimeout() {
+        WAKLogger.debug("<GetOperation> timeout")
         self.stopLifetimeTimer()
     }
 
     private func judgeUserVerificationExecution(_ session: AuthenticatorGetAssertionSession) -> Bool {
+        WAKLogger.debug("<GetOperation> judgeUserVerificationExecution")
         switch self.options.userVerification {
         case .required:
             return true
@@ -169,6 +177,8 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
 
     public func authenticatorSessionDidBecomeAvailable(session: AuthenticatorGetAssertionSession) {
 
+        WAKLogger.debug("<GetOperation> authenticator become available")
+        
         if self.stopped {
             WAKLogger.debug("<GetOperation> already stopped")
             return
@@ -230,11 +240,17 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
         session:   AuthenticatorGetAssertionSession,
         assertion: AuthenticatorAssertionResult
     ) {
+        
+        WAKLogger.debug("<GetOperation> authenticator discovered credential")
+        
         var credentialId: [UInt8]
         if let savedId = self.savedCredentialId {
+            WAKLogger.debug("<GetOperation> use saved credentialId")
            credentialId = savedId
         } else {
+            WAKLogger.debug("<GetOperation> use credentialId from authenticator")
             guard let resultId = assertion.credentailId else {
+                WAKLogger.debug("<GetOperation> credentialId not found")
                 self.dispatchError(.unknown)
                 return
             }
@@ -249,7 +265,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
                 clientDataJSON:    self.clientDataJSON,
                 authenticatorData: assertion.authenticatorData,
                 signature:         assertion.signature,
-                userHandler:       assertion.userHandle
+                userHandle:        assertion.userHandle
             )
         )
 
@@ -263,6 +279,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
     }
 
     public func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorGetAssertionSession) {
+        WAKLogger.debug("<GetOperation> authenticator become unavailable")
         self.stop(by: .notAllowed)
     }
 
@@ -270,6 +287,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
         session: AuthenticatorGetAssertionSession,
         reason:  AuthenticatorError
     ) {
+        WAKLogger.debug("<GetOperation> authenticator stopped operation")
         switch reason {
         case .userCancelled:
             self.stop(by: .cancelled)

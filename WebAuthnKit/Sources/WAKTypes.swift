@@ -54,22 +54,22 @@ public enum UserVerificationRequirement: String, Codable {
 
 public protocol AuthenticatorResponse : Codable {}
 public struct AuthenticatorAttestationResponse : AuthenticatorResponse {
-    var clientDataJSON: String
-    var attestationObject: [UInt8]
+    public var clientDataJSON: String
+    public var attestationObject: [UInt8]
 }
 
 public struct AuthenticatorAssertionResponse: AuthenticatorResponse {
-    var clientDataJSON: String
-    var authenticatorData: [UInt8]
-    var signature: [UInt8]
-    var userHandler: [UInt8]?
+    public var clientDataJSON: String
+    public var authenticatorData: [UInt8]
+    public var signature: [UInt8]
+    public var userHandle: [UInt8]?
 }
 
 public struct PublicKeyCredential<T: AuthenticatorResponse>: Codable {
-    let type: PublicKeyCredentialType = .publicKey
-    var rawId: [UInt8]
-    var id: String
-    var response: T
+    public let type: PublicKeyCredentialType = .publicKey
+    public var rawId: [UInt8]
+    public var id: String
+    public var response: T
     // getClientExtensionResults()
     
     public func toJSON() -> Optional<String> {
@@ -103,22 +103,59 @@ public enum AuthenticatorTransport: String, Codable, Equatable {
 }
 
 public struct PublicKeyCredentialDescriptor: Codable {
-    var type: PublicKeyCredentialType = .publicKey
-    var id: [UInt8] = [UInt8]() // credential ID
-    var transports = [AuthenticatorTransport]()
+    
+    public var type: PublicKeyCredentialType = .publicKey
+    public var id: [UInt8] // credential ID
+    public var transports: [AuthenticatorTransport]
+    
+    public init(
+        id:         [UInt8]                  = [UInt8](),
+        transports: [AuthenticatorTransport] = [AuthenticatorTransport]()
+    ) {
+        self.id         = id
+        self.transports = transports
+    }
+
+    public mutating func addTransport(transport: AuthenticatorTransport) {
+       self.transports.append(transport)
+    }
 }
 
 public struct PublicKeyCredentialRpEntity: Codable {
-    var id: String?
-    var name: String = ""
-    var icon: String?
+    
+    public var id: String?
+    public var name: String
+    public var icon: String?
+    
+    public init(
+        id: String? = nil,
+        name: String = "",
+        icon: String? = nil
+    ) {
+        self.id   = id
+        self.name = name
+        self.icon = icon
+    }
 }
 
 public struct PublicKeyCredentialUserEntity: Codable {
-    var id: [UInt8] = [UInt8]()
-    var displayName: String = ""
-    var name: String = ""
-    var icon: String?
+    
+    public var id: [UInt8]
+    public var displayName: String
+    public var name: String
+    public var icon: String?
+    
+    public init(
+        id: [UInt8] = [UInt8](),
+        displayName: String = "",
+        name: String = "",
+        icon: String? = nil
+    ) {
+        self.id = id
+        self.displayName = displayName
+        self.name = name
+        self.icon = icon
+    }
 }
 
 public enum AttestationConveyancePreference: String, Codable {
@@ -144,8 +181,12 @@ public enum AttestationConveyancePreference: String, Codable {
 }
 
 public struct PublicKeyCredentialParameters : Codable {
-    let type: PublicKeyCredentialType = .publicKey
-    var alg: Int
+    public let type: PublicKeyCredentialType = .publicKey
+    public var alg: COSEAlgorithmIdentifier
+    
+    public init(alg: COSEAlgorithmIdentifier) {
+        self.alg = alg
+    }
 }
 
 public enum TokenBindingStatus: String, Codable {
@@ -169,8 +210,13 @@ public enum TokenBindingStatus: String, Codable {
 }
 
 public struct TokenBinding: Codable {
-    var status: TokenBindingStatus
-    var id: String
+    public var status: TokenBindingStatus
+    public var id: String
+    
+    public init(id: String, status: TokenBindingStatus) {
+        self.id = id
+        self.status = status
+    }
 }
 
 public enum CollectedClientDataType: String, Codable {
@@ -179,10 +225,10 @@ public enum CollectedClientDataType: String, Codable {
 }
 
 public struct CollectedClientData : Codable {
-    var type: CollectedClientDataType
-    var challenge: String
-    var origin: String
-    var tokenBinding: TokenBinding?
+    public var type: CollectedClientDataType
+    public var challenge: String
+    public var origin: String
+    public var tokenBinding: TokenBinding?
 }
 
 public enum AuthenticatorAttachment: String, Codable {
@@ -204,9 +250,20 @@ public enum AuthenticatorAttachment: String, Codable {
 }
 
 public struct AuthenticatorSelectionCriteria: Codable {
-    var authenticatorAttachment: AuthenticatorAttachment?
-    var requireResidentKey: Bool = false
-    var userVerification: UserVerificationRequirement = .preferred
+    
+    public var authenticatorAttachment: AuthenticatorAttachment?
+    public var requireResidentKey: Bool
+    public var userVerification: UserVerificationRequirement
+    
+    public init(
+        authenticatorAttachment: AuthenticatorAttachment? = nil,
+        requireResidentKey: Bool = true,
+        userVerification: UserVerificationRequirement = .preferred
+    ) {
+        self.authenticatorAttachment = authenticatorAttachment
+        self.requireResidentKey = requireResidentKey
+        self.userVerification = userVerification
+    }
 }
 
 // put extensions supported in this library
@@ -215,15 +272,47 @@ public struct ExtensionOptions: Codable {
 }
 
 public struct PublicKeyCredentialCreationOptions: Codable {
-    var rp: PublicKeyCredentialRpEntity = PublicKeyCredentialRpEntity()
-    var user: PublicKeyCredentialUserEntity = PublicKeyCredentialUserEntity()
-    var challenge: String = ""
-    var pubKeyCredParams = [PublicKeyCredentialParameters]()
-    var timeout: UInt64?
-    var excludeCredentials = [PublicKeyCredentialDescriptor]()
-    var authenticatorSelection: AuthenticatorSelectionCriteria?
-    var attestation: AttestationConveyancePreference = .none
-    var extensions: ExtensionOptions?
+    
+    public var rp: PublicKeyCredentialRpEntity
+    public var user: PublicKeyCredentialUserEntity
+    public var challenge: [UInt8]
+    public var pubKeyCredParams: [PublicKeyCredentialParameters]
+    public var timeout: UInt64?
+    public var excludeCredentials: [PublicKeyCredentialDescriptor]
+    public var authenticatorSelection: AuthenticatorSelectionCriteria?
+    public var attestation: AttestationConveyancePreference
+    public var extensions: ExtensionOptions?
+    
+    public init(
+        rp: PublicKeyCredentialRpEntity = PublicKeyCredentialRpEntity(),
+        user: PublicKeyCredentialUserEntity = PublicKeyCredentialUserEntity(),
+        challenge: [UInt8] = [UInt8](),
+        pubKeyCredParams: [PublicKeyCredentialParameters] = [PublicKeyCredentialParameters](),
+        timeout: UInt64? = nil,
+        excludeCredentials: [PublicKeyCredentialDescriptor] = [PublicKeyCredentialDescriptor](),
+        authenticatorSelection: AuthenticatorSelectionCriteria? = nil,
+        attestation: AttestationConveyancePreference = .none
+    ) {
+        self.rp = rp
+        self.user = user
+        self.challenge = challenge
+        self.pubKeyCredParams = pubKeyCredParams
+        self.timeout = timeout
+        self.excludeCredentials = excludeCredentials
+        self.authenticatorSelection = authenticatorSelection
+        self.attestation = attestation
+        // not supported yet
+        self.extensions = nil
+    }
+    
+    public mutating func addPubKeyCredParam(alg: COSEAlgorithmIdentifier) {
+        self.pubKeyCredParams.append(PublicKeyCredentialParameters(alg: alg))
+    }
+    
+    public func toJSON() -> Optional<String> {
+        let obj = PublicKeyCredentialCreationArgs(publicKey: self)
+        return JSONHelper<PublicKeyCredentialCreationArgs>.encode(obj)
+    }
     
     public static func fromJSON(json: String) -> Optional<PublicKeyCredentialCreationOptions> {
         guard let args = JSONHelper<PublicKeyCredentialCreationArgs>.decode(json) else {
@@ -234,12 +323,42 @@ public struct PublicKeyCredentialCreationOptions: Codable {
 }
 
 public struct PublicKeyCredentialRequestOptions: Codable {
-    var challenge: String = ""
-    var timeout: UInt64?
-    var rpId: String?
-    var allowCredentials = [PublicKeyCredentialDescriptor]()
-    var userVerification: UserVerificationRequirement = .preferred
+    public var challenge: [UInt8]
+    public var rpId: String?
+    public var allowCredentials: [PublicKeyCredentialDescriptor]
+    public var userVerification: UserVerificationRequirement
+    public var timeout: UInt64?
     // let extensions: []
+    
+    public init(
+        challenge: [UInt8] = [UInt8](),
+        rpId: String = "",
+        allowCredentials: [PublicKeyCredentialDescriptor] = [PublicKeyCredentialDescriptor](),
+        userVerification: UserVerificationRequirement = .preferred,
+        timeout: UInt64? = nil
+    ) {
+        self.challenge = challenge
+        self.rpId = rpId
+        self.allowCredentials = allowCredentials
+        self.userVerification = userVerification
+        self.timeout = timeout
+    }
+    
+    public mutating func addAllowCredential(
+        credentialId: [UInt8],
+        transports: [AuthenticatorTransport]
+    ) {
+        self.allowCredentials.append(PublicKeyCredentialDescriptor(
+            id:         credentialId,
+            transports: transports
+        ))
+    }
+    
+    public func toJSON() -> Optional<String> {
+        let obj = PublicKeyCredentialRequestArgs(publicKey: self)
+        return JSONHelper<PublicKeyCredentialRequestArgs>.encode(obj)
+    }
+    
     public static func fromJSON(json: String) -> Optional<PublicKeyCredentialRequestOptions> {
         guard let args = JSONHelper<PublicKeyCredentialRequestArgs>.decode(json) else {
             return nil
@@ -249,9 +368,9 @@ public struct PublicKeyCredentialRequestOptions: Codable {
 }
 
 public struct PublicKeyCredentialCreationArgs: Codable {
-    let publicKey: PublicKeyCredentialCreationOptions
+    public let publicKey: PublicKeyCredentialCreationOptions
 }
 
 public struct PublicKeyCredentialRequestArgs: Codable {
-    let publicKey: PublicKeyCredentialRequestOptions
+    public let publicKey: PublicKeyCredentialRequestOptions
 }

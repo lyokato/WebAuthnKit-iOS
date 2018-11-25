@@ -12,7 +12,7 @@ import CryptoSwift
 
 public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertionSession {
     
-    public var delegate : AuthenticatorGetAssertionSessionDelegate?
+    public weak var delegate : AuthenticatorGetAssertionSessionDelegate?
     
     private let setting: InternalAuthenticatorSetting
     
@@ -28,10 +28,9 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         }
     }
     
-    private let ui:                  UserConsentUI
-    private let credentialStore:     CredentialStore
-    private let credentialEncryptor: CredentialEncryptor
-    private let keySupportChooser:   KeySupportChooser
+    private let ui:                UserConsentUI
+    private let credentialStore:   CredentialStore
+    private let keySupportChooser: KeySupportChooser
     
     private var started = false
     private var stopped = false
@@ -39,22 +38,23 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
     init(
         setting:             InternalAuthenticatorSetting,
         ui:                  UserConsentUI,
-        credentialEncryptor: CredentialEncryptor,
         credentialStore:     CredentialStore,
         keySupportChooser:   KeySupportChooser
     ) {
         self.setting             = setting
         self.ui                  = ui
-        self.credentialEncryptor = credentialEncryptor
         self.credentialStore     = credentialStore
         self.keySupportChooser   = keySupportChooser
     }
     
     public func start() {
+        WAKLogger.debug("<GetAssertionSession> start")
         if self.stopped {
+            WAKLogger.debug("<GetAssertionSession> alread stopped")
             return
         }
         if self.started {
+            WAKLogger.debug("<GetAssertionSession> alread started")
             return
         }
         self.started = true
@@ -67,14 +67,18 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
     
     // 6.3.4 authenticatorCancel Operation
     public func cancel() {
+        WAKLogger.debug("<GetAssertionSession> cancel")
         self.stop(by: .userCancelled)
     }
     
     private func stop(by reason: AuthenticatorError) {
+        WAKLogger.debug("<GetAssertionSession> stop")
         if !self.started {
+            WAKLogger.debug("<GetAssertionSession> not started")
             return
         }
         if self.stopped  {
+            WAKLogger.debug("<GetAssertionSession> already stopped")
             return
         }
         self.stopped = true
@@ -82,6 +86,10 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
             session: self,
             reason:  reason
         )
+    }
+    
+    private func completed() {
+        self.stopped = true
     }
     
     public func getAssertion(
@@ -92,6 +100,8 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         requireUserVerification:       Bool
         // extensions: [] CBOR MAP
         ) {
+        
+        WAKLogger.debug("<GetAssertionSession> get assertion")
         
         let credSources =
             self.gatherCredentialSources(
@@ -108,7 +118,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         firstly {
             
             self.ui.requestUserSelection(
-                credentials:         credSources,
+                sources:             credSources,
                 requireVerification: requireUserVerification
             )
             
@@ -116,27 +126,15 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 
                 var newSignCount: UInt32 = 0
                 
-                if cred.isResidentKey {
-                    var copiedCred = cred
-                    copiedCred.signCount = cred.signCount + self.setting.counterStep
-                    newSignCount = copiedCred.signCount
-                    if !self.credentialStore.saveCredentialSource(copiedCred) {
-                        self.stop(by: .unknownError)
-                        return
-                    }
-                } else {
-                    guard let signCount = self.credentialStore.loadGlobalSignCounter(rpId: rpId) else {
-                        self.stop(by: .unknownError)
-                        return
-                    }
-                    newSignCount = signCount + self.setting.counterStep
-                    if !self.credentialStore.saveGlobalSignCounter(rpId: rpId, count: newSignCount) {
-                        self.stop(by: .unknownError)
-                        return
-                    }
+                var copiedCred = cred
+                copiedCred.signCount = cred.signCount + self.setting.counterStep
+                newSignCount = copiedCred.signCount
+                if !self.credentialStore.saveCredentialSource(copiedCred) {
+                    self.stop(by: .unknownError)
+                    return
                 }
-                
-                let extensions = SimpleOrderedDictionary<String, Any>()
+
+                let extensions = SimpleOrderedDictionary<String>()
                 
                 let authenticatorData = AuthenticatorData(
                     rpIdHash:               rpId.bytes.sha256(),
@@ -151,15 +149,21 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 
                 var data = authenticatorDataBytes
                 data.append(contentsOf: hash)
+                
+                guard let alg = COSEAlgorithmIdentifier.fromInt(cred.alg) else {
+                    WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
+                    self.stop(by: .notSupportedError)
+                    return
+                }
 
                 guard let keySupport =
-                    self.keySupportChooser.choose([cred.alg]) else {
+                    self.keySupportChooser.choose([alg]) else {
                         WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
                         self.stop(by: .notSupportedError)
                         return
                 }
                 
-                guard let signature = keySupport.sign(data: data, pem: cred.privateKey) else {
+                guard let signature = keySupport.sign(data: data, label: cred.keyLabel) else {
                     self.stop(by: .unknownError)
                     return
                 }
@@ -171,10 +175,11 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 
                 assertion.userHandle = cred.userHandle
                 
-                if allowCredentialDescriptorList.count > 1 {
+                if allowCredentialDescriptorList.count != 1 {
                     assertion.credentailId = cred.id
                 }
                 
+                self.completed()
                 self.delegate?.authenticatorSessionDidDiscoverCredential(
                     session:   self,
                     assertion: assertion
@@ -193,23 +198,6 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         
     }
     
-    // 6.3.1 Lookup Credential Source By Credential ID Algoreithm
-    private func lookupCredentialSource(rpId: String, credentialId: [UInt8])
-        -> Optional<PublicKeyCredentialSource> {
-            if let src = self.credentialStore.lookupCredentialSource(
-                rpId:         rpId,
-                credentialId: credentialId) {
-                return src
-            } else {
-                guard var src = self.credentialEncryptor.decryptCredentialId(credentialId) else {
-                    return nil
-                }
-                src.id = credentialId
-                src.isResidentKey = false
-                return src
-            }
-    }
-    
     private func gatherCredentialSources(
         rpId: String,
         allowCredentialDescriptorList: [PublicKeyCredentialDescriptor]
@@ -219,7 +207,10 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
             return self.credentialStore.loadAllCredentialSources(rpId: rpId)
         } else {
             return allowCredentialDescriptorList.compactMap {
-                return self.lookupCredentialSource(rpId: rpId, credentialId: $0.id)
+                return self.credentialStore.lookupCredentialSource(
+                    rpId:         rpId,
+                    credentialId: $0.id
+                )
             }
         }
     }

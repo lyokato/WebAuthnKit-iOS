@@ -11,15 +11,22 @@ import PromiseKit
 import CryptoSwift
 
 public struct InternalAuthenticatorSetting {
-    var attachment: AuthenticatorAttachment = .platform
-    var transport: AuthenticatorTransport = .internal_
-    var counterStep: UInt32 = 1
-    var allowResidentKey: Bool = true
-    var allowUserVerification: Bool = true
+    public let attachment: AuthenticatorAttachment = .platform
+    public let transport: AuthenticatorTransport = .internal_
+    public var counterStep: UInt32
+    public var allowUserVerification: Bool
+    
+    public init(
+        counterStep:           UInt32 = 1,
+        allowUserVerification: Bool = true
+    ) {
+        self.counterStep           = counterStep
+        self.allowUserVerification = allowUserVerification
+    }
 }
 
 public class InternalAuthenticator : Authenticator {
-
+    
     public var setting = InternalAuthenticatorSetting()
     
     public var attachment: AuthenticatorAttachment {
@@ -43,16 +50,6 @@ public class InternalAuthenticator : Authenticator {
         }
     }
     
-    
-    public var allowResidentKey: Bool {
-        get {
-            return self.setting.allowResidentKey
-        }
-        set(value) {
-            self.setting.allowResidentKey = value
-        }
-    }
-    
     public var allowUserVerification: Bool {
         get {
             return self.setting.allowUserVerification
@@ -61,40 +58,51 @@ public class InternalAuthenticator : Authenticator {
             self.setting.allowUserVerification = value
         }
     }
-
-    private let ui:                  UserConsentUI
-    private let credentialStore:     CredentialStore
-    private let credentialEncryptor: CredentialEncryptor
     
+    public var allowResidentKey: Bool {
+        get {
+            return true
+        }
+    }
+
+    private let ui:              UserConsentUI
+    private let credentialStore: CredentialStore
+
     private let keySupportChooser = KeySupportChooser()
     
-    init(
-        ui:                  UserConsentUI,
-        credentialEncryptor: CredentialEncryptor,
-        credentialStore:     CredentialStore
+    public convenience init(ui: UserConsentUI) {
+        let store = KeychainCredentialStore()
+        self.init(
+            ui:              ui,
+            credentialStore: store
+        )
+    }
+
+    public init(
+        ui:              UserConsentUI,
+        credentialStore: CredentialStore
     ) {
-        self.ui                  = ui
-        self.credentialEncryptor = credentialEncryptor
-        self.credentialStore     = credentialStore
+        self.ui              = ui
+        self.credentialStore = credentialStore
     }
 
     public func newMakeCredentialSession() -> AuthenticatorMakeCredentialSession {
+        WAKLogger.debug("<InternalAuthenticator> newMakeCredentialSession")
         return InternalAuthenticatorMakeCredentialSession(
-            setting:             self.setting,
-            ui:                  self.ui,
-            credentialEncryptor: self.credentialEncryptor,
-            credentialStore:     self.credentialStore,
-            keySupportChooser:   self.keySupportChooser
+            setting:           self.setting,
+            ui:                self.ui,
+            credentialStore:   self.credentialStore,
+            keySupportChooser: self.keySupportChooser
         )
     }
     
     public func newGetAssertionSession() -> AuthenticatorGetAssertionSession {
+        WAKLogger.debug("<InternalAuthenticator> newGetAssertionSession")
         return InternalAuthenticatorGetAssertionSession(
-            setting:             self.setting,
-            ui:                  self.ui,
-            credentialEncryptor: self.credentialEncryptor,
-            credentialStore:     self.credentialStore,
-            keySupportChooser:   self.keySupportChooser
+            setting:           self.setting,
+            ui:                self.ui,
+            credentialStore:   self.credentialStore,
+            keySupportChooser: self.keySupportChooser
         )
     }
 

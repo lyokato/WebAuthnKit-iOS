@@ -11,24 +11,19 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.3.5):
     - PromiseKit/CorePromise
-  - SwiftyRSA (1.5.0):
-    - SwiftyRSA/ObjC (= 1.5.0)
-  - SwiftyRSA/ObjC (1.5.0)
 
 DEPENDENCIES:
   - CryptoSwift (~> 0.13.0)
   - EllipticCurveKeyPair (~> 2.0-beta1)
   - KeychainAccess (~> 3.1.2)
   - PromiseKit (~> 6.3.4)
-  - SwiftyRSA (~> 1.5.0)
 
 SPEC CHECKSUMS:
   CryptoSwift: 16e78bebf567bad1c87b2d58f6547f25b74c31aa
   EllipticCurveKeyPair: 0c447d7b6e1de511553e0beed42f2dd21b6bab07
   KeychainAccess: b3816fddcf28aa29d94b10ec305cd52be14c472b
   PromiseKit: 32c36425387e9cfc7f1206f27bfd906d0b53c0d6
-  SwiftyRSA: 6e528fb1b1a87d5111c48081083b141d6d65f1cf
 
-PODFILE CHECKSUM: 788558e0168bb13aabfd28f12960f24f1a65ea95
+PODFILE CHECKSUM: 9c60bc699af0df2b2b736a7d3a7fb77886083d32
 
 COCOAPODS: 1.4.0

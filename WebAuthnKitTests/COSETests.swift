@@ -10,7 +10,6 @@ import XCTest
 
 @testable import WebAuthnKit
 @testable import CryptoSwift
-@testable import SwiftyRSA
 
 class COSETests: XCTestCase {
 
@@ -22,7 +21,7 @@ class COSETests: XCTestCase {
     override func tearDown() {
         super.tearDown()
     }
-
+    
     func testRsaCoseKey() {
         
         let modulus = """

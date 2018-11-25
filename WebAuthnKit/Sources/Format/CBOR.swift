@@ -31,9 +31,9 @@ public enum CBORError : Error {
 }
 
 
-internal class SimpleOrderedDictionary<T1: Hashable, T2> {
+internal class SimpleOrderedDictionary<T1: Hashable> {
     
-    var list = [(T1, T2)]()
+    var list = [(T1, Any)]()
     
     public var count: Int {
         get {
@@ -47,8 +47,8 @@ internal class SimpleOrderedDictionary<T1: Hashable, T2> {
         }
     }
     
-    public static func fromDictionary(_ dict: Dictionary<T1, T2>) -> SimpleOrderedDictionary<T1, T2> {
-        let dic = SimpleOrderedDictionary<T1, T2>()
+    public static func fromDictionary(_ dict: Dictionary<T1, Any>) -> SimpleOrderedDictionary<T1> {
+        let dic = SimpleOrderedDictionary<T1>()
         for (key, value) in dict {
            dic.add(key, value)
         }
@@ -59,11 +59,39 @@ internal class SimpleOrderedDictionary<T1: Hashable, T2> {
         
     }
     
-    public func add(_ k:T1, _ v:T2) {
+    public func addString(_ k: T1, _ v: String) {
+        self.add(k, v)
+    }
+    
+    public func addBytes(_ k: T1, _ v: [UInt8]) {
+        self.add(k, v)
+    }
+    
+    public func addStringKeyMap(_ k: T1, _ v: SimpleOrderedDictionary<String>) {
+        self.add(k, v)
+    }
+    
+    public func addIntKeyMap(_ k: T1, _ v: SimpleOrderedDictionary<Int>) {
+        self.add(k, v)
+    }
+    
+    public func addArray(_ k: T1, _ v: [Any]) {
+        self.add(k, v)
+    }
+    
+    public func addInt(_ k: T1, _ v: Int64) {
+        self.add(k, v)
+    }
+    
+    private func add(_ k: T1, _ v: Any) {
        self.list.append((k, v))
     }
     
-    public func entries() -> [(T1, T2)] {
+    public func get(_ k: T1) -> Optional<Any> {
+        return self.list.first { $0.0 == k } 
+    }
+    
+    public func entries() -> [(T1, Any)] {
         return self.list
     }
 }
@@ -527,7 +555,7 @@ internal class CBORWriter {
     }
 
     // for Attestation Object
-    public func putStringKeyMap(_ values: SimpleOrderedDictionary<String, Any>) -> CBORWriter {
+    public func putStringKeyMap(_ values: SimpleOrderedDictionary<String>) -> CBORWriter {
         var bytes = composePositive(UInt64(values.count))
         bytes[0] = bytes[0] | CBORBits.mapHeader
         self.result.append(contentsOf: bytes)
@@ -545,8 +573,8 @@ internal class CBORWriter {
                 _ = self.putDouble(value as! Double)
             } else if value is Bool {
                 _ = self.putBool(value as! Bool)
-            } else if value is SimpleOrderedDictionary<String, Any> {
-                _ = self.putStringKeyMap(value as! SimpleOrderedDictionary<String, Any>)
+            } else if value is SimpleOrderedDictionary<String> {
+                _ = self.putStringKeyMap(value as! SimpleOrderedDictionary<String>)
             } else if value is [Any] {
                 _ = self.putArray(value as! [Any])
             } else {
@@ -557,7 +585,7 @@ internal class CBORWriter {
     }
 
     // for COSE_Key format
-    public func putIntKeyMap(_ values: SimpleOrderedDictionary<Int, Any>) -> CBORWriter {
+    public func putIntKeyMap(_ values: SimpleOrderedDictionary<Int>) -> CBORWriter {
         var bytes = composePositive(UInt64(values.count))
         bytes[0] = bytes[0] | CBORBits.mapHeader
         self.result.append(contentsOf: bytes)

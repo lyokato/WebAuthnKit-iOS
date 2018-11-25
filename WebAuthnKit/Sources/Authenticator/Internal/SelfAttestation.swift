@@ -13,27 +13,32 @@ public class SelfAttestation {
     public static func create(
         authData:       AuthenticatorData,
         clientDataHash: [UInt8],
-        alg:             Int,
-        privateKey:      String
+        alg:            COSEAlgorithmIdentifier,
+        keyLabel:       String
         ) -> Optional<AttestationObject> {
+        
+        WAKLogger.debug("<SelfAttestation> create")
         
         var dataToBeSigned = authData.toBytes()
         dataToBeSigned.append(contentsOf: clientDataHash)
         
         guard let keySupport =
             KeySupportChooser().choose([alg]) else {
-                WAKLogger.debug("<AttestationHelper> key-support not found")
+                WAKLogger.debug("<SelfAttestation> key-support not found")
                 return nil
         }
         
-        let sig = keySupport.sign(
-            data: dataToBeSigned,
-            pem:  privateKey
-        )
+        guard let sig = keySupport.sign(
+            data:  dataToBeSigned,
+            label: keyLabel
+        ) else {
+            WAKLogger.debug("<AttestationHelper> failed to sign")
+            return nil
+        }
         
-        var stmt = [String: Any]()
-        stmt["alg"] = alg
-        stmt["sig"] = sig
+        let stmt = SimpleOrderedDictionary<String>()
+        stmt.addInt("alg", Int64(alg.rawValue))
+        stmt.addBytes("sig", sig)
         
         return AttestationObject(
             fmt:      "packed",

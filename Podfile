@@ -9,7 +9,6 @@ target 'WebAuthnKitDemo' do
   pod "EllipticCurveKeyPair", "~> 2.0-beta1"
   pod "KeychainAccess", "~> 3.1.2"
   pod "CryptoSwift", "~> 0.13.0"
-  pod "SwiftyRSA", "~> 1.5.0"
 
   # Pods for WebAuthnKitDemo
 
@@ -19,7 +18,6 @@ target 'WebAuthnKitDemo' do
     pod "EllipticCurveKeyPair", "~> 2.0-beta1"
     pod "KeychainAccess", "~> 3.1.2"
     pod "CryptoSwift", "~> 0.13.0"
-    pod "SwiftyRSA", "~> 1.5.0"
   end
 
   target 'WebAuthnKitTests' do

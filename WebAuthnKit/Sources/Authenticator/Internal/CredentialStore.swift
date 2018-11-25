@@ -10,130 +10,78 @@ import Foundation
 import KeychainAccess
 import CryptoSwift
 
-public struct PublicKeyCredentialSource {
-
-    var type:       PublicKeyCredentialType = .publicKey
-    var signCount:  UInt32 = 0
-    var id:         [UInt8]? // credential id
-    var privateKey: String
-    var rpId:       String
-    var userHandle: [UInt8]
-    var alg:        Int = COSEAlgorithmIdentifier.rs256.rawValue
-    var otherUI:    String?
-
-    var isResidentKey: Bool = false
-
-    init(
-        rpId:       String,
-        privateKey: String,
-        userHandle: [UInt8],
-        alg:        Int
-    ) {
-        self.rpId       = rpId
-        self.privateKey = privateKey
-        self.userHandle = userHandle
-        self.alg        = alg
-    }
-
-    public func toCBOR() -> Optional<[UInt8]> {
-
-        let builder = CBORWriter()
-
-        let dict = SimpleOrderedDictionary<String, Any>()
-        
-        dict.add("rpId"       , self.rpId)
-        dict.add("privateKey" , self.privateKey)
-        dict.add("userHandle" , self.userHandle)
-        dict.add("alg"        , self.alg)
-
-        if self.isResidentKey {
-            dict.add("signCount", self.signCount)
-            if let credId = self.id {
-                dict.add("id", credId)
-            } else {
-                WAKLogger.debug("<PublicKeyCredentialSource> id not found")
-                return nil
-            }
-        }
-
-        if let ui = self.otherUI {
-            dict.add("otherUI", ui)
-        }
-
-        return builder.putStringKeyMap(dict).getResult()
-    }
-
-    public static func fromCBOR(_ bytes: [UInt8]) -> Optional<PublicKeyCredentialSource> {
-
-        var rpId:       String = ""
-        var privateKey: String = ""
-        var userHandle: [UInt8];
-        var algId:      Int = 0
-
-        guard let dict = CBORReader(bytes: bytes).readStringKeyMap()  else {
-            return nil
-        }
-
-        if let foundKey = dict["privateKey"] as? String {
-            privateKey = foundKey
-        } else {
-            WAKLogger.debug("<PublicKeyCredentialSource> private-key not found")
-            return nil
-        }
-        if let foundRpId = dict["rpId"] as? String {
-            rpId = foundRpId
-        } else {
-            WAKLogger.debug("<PublicKeyCredentialSource> rpId not found")
-            return nil
-        }
-        if let handle = dict["userHandle"] as? [UInt8] {
-            userHandle = handle
-        } else {
-            WAKLogger.debug("<PublicKeyCredentialSource> userHandle not found")
-            return nil
-        }
-        if let alg = dict["alg"] as? Int {
-            algId = alg
-        } else {
-            WAKLogger.debug("<PublicKeyCredentialSource> userHandle not found")
-            return nil
-        }
-        var src = PublicKeyCredentialSource(
-            rpId:       rpId,
-            privateKey: privateKey,
-            userHandle: userHandle,
-            alg:        algId
-        )
-        if let id = dict["id"] as? [UInt8] {
-            src.id = id
-            src.isResidentKey = true
-        }
-        if let signCount = dict["signCount"] as? UInt32 {
-            src.signCount = signCount
-        }
-        if let otherUI = dict["otherUI"] as? String {
-            src.otherUI = otherUI
-        }
-        return src
-    }
-}
-
 public protocol CredentialStore {
     func lookupCredentialSource(rpId: String, credentialId: [UInt8]) -> Optional<PublicKeyCredentialSource>
     func saveCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool
     func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource]
-    func loadGlobalSignCounter(rpId: String) -> Optional<UInt32>
-    func saveGlobalSignCounter(rpId: String, count: UInt32) -> Bool
+    func deleteCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool
+    func deleteAllCredentialSources(rpId: String, userHandle: [UInt8])
+    func findOrCreateEncryptionKey() -> Optional<[UInt8]>
 }
 
 public class KeychainCredentialStore : CredentialStore {
 
-    private static let globalCounterHandle: String = "global-sign-count"
+    private static let webAuthnKitService: String = "webauthnkit"
+    private static let encryptionKeyHandle: String = "encryption-key"
+    
+    public init() {}
+    
+    private func newRandom() -> Optional<[UInt8]> {
+        var randomBytes = [UInt8](repeating: 0, count: 16)
+        if SecRandomCopyBytes(kSecRandomDefault, 16, &randomBytes) == errSecSuccess {
+            return randomBytes
+        } else {
+            WAKLogger.debug("<KeychainStore> failed to create random")
+            return nil
+        }
+    }
+    
+    public func findOrCreateEncryptionKey() -> Optional<[UInt8]> {
+        WAKLogger.debug("<KeychainStore> findOrCreateEncryptionKey")
+        
+        let keychain = Keychain(service: type(of: self).webAuthnKitService)
+        let handle = type(of: self).encryptionKeyHandle
+        
+        if let result = try? keychain.getData(handle) {
+            if let bytes = result?.bytes {
+                if bytes.count == 16 {
+                    return bytes
+                } else {
+                    return self.createEncryptionKey()
+                }
+            } else {
+                WAKLogger.debug("<KeychainStore> not found data for key:\(handle)")
+                return self.createEncryptionKey()
+            }
+        } else {
+            WAKLogger.debug("<KeychainStore> failed to load data for key:\(handle)")
+            return nil
+        }
+    }
+    
+    private func createEncryptionKey() -> Optional<[UInt8]> {
+        WAKLogger.debug("<KeychainStore> findOrCreateEncryptionKey")
+        
+        let keychain = Keychain(service: type(of: self).webAuthnKitService)
+        let handle = type(of: self).encryptionKeyHandle
 
+        if let random = self.newRandom() {
+            do {
+                try keychain.set(Data(bytes: random), key: handle)
+                return random
+            } catch let error {
+                WAKLogger.debug("<KeychainStore> failed to save encryption key: \(error)")
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+    
     public func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource] {
+        WAKLogger.debug("<KeychainStore> loadAllCredentialSources")
         let keychain = Keychain(service: rpId)
-        return keychain.allKeys().filter { $0 != type(of: self).globalCounterHandle }
-            .compactMap {
+        return keychain.allKeys().compactMap {
                 if let result = try? keychain.getData($0) {
                     if let bytes = result?.bytes {
                         return PublicKeyCredentialSource.fromCBOR(bytes)
@@ -147,35 +95,21 @@ public class KeychainCredentialStore : CredentialStore {
                 }
         }
     }
-
-    public func loadGlobalSignCounter(rpId: String) -> Optional<UInt32> {
-        let keychain = Keychain(service: rpId)
-        if let result = try? keychain.getString(type(of: self).globalCounterHandle) {
-            if let str = result {
-                return Bytes.toUInt32([UInt8](hex: str))
-            } else {
-                return UInt32(0)
-            }
-        } else {
-            WAKLogger.debug("<KeychainStore> failed to load global-sign-count")
-            return nil
+    
+    public func deleteAllCredentialSources(rpId: String, userHandle: [UInt8]) {
+        self.loadAllCredentialSources(rpId: rpId, userHandle: userHandle).forEach {
+            _ = self.deleteCredentialSource($0)
         }
     }
-
-    public func saveGlobalSignCounter(rpId: String, count: UInt32) -> Bool {
-        let keychain = Keychain(service: rpId)
-        do {
-            try keychain.set(Bytes.fromUInt32(count).toHexString(),
-                             key: type(of: self).globalCounterHandle)
-            return true
-        } catch let error {
-            WAKLogger.debug("<KeychainStore> failed to save global-sign-count: \(error)")
-            return false
-        }
+    
+    public func loadAllCredentialSources(rpId: String, userHandle: [UInt8]) -> [PublicKeyCredentialSource] {
+        WAKLogger.debug("<KeychainStore> loadAllCredentialSources with userHandle")
+        return self.loadAllCredentialSources(rpId: rpId).filter { $0.userHandle.elementsEqual(userHandle) }
     }
 
     public func lookupCredentialSource(rpId: String, credentialId: [UInt8])
         -> Optional<PublicKeyCredentialSource> {
+            WAKLogger.debug("<KeychainStore> lookupCredentialSource")
 
             let handle = credentialId.toHexString()
             let keychain = Keychain(service: rpId)
@@ -192,20 +126,28 @@ public class KeychainCredentialStore : CredentialStore {
                 return nil
             }
     }
+    
+    public func deleteCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool {
+        
+        WAKLogger.debug("<KeychainStore> deleteCredentialSource")
+        
+        let handle = cred.id.toHexString()
+        let keychain = Keychain(service: cred.rpId)
+        
+        do {
+            try keychain.remove(handle)
+            return true
+        } catch let error {
+            WAKLogger.debug("<KeychainStore> failed to delete credential-source: \(error)")
+            return false
+        }
+
+    }
 
     public func saveCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool {
+        WAKLogger.debug("<KeychainStore> saveCredentialSource")
 
-        guard let credentialId = cred.id else {
-            WAKLogger.debug("<KeychainStore> credential id not found")
-            return false
-        }
-
-        if !cred.isResidentKey {
-            WAKLogger.debug("<KeychainStore> credential is not a resident key")
-            return false
-        }
-
-        let handle = credentialId.toHexString()
+        let handle = cred.id.toHexString()
         let keychain = Keychain(service: cred.rpId)
 
         if let bytes = cred.toCBOR() {

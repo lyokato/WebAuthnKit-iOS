@@ -17,21 +17,11 @@ public protocol UserConsentViewControllerDelegate: class {
 }
 
 public class UserConsentUI: UserConsentViewControllerDelegate {
-
+    
     public typealias MessageBuilder = ((PublicKeyCredentialRpEntity ,PublicKeyCredentialUserEntity) -> String)
 
     private let viewController: UIViewController
-
-    public var newCredentialPopupTitle: String = "New Authentication Key"
-    public var newCredentialPopupMessage: String = "key for this service already exists, do you surely create new one?"
-
-    public var confirmationPopupTitle: String = "New Authentication Key"
-    public var confirmationPopupMessageBuilder: MessageBuilder = { rp, user in
-        return "Create new key for \(user.displayName)?"
-    }
-
-    public var selectionPopupTitle: String = "Login Key Selection"
-    public var selectionPopupMessage: String = "Choose key with which you want to login with"
+    public let config = UserConsentUIConfig()
 
     private let tempBackground: UIView
 
@@ -69,18 +59,18 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
             DispatchQueue.main.async {
 
                 let alert = UIAlertController.init(
-                    title:          self.newCredentialPopupTitle,
-                    message:        self.newCredentialPopupMessage,
+                    title:          self.config.excludeKeyFoundPopupTitle,
+                    message:        self.config.excludeKeyFoundPopupMessage,
                     preferredStyle: .actionSheet
                 )
 
-                let okAction = UIAlertAction.init(title: "OK", style: .default) { _ in
+                let okAction = UIAlertAction.init(title: self.config.excludeKeyFoundPopupCreateButtonText, style: .default) { _ in
                     DispatchQueue.global().async {
                         resolver.fulfill(())
                     }
                 }
 
-                let cancelAction = UIAlertAction.init(title: "Cancel", style: .cancel) { _ in
+                let cancelAction = UIAlertAction.init(title: self.config.excludeKeyFoundPopupCancelButtonText, style: .cancel) { _ in
                     DispatchQueue.global().async {
                         resolver.reject(AuthenticatorError.notAllowedError)
                     }
@@ -110,9 +100,9 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
             
                 let vc = KeyRegistrationViewController(
                     resolver:          resolver,
+                    config:            self.config,
                     user:              userEntity,
-                    rp:                rpEntity,
-                    showRpInformation: true
+                    rp:                rpEntity
                 )
                 
                 vc.delegate = self
@@ -127,7 +117,7 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         
         if requireVerification {
             return promise.then {
-                return self.verifyUser(message:$0, params: $0)
+                return self.verifyUser(message: "Create-Key Authentication", params: $0)
             }
         } else {
             return promise
@@ -157,66 +147,40 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     }
 
     internal func requestUserSelection(
-        credentials:         [PublicKeyCredentialSource],
+        sources:             [PublicKeyCredentialSource],
         requireVerification: Bool
         ) -> Promise<PublicKeyCredentialSource> {
         
         WAKLogger.debug("<UserConsentUI> requestUserSelection")
-
-        if requireVerification {
-            WAKLogger.debug("<UserConsentUI> verification required")
-            let message = self.selectionPopupMessage
-            return self.verifyUser(message: message, params: ()).then {
-                return self.requestUserSelectionInternal(credentials: credentials)
-            }
-
-        } else {
-           WAKLogger.debug("<UserConsentUI> verification not required")
-           return self.requestUserSelectionInternal(credentials: credentials)
-
-        }
-    }
-
-    internal func requestUserSelectionInternal(
-        credentials: [PublicKeyCredentialSource]
-    ) -> Promise<PublicKeyCredentialSource> {
-        
-        WAKLogger.debug("<UserConsentUI> requestUserSelectionInternal")
-
-        return Promise { resolver in
-
+        let promise = Promise<PublicKeyCredentialSource> { resolver in
+            
             DispatchQueue.main.async {
-
-                let alert = UIAlertController.init(
-                    title:   self.selectionPopupTitle,
-                    message: self.selectionPopupMessage,
-                    preferredStyle: .actionSheet)
                 
-                credentials.forEach { src in
-                    
-                    let title = src.otherUI ?? "no name"
-                    
-                    let chooseAction = UIAlertAction.init(title: title, style: .destructive) { _ in
-                        DispatchQueue.global().async {
-                            resolver.fulfill(src)
-                        }
-                    }
-
-                    alert.addAction(chooseAction)
-                }
-
-                let cancelAction = UIAlertAction.init(title: "Cancel", style: .cancel) { _ in
-                    DispatchQueue.global().async {
-                        resolver.reject(AuthenticatorError.notAllowedError)
-                    }
-                }
-                alert.addAction(cancelAction)
-
-                self.viewController.present(alert, animated: true, completion: nil)
+                let vc = KeySelectionViewController(
+                    resolver: resolver,
+                    config:   self.config,
+                    sources:  sources
+                )
+                
+                vc.delegate = self
+                
+                self.showBackground()
+                
+                self.viewController.present(vc, animated: true, completion: nil)
+                
             }
+            
+        }
+        
+        if requireVerification {
+            return promise.then {
+                return self.verifyUser(message: "Use-Key Authentication", params: $0)
+            }
+        } else {
+            return promise
         }
     }
-
+    
     private func verifyUser<T>(message: String, params: T) -> Promise<T> {
         
         WAKLogger.debug("<UserConsentUI> verifyUser")

@@ -118,7 +118,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         firstly {
             
             self.ui.requestUserSelection(
-                credentials:         credSources,
+                sources:             credSources,
                 requireVerification: requireUserVerification
             )
             

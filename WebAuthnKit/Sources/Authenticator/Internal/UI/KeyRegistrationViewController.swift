@@ -18,23 +18,21 @@ class KeyDetailView: UIView, UITextFieldDelegate {
     
     weak var delegate: KeyDetailViewDelegate?
     
-    let user: PublicKeyCredentialUserEntity
-    let rp:   PublicKeyCredentialRpEntity
+    private let config: UserConsentUIConfig
+    private let user: PublicKeyCredentialUserEntity
+    private let rp:   PublicKeyCredentialRpEntity
     
-    let showRpInformation: Bool
-    
-    var keyNameField: UITextField!
+    private var keyNameField: UITextField!
     
     init(
+        config: UserConsentUIConfig,
         user: PublicKeyCredentialUserEntity,
-        rp:   PublicKeyCredentialRpEntity,
-        showRpInformation: Bool
+        rp: PublicKeyCredentialRpEntity
     ) {
         
+        self.config = config
         self.user = user
         self.rp   = rp
-        
-        self.showRpInformation = showRpInformation
         
         super.init(frame: CGRect.zero)
         
@@ -82,7 +80,7 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         let rpIconSize: CGFloat = 25
         let userIconSize: CGFloat = 75
         
-        let minWidth: CGFloat = 700
+        let minWidth: CGFloat = 320
         var viewWidth: CGFloat = UIScreen.main.bounds.width - horizontalMargin * 2
         viewWidth = min(minWidth, viewWidth)
         
@@ -100,19 +98,18 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         )
         titleLabel.backgroundColor = UIColor.clear
         titleLabel.textColor = UIColor.black
-        titleLabel.text = "New Login Key"
+        titleLabel.text = self.config.keyCreationTitle
         titleLabel.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
         titleLabel.textAlignment = .center
         self.addSubview(titleLabel)
         
-        offset = offset + titleHeight + 16
+        offset = offset + titleHeight + 12
         
         let keyNameFieldHeight: CGFloat = 30
 
         self.keyNameField = UITextField(frame: CGRect.zero)
         keyNameField.frame = CGRect(
             x: 20,
-            //y: keyNameMargin * 2 + keyNameLabelHeight,
             y: offset,
             width: viewWidth - 40,
             height: keyNameFieldHeight
@@ -126,7 +123,7 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         self.keyNameField.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
         self.addSubview(self.keyNameField)
         
-        offset = offset + keyNameFieldHeight + 16
+        offset = offset + keyNameFieldHeight + 18
         
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: keyNameFieldHeight))
         self.keyNameField.leftView = paddingView
@@ -167,7 +164,7 @@ class KeyDetailView: UIView, UITextFieldDelegate {
                     }
                 }
                 
-                offset = offset + userIconSize + 10
+                offset = offset + userIconSize + 14
             } else {
                 WAKLogger.debug("<KeyDetailView> user.icon is not a valid URL: \(iconURLString)")
             }
@@ -187,9 +184,9 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         displayNameLabel.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
         self.addSubview(displayNameLabel)
         
-        offset = offset + displayNameHeight + 10
+        offset = offset + displayNameHeight + 6
         
-        if self.showRpInformation {
+        if self.config.showRPInformation {
             
             let rpMargin: CGFloat = 10
             
@@ -223,12 +220,10 @@ class KeyDetailView: UIView, UITextFieldDelegate {
             width: buttonWidth + 1,
             height: buttonHeight
         )
-        cancelButton.setTitle("Cancel", for: .normal)
-        cancelButton.setTitleColor(UIColor.red, for: .normal)
-        //cancelButton.layer.backgroundColor = UIColor.white.cgColor
+        cancelButton.setTitle(self.config.keyCreationCancelButtonText, for: .normal)
+        cancelButton.setTitleColor(self.tintColor, for: .normal)
         cancelButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
         cancelButton.layer.borderWidth = 1.0
-        cancelButton.titleLabel?.textColor = self.tintColor
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .light)
         cancelButton.addTarget(
             self,
@@ -244,12 +239,10 @@ class KeyDetailView: UIView, UITextFieldDelegate {
             width: buttonWidth,
             height: buttonHeight
         )
-        createButton.setTitleColor(UIColor.blue, for: .normal)
-        createButton.setTitle("Create", for: .normal)
-        //createButton.layer.backgroundColor = UIColor.white.cgColor
+        createButton.setTitleColor(self.tintColor, for: .normal)
+        createButton.setTitle(self.config.keyCreationCreateButtonText, for: .normal)
         createButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
         createButton.layer.borderWidth = 1.0
-        createButton.titleLabel?.textColor = self.tintColor
         createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .medium)
         createButton.addTarget(
             self,
@@ -271,18 +264,19 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         self.layer.borderWidth = 1
         backgroundView.frame = self.frame
 
+        WAKLogger.debug("<KeyDetailView> frame:\(viewWidth):\(offset)")
     }
     
     private func createDefaultKeyName() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMddHHmm"
+        formatter.dateFormat = "yyyyMMdd"
         let dateString = formatter.string(from: Date())
-        return "\(self.user.displayName) (\(dateString))"
+        return "\(self.user.name) (\(dateString))"
     }
     
     private func getCurrentKeyName() -> String {
         if let keyName = self.keyNameField.text {
-            return keyName.isEmpty ? self.user.displayName : keyName
+            return keyName.isEmpty ? self.createDefaultKeyName() : keyName
         } else {
             return self.createDefaultKeyName()
         }
@@ -323,24 +317,22 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
     
     public weak var delegate: UserConsentViewControllerDelegate?
     
-    let resolver: Resolver<String>
-    let user: PublicKeyCredentialUserEntity
-    let rp: PublicKeyCredentialRpEntity
-    
-    let showRpInformation: Bool
+    private let resolver: Resolver<String>
+    private let config: UserConsentUIConfig
+    private let user: PublicKeyCredentialUserEntity
+    private let rp: PublicKeyCredentialRpEntity
     
     init(
         resolver: Resolver<String>,
+        config: UserConsentUIConfig,
         user: PublicKeyCredentialUserEntity,
-        rp: PublicKeyCredentialRpEntity,
-        showRpInformation: Bool
+        rp: PublicKeyCredentialRpEntity
     ) {
         
         self.resolver = resolver
+        self.config = config
         self.user = user
         self.rp = rp
-        
-        self.showRpInformation = showRpInformation
         super.init(nibName: nil, bundle: nil)
         self.modalPresentationStyle = .overCurrentContext
     }
@@ -357,9 +349,9 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
         self.view.backgroundColor = UIColor.clear
 
         self.detailView = KeyDetailView(
+            config: self.config,
             user: self.user,
-            rp: self.rp,
-            showRpInformation: self.showRpInformation
+            rp: self.rp
         )
         self.detailView.delegate = self
         self.view.addSubview(self.detailView)

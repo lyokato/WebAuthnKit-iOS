@@ -24,21 +24,7 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
     private func setupWebAuthnClient() {
         
         self.userConsentUI = UserConsentUI(viewController: self)
-        
-        // Registration Phase: These messages are shown for UserVerification/UserPresenceCheck popup.
-        self.userConsentUI.confirmationPopupTitle = "Use Key"
-        self.userConsentUI.confirmationPopupMessageBuilder = { rp, user in
-            return "Create new key for \(user.displayName)?"
-        }
-        
-        // Registration Phase: These messages are shown for confirmation popup when 'exclude' list is set.
-        self.userConsentUI.newCredentialPopupTitle = "New Key"
-        self.userConsentUI.newCredentialPopupMessage = "Create New Key for this service?"
-        
-        // Authentication Phase: These messages are shown for key-selection popup.
-        self.userConsentUI.selectionPopupTitle = "Key Selection"
-        self.userConsentUI.selectionPopupMessage = "Key Selection"
-        
+
         let authenticator = InternalAuthenticator(ui: self.userConsentUI)
         
         self.webAuthnClient = WebAuthnClient(
@@ -67,6 +53,24 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
             return
         }
         
+        guard let userName = self.userNameText.text else {
+            self.showErrorPopup(FormError.missing("userName"))
+            return
+        }
+        if userName.isEmpty {
+            self.showErrorPopup(FormError.empty("userName"))
+            return
+        }
+        
+        guard let displayName = self.displayNameText.text else {
+            self.showErrorPopup(FormError.missing("displayName"))
+            return
+        }
+        if displayName.isEmpty {
+            self.showErrorPopup(FormError.empty("displayName"))
+            return
+        }
+        
         guard let rpId = self.rpIdText.text else {
             self.showErrorPopup(FormError.missing("rpId"))
             return
@@ -88,19 +92,14 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
             UserVerificationRequirement.discouraged
         ][self.userVerification.selectedSegmentIndex]
         
-        let requireResidentKey = [true, false][self.residentKeyRequired.selectedSegmentIndex]
+        let requireResidentKey = true
         
         var options = PublicKeyCredentialCreationOptions()
         options.challenge = Bytes.fromHex(challenge)
         options.user.id = Bytes.fromString(userId)
-        
-        if let displayName = self.displayNameText.text {
-            if !displayName.isEmpty {
-                options.user.name        = displayName
-                options.user.displayName = displayName
-            }
-        }
-        
+        options.user.name = userName
+        options.user.displayName = displayName
+
         if let iconURL = self.userIconURLText.text {
             if !iconURL.isEmpty {
                 options.user.icon = iconURL
@@ -167,14 +166,14 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
     
     var userIdText:            UITextField!
     var displayNameText:       UITextField!
+    var userNameText:          UITextField!
     var userIconURLText:       UITextField!
     var rpIconURLText:         UITextField!
     var rpIdText:              UITextField!
     var challengeText:         UITextField!
     var userVerification:      UISegmentedControl!
     var attestationConveyance: UISegmentedControl!
-    var residentKeyRequired:   UISegmentedControl!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -188,6 +187,11 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
         
         self.newLabel(text: "User Id", top: offset)
         self.userIdText = self.newTextField(height: 30, top: offset + 30, text: "lyokato")
+        
+        offset = offset + 70
+        
+        self.newLabel(text: "User Name", top: offset)
+        self.userNameText = self.newTextField(height: 30, top: offset + 30, text: "lyokato")
         
         offset = offset + 70
         
@@ -225,9 +229,6 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
         self.attestationConveyance = self.newSegmentedControl(top: offset + 30, list: ["Direct", "Indirect", "None"])
         
         offset = offset + 80
-
-        self.newLabel(text: "Resident Key Required", top: offset)
-        self.residentKeyRequired = self.newSegmentedControl(top: offset + 30, list: ["Required", "Not Required"])
 
         self.setupWebAuthnClient()
         

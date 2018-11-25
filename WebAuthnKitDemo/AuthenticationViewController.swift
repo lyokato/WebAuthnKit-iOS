@@ -20,20 +20,6 @@ class AuthenticationViewController: UIViewController, UITextFieldDelegate {
         
         self.userConsentUI = UserConsentUI(viewController: self)
         
-        // Registration Phase: These messages are shown for UserVerification/UserPresenceCheck popup.
-        self.userConsentUI.confirmationPopupTitle = "Use Key"
-        self.userConsentUI.confirmationPopupMessageBuilder = { rp, user in
-            return "Create new key for \(user.displayName)?"
-        }
-        
-        // Registration Phase: These messages are shown for confirmation popup when 'exclude' list is set.
-        self.userConsentUI.newCredentialPopupTitle = "New Key"
-        self.userConsentUI.newCredentialPopupMessage = "Create New Key for this service?"
-        
-        // Authentication Phase: These messages are shown for key-selection popup.
-        self.userConsentUI.selectionPopupTitle = "Key Selection"
-        self.userConsentUI.selectionPopupMessage = "Key Selection"
-        
         let authenticator = InternalAuthenticator(ui: self.userConsentUI)
         
         self.webAuthnClient = WebAuthnClient(

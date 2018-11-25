@@ -2,4 +2,4 @@
 
 https://github.com/lyokato/WebAuthnKit/wiki
 
-![webauthreg](https://user-images.githubusercontent.com/30877/48919672-b103dd80-eed7-11e8-989f-b8e20a4c3fbd.gif)
+![webauthreg_5](https://user-images.githubusercontent.com/30877/48976478-bc1f5f00-f0cb-11e8-88ef-c6d7704b40b4.gif)

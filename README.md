@@ -10,6 +10,24 @@ This library provides you a way to handle W3C Web Authentication API (a.k.a. Web
 
 ![webauthreg_5](https://user-images.githubusercontent.com/30877/48976478-bc1f5f00-f0cb-11e8-88ef-c6d7704b40b4.gif)
 
+## Installation
+
+### CocoaPods
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '10.0'
+use_frameworks!
+
+target '<Your Target Name>' do
+    pod 'WebAuthnKit', '~> 0.9.0'
+end
+```
+
+```
+$ pod install
+```
+
 ## Getting Started
 
 ### Info.plist

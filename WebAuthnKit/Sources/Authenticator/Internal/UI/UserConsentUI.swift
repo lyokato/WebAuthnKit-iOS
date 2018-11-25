@@ -197,7 +197,7 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
             }
         }
     }
-    
+
     private func verifyUser<T>(message: String, params: T) -> Promise<T> {
         
         WAKLogger.debug("<UserConsentUI> verifyUser")
@@ -208,10 +208,8 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
 
                 let ctx = LAContext()
                 var authError: NSError?
-                //if ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
-                //    ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
-                if ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &authError) {
-                    ctx.evaluatePolicy(.deviceOwnerAuthentication,
+                if ctx.canEvaluatePolicy(self.config.localAuthPolicy, error: &authError) {
+                    ctx.evaluatePolicy(self.config.localAuthPolicy,
                                        localizedReason: message,
                                        reply: { success, error in
                                         if success {

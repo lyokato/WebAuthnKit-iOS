@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import LocalAuthentication
 
 public class UserConsentUIConfig {
     
@@ -25,7 +26,16 @@ public class UserConsentUIConfig {
     
     public var showRPInformation: Bool = true
     public var alwaysShowKeySelection: Bool = false
+    public var requireBiometrics: Bool = false
 
     public init() {}
+    
+    public var localAuthPolicy: LAPolicy {
+        get {
+            return self.requireBiometrics ?
+                .deviceOwnerAuthenticationWithBiometrics :
+                .deviceOwnerAuthentication
+        }
+    }
 
 }

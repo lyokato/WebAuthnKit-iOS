@@ -2,6 +2,8 @@
 
 This library provides you a way to handle W3C Web Authentication API (a.k.a. WebAuthN / FIDO 2.0) easily.
 
+![webauthnkit](https://user-images.githubusercontent.com/30877/48991209-58517080-f175-11e8-879c-2a7628ff5df5.png)
+
 #### Demo App
 
 ![webauthreg_5](https://user-images.githubusercontent.com/30877/48976478-bc1f5f00-f0cb-11e8-88ef-c6d7704b40b4.gif)
@@ -69,11 +71,11 @@ options.user.icon = iconURL  // Optional
 options.rp.id = "https://example.org"
 options.rp.name = "your_service_name"
 options.rp.icon = yourServiceIconURL // Optional
-options.attestation = .required // (choose from .required, .preferred, .discouraged)
+options.attestation = .direct // (choose from .direct, .indirect, .none)
 options.addPubKeyCredParam(alg: .es256)
 options.authenticatorSelection = AuthenticatorSelectionCriteria(
-    requireResidentKey: requireResidentKey, // this flag is ignored by InternalAuthenticator
-    userVerification: verification
+    requireResidentKey: true, // this flag is ignored by InternalAuthenticator
+    userVerification: .required // (choose from .required, .preferred, .discouraged)
 )
 
 self.webAuthnClient.create(options).then { credential in

@@ -10,6 +10,7 @@ import Foundation
 
 public enum AuthenticatorError : Error {
     case clientCancelled
+    case clientTimeout
     case userCancelled
     case invalidStateError
     case constraintError

@@ -68,7 +68,11 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
     
     // 6.3.4 authenticatorCancel Operation
     public func cancel() {
-        self.stop(by: .userCancelled)
+        if self.ui.opened {
+            self.ui.cancel()
+        } else {
+            self.stop(by: .clientCancelled)
+        }
     }
     
     private func stop(by reason: AuthenticatorError) {

@@ -9,6 +9,7 @@
 import Foundation
 
 public enum AuthenticatorError : Error {
+    case clientCancelled
     case userCancelled
     case invalidStateError
     case constraintError

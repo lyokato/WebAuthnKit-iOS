@@ -8,15 +8,6 @@
 
 import Foundation
 
-public enum AuthenticatorError : Error {
-    case userCancelled
-    case invalidStateError
-    case constraintError
-    case unknownError
-    case notSupportedError
-    case notAllowedError
-}
-
 public struct AuthenticatorAssertionResult {
     var credentailId: [UInt8]?
     var userHandle: [UInt8]?
@@ -31,14 +22,14 @@ public struct AuthenticatorAssertionResult {
 public protocol AuthenticatorMakeCredentialSessionDelegate: class {
     func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession)
     func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorMakeCredentialSession)
-    func authenticatorSessionDidStopOperation(session: AuthenticatorMakeCredentialSession, reason: AuthenticatorError)
+    func authenticatorSessionDidStopOperation(session: AuthenticatorMakeCredentialSession, reason: WAKError)
     func authenticatorSessionDidMakeCredential(session: AuthenticatorMakeCredentialSession, attestation: AttestationObject)
 }
 
 public protocol AuthenticatorGetAssertionSessionDelegate: class {
     func authenticatorSessionDidBecomeAvailable(session: AuthenticatorGetAssertionSession)
     func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorGetAssertionSession)
-    func authenticatorSessionDidStopOperation(session: AuthenticatorGetAssertionSession, reason: AuthenticatorError)
+    func authenticatorSessionDidStopOperation(session: AuthenticatorGetAssertionSession, reason: WAKError)
     func authenticatorSessionDidDiscoverCredential(session: AuthenticatorGetAssertionSession, assertion: AuthenticatorAssertionResult)
 }
 
@@ -61,7 +52,7 @@ public protocol AuthenticatorGetAssertionSession {
     func canPerformUserVerification() -> Bool
     
     func start()
-    func cancel()
+    func cancel(reason: WAKError)
 
 }
 
@@ -87,7 +78,7 @@ public protocol AuthenticatorMakeCredentialSession {
     func canStoreResidentKey() -> Bool
     
     func start()
-    func cancel()
+    func cancel(reason: WAKError)
 
 }
 

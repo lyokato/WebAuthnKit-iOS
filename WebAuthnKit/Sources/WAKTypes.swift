@@ -12,6 +12,7 @@ public enum WAKError : Error {
     case badData
     case badOperation
     case invalidState
+    case constraint
     case cancelled
     case timeout
     case notAllowed

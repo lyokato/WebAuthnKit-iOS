@@ -75,6 +75,9 @@ class AuthenticationViewController: UIViewController, UITextFieldDelegate {
         print("==========================================")
         print("challenge: " + Base64.encodeBase64URL(options.challenge))
         print("==========================================")
+        
+        self.webAuthnClient.minTimeout = 5
+        self.webAuthnClient.defaultTimeout = 5
 
         firstly {
             

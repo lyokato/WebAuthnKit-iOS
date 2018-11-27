@@ -24,6 +24,9 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     public let config = UserConsentUIConfig()
 
     private let tempBackground: UIView
+    
+    public private(set) var opened: Bool = false
+    private var cancelled: WAKError? = nil
 
     public init(viewController: UIViewController) {
         self.viewController = viewController
@@ -33,26 +36,24 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         self.tempBackground.alpha = 0
     }
     
-    public func cancel() {
-        DispatchQueue.main.async {
-            // if let ctx = self.laCtx {
-            //    ctx.invalidate()
-            // }
-            // if let alert = self.popup {
-            //    alert.dismiss(animated: true, completion: nil)
-            // }
-            self.clear()
-        }
+    private func willStartUserInteraction() {
+        self.opened = true
+        self.cancelled = nil
     }
     
-    private func clear() {
-        // self.laCtx = nil
-        // self.popup = nil
+    private func didFinishUserInteraction() {
+        self.opened = false
     }
-
+    
+    public func cancel(reason: WAKError) {
+        self.cancelled = reason
+    }
+    
     internal func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
         
         WAKLogger.debug("<UserConsentUI> askUserToCreateNewCredential")
+        
+        self.willStartUserInteraction()
 
         return Promise { resolver in
 
@@ -66,13 +67,23 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
 
                 let okAction = UIAlertAction.init(title: self.config.excludeKeyFoundPopupCreateButtonText, style: .default) { _ in
                     DispatchQueue.global().async {
-                        resolver.fulfill(())
+                        self.didFinishUserInteraction()
+                        if let reason = self.cancelled {
+                            resolver.reject(reason)
+                        } else {
+                            resolver.fulfill(())
+                        }
                     }
                 }
 
                 let cancelAction = UIAlertAction.init(title: self.config.excludeKeyFoundPopupCancelButtonText, style: .cancel) { _ in
                     DispatchQueue.global().async {
-                        resolver.reject(AuthenticatorError.notAllowedError)
+                        self.didFinishUserInteraction()
+                        if let reason = self.cancelled {
+                            resolver.reject(reason)
+                        } else {
+                            resolver.reject(WAKError.notAllowed)
+                        }
                     }
                 }
 
@@ -94,7 +105,9 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         
         WAKLogger.debug("<UserConsentUI> requestUserConsent")
         
-        let promise = Promise<String> { resolver in
+        self.willStartUserInteraction()
+        
+        return Promise<String> { resolver in
             
             DispatchQueue.main.async {
             
@@ -113,39 +126,61 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                 
             }
             
-        }
-        
-        if requireVerification {
-            return promise.then {
-                return self.verifyUser(message: "Create-Key Authentication", params: $0)
-            }
-        } else {
-            return promise
-        }
-    }
-    
-    public func consentViewControllerWillDismiss(viewController: UIViewController) {
-        self.hideBackground()
-    }
-    
-    private func showBackground() {
-        self.viewController.view.addSubview(self.tempBackground)
-        self.tempBackground.frame = self.viewController.view.frame
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
-            self.tempBackground.alpha = 0.4
-        }, completion: nil)
-    }
-    
-    private func hideBackground() {
-        if self.tempBackground.superview != nil {
-            UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
-                self.tempBackground.alpha = 0.0
-            }, completion: { _ in
-                self.tempBackground.removeFromSuperview()
-            })
-        }
-    }
+        }.then { (keyName: String) -> Promise<String> in
 
+            if let reason = self.cancelled {
+
+                self.didFinishUserInteraction()
+                throw reason
+
+            } else {
+                
+                if requireVerification {
+                    
+                    return self.verifyUser(
+                        message: "Create-Key Authentication",
+                        params:  keyName
+                    )
+                    
+                } else {
+                    
+                    return Promise<String>{ $0.fulfill(keyName) }
+                    
+                }
+
+            }
+            
+        }.then { (keyName: String) -> Promise<String> in
+            
+            self.didFinishUserInteraction()
+            
+            if let reason = self.cancelled {
+          
+                throw reason
+                
+            } else {
+                
+                return Promise<String>{ $0.fulfill(keyName) }
+                
+            }
+            
+        }.recover { error -> Promise<String> in
+            
+            self.didFinishUserInteraction()
+            
+            if let reason = self.cancelled {
+                
+                throw reason
+                
+            } else {
+                
+               throw error
+                
+            }
+            
+        }
+    }
+    
     internal func requestUserSelection(
         sources:             [PublicKeyCredentialSource],
         requireVerification: Bool
@@ -153,15 +188,62 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         
         WAKLogger.debug("<UserConsentUI> requestUserSelection")
         
-        let promise = self.userSelectionTask(sources: sources)
-            
-        if requireVerification {
-            return promise.then {
-                return self.verifyUser(message: "Use-Key Authentication", params: $0)
+        self.willStartUserInteraction()
+        
+        return self.userSelectionTask(sources: sources)
+            .then { (source: PublicKeyCredentialSource) -> Promise<PublicKeyCredentialSource> in
+                
+                if let reason = self.cancelled {
+                    
+                    self.didFinishUserInteraction()
+                    throw reason
+                    
+                } else {
+                    
+                    if requireVerification {
+                        
+                        return self.verifyUser(
+                            message: "Use-Key Authentication",
+                            params: source
+                        )
+                        
+                    } else {
+                        
+                        return Promise<PublicKeyCredentialSource>{ $0.fulfill(source) }
+                        
+                    }
+                    
+                }
+        }.then { (source: PublicKeyCredentialSource) -> Promise<PublicKeyCredentialSource> in
+    
+            self.didFinishUserInteraction()
+    
+            if let reason = self.cancelled {
+    
+                throw reason
+    
+            } else {
+    
+                return Promise<PublicKeyCredentialSource>{ $0.fulfill(source) }
+    
             }
-        } else {
-            return promise
+    
+        }.recover { error -> Promise<PublicKeyCredentialSource> in
+    
+            self.didFinishUserInteraction()
+    
+            if let reason = self.cancelled {
+    
+                throw reason
+    
+            } else {
+    
+                throw error
+    
+            }
+    
         }
+
     }
     
     private func userSelectionTask(sources: [PublicKeyCredentialSource]) -> Promise<PublicKeyCredentialSource> {
@@ -197,7 +279,7 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
             }
         }
     }
-    
+
     private func verifyUser<T>(message: String, params: T) -> Promise<T> {
         
         WAKLogger.debug("<UserConsentUI> verifyUser")
@@ -208,10 +290,8 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
 
                 let ctx = LAContext()
                 var authError: NSError?
-                //if ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
-                //    ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
-                if ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &authError) {
-                    ctx.evaluatePolicy(.deviceOwnerAuthentication,
+                if ctx.canEvaluatePolicy(self.config.localAuthPolicy, error: &authError) {
+                    ctx.evaluatePolicy(self.config.localAuthPolicy,
                                        localizedReason: message,
                                        reply: { success, error in
                                         if success {
@@ -222,43 +302,66 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                                             switch LAError(_nsError: error as NSError) {
                                             case LAError.userFallback:
                                                 WAKLogger.debug("<UserConsentUI> user fallback")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             case LAError.userCancel:
                                                 WAKLogger.debug("<UserConsentUI> user cancel")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             case LAError.authenticationFailed:
                                                 WAKLogger.debug("<UserConsentUI> authentication failed")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             case LAError.passcodeNotSet:
                                                 WAKLogger.debug("<UserConsentUI> passcode not set")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             case LAError.systemCancel:
                                                 WAKLogger.debug("<UserConsentUI> system cancel")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             default:
                                                 WAKLogger.debug("<UserConsentUI> must not come here")
-                                                self.dispatchError(resolver, .unknownError)
+                                                self.dispatchError(resolver, .unknown)
                                             }
 
                                         } else {
                                             WAKLogger.debug("<UserConsentUI> must not come here")
-                                            self.dispatchError(resolver, .unknownError)
+                                            self.dispatchError(resolver, .unknown)
                                         }
                     })
                 } else {
                     let reason = authError?.localizedDescription ?? ""
                     WAKLogger.debug("<UserConsentUI> device not supported: \(reason)")
-                    self.dispatchError(resolver, .notAllowedError)
+                    self.dispatchError(resolver, .notAllowed)
                 }
             }
         }
     }
     
-    private func dispatchError<T>(_ resolver: Resolver<T>, _ error: AuthenticatorError) {
+    private func dispatchError<T>(_ resolver: Resolver<T>, _ error: WAKError) {
         WAKLogger.debug("<UserConsentUI> dispatchError")
         DispatchQueue.global().async {
             resolver.reject(error)
         }
     }
+    
+    public func consentViewControllerWillDismiss(viewController: UIViewController) {
+        self.hideBackground()
+    }
+    
+    private func showBackground() {
+        self.viewController.view.addSubview(self.tempBackground)
+        self.tempBackground.frame = self.viewController.view.frame
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
+            self.tempBackground.alpha = 0.4
+        }, completion: nil)
+    }
+    
+    private func hideBackground() {
+        if self.tempBackground.superview != nil {
+            UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseIn], animations: {
+                self.tempBackground.alpha = 0.0
+            }, completion: { _ in
+                self.tempBackground.removeFromSuperview()
+            })
+        }
+    }
+
 
 }

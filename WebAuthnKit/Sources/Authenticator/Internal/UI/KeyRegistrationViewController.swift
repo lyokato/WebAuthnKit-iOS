@@ -283,23 +283,21 @@ class KeyDetailView: UIView, UITextFieldDelegate {
     }
     
     @objc func onCancelButtonTapped(_ sender: UIButton) {
-        if self.keyNameField.isFirstResponder {
-            self.keyNameField.resignFirstResponder()
-        }
+        self.resignKeyNameField()
         self.delegate?.userDidCancel()
     }
     
     @objc func onCreateButtonTapped(_ sender: UIButton) {
-        if self.keyNameField.isFirstResponder {
-            self.keyNameField.resignFirstResponder()
-        }
+        self.resignKeyNameField()
         self.delegate?.userDidRequestToCreateNewKey(keyName: self.getCurrentKeyName())
+    }
+    
+    func resignKeyNameField() {
+        self.keyNameField.resignFirstResponder()
     }
 
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if self.keyNameField.isFirstResponder {
-            self.keyNameField.resignFirstResponder()
-        }
+        self.resignKeyNameField()
     }
     
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
@@ -313,7 +311,8 @@ class KeyDetailView: UIView, UITextFieldDelegate {
 
 }
 
-public class KeyRegistrationViewController : UIViewController, KeyDetailViewDelegate {
+public class KeyRegistrationViewController : UIViewController,
+    KeyDetailViewDelegate {
     
     public weak var delegate: UserConsentViewControllerDelegate?
     
@@ -359,6 +358,9 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
         detailViewFrame.origin.x = (self.view.frame.width - detailViewFrame.width) / 2.0
         detailViewFrame.origin.y = (self.view.frame.height - detailViewFrame.height) / 2.0
         self.detailView.frame = detailViewFrame
+        
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(type(of: self).onBackgroundViewTapped(_:)))
+        self.view.addGestureRecognizer(gesture)
     }
     
     public func userDidCancel() {
@@ -366,6 +368,10 @@ public class KeyRegistrationViewController : UIViewController, KeyDetailViewDele
         dismiss(animated: true) {
            self.resolver.reject(WAKError.cancelled)
         }
+    }
+    
+    @objc public func onBackgroundViewTapped(_ sender: UITapGestureRecognizer) {
+        self.detailView.resignKeyNameField()
     }
     
     public func userDidRequestToCreateNewKey(keyName: String) {

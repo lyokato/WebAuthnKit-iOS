@@ -66,12 +66,22 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
     }
     
     // 6.3.4 authenticatorCancel Operation
-    public func cancel() {
+    public func cancel(reason: WAKError) {
         WAKLogger.debug("<GetAssertionSession> cancel")
-        self.stop(by: .userCancelled)
+        if self.stopped {
+            WAKLogger.debug("<GetAssertionSession> already stopped")
+            return
+        }
+        if self.ui.opened {
+            WAKLogger.debug("<GetAssertionSession> during user interaction")
+            self.ui.cancel(reason: reason)
+        } else {
+            WAKLogger.debug("<GetAssertionSession> stop by clientCancelled")
+            self.stop(by: reason)
+        }
     }
     
-    private func stop(by reason: AuthenticatorError) {
+    private func stop(by reason: WAKError) {
         WAKLogger.debug("<GetAssertionSession> stop")
         if !self.started {
             WAKLogger.debug("<GetAssertionSession> not started")
@@ -111,7 +121,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         
         if credSources.isEmpty {
             WAKLogger.debug("<GetAssertion> not found allowable credential source, stop session")
-            self.stop(by: .notAllowedError)
+            self.stop(by: .notAllowed)
             return
         }
         
@@ -130,7 +140,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 copiedCred.signCount = cred.signCount + self.setting.counterStep
                 newSignCount = copiedCred.signCount
                 if !self.credentialStore.saveCredentialSource(copiedCred) {
-                    self.stop(by: .unknownError)
+                    self.stop(by: .unknown)
                     return
                 }
 
@@ -152,19 +162,19 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 
                 guard let alg = COSEAlgorithmIdentifier.fromInt(cred.alg) else {
                     WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
-                    self.stop(by: .notSupportedError)
+                    self.stop(by: .unsupported)
                     return
                 }
 
                 guard let keySupport =
                     self.keySupportChooser.choose([alg]) else {
                         WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
-                        self.stop(by: .notSupportedError)
+                        self.stop(by: .unsupported)
                         return
                 }
                 
                 guard let signature = keySupport.sign(data: data, label: cred.keyLabel) else {
-                    self.stop(by: .unknownError)
+                    self.stop(by: .unknown)
                     return
                 }
                 
@@ -186,13 +196,10 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 )
                 
             }.catch { error in
-                switch error {
-                case AuthenticatorError.notAllowedError:
-                    self.stop(by: .notAllowedError)
-                    return
-                default:
-                    self.stop(by: .unknownError)
-                    return
+                if let err = error as? WAKError {
+                    self.stop(by: err)
+                } else {
+                    self.stop(by: .unknown)
                 }
         }
         

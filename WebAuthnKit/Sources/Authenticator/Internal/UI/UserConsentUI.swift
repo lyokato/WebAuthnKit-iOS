@@ -26,7 +26,7 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     private let tempBackground: UIView
     
     public private(set) var opened: Bool = false
-    private var cancelled: Bool = false
+    private var cancelled: WAKError? = nil
 
     public init(viewController: UIViewController) {
         self.viewController = viewController
@@ -38,15 +38,15 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     
     private func willStartUserInteraction() {
         self.opened = true
-        self.cancelled = false
+        self.cancelled = nil
     }
     
     private func didFinishUserInteraction() {
         self.opened = false
     }
     
-    public func cancel() {
-        self.cancelled = true
+    public func cancel(reason: WAKError) {
+        self.cancelled = reason
     }
     
     internal func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
@@ -68,8 +68,8 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                 let okAction = UIAlertAction.init(title: self.config.excludeKeyFoundPopupCreateButtonText, style: .default) { _ in
                     DispatchQueue.global().async {
                         self.didFinishUserInteraction()
-                        if self.cancelled {
-                            resolver.reject(AuthenticatorError.clientCancelled)
+                        if let reason = self.cancelled {
+                            resolver.reject(reason)
                         } else {
                             resolver.fulfill(())
                         }
@@ -79,10 +79,10 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                 let cancelAction = UIAlertAction.init(title: self.config.excludeKeyFoundPopupCancelButtonText, style: .cancel) { _ in
                     DispatchQueue.global().async {
                         self.didFinishUserInteraction()
-                        if self.cancelled {
-                            resolver.reject(AuthenticatorError.clientCancelled)
+                        if let reason = self.cancelled {
+                            resolver.reject(reason)
                         } else {
-                            resolver.reject(AuthenticatorError.notAllowedError)
+                            resolver.reject(WAKError.notAllowed)
                         }
                     }
                 }
@@ -128,10 +128,10 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
             
         }.then { (keyName: String) -> Promise<String> in
 
-            if self.cancelled {
+            if let reason = self.cancelled {
 
                 self.didFinishUserInteraction()
-                throw AuthenticatorError.clientCancelled
+                throw reason
 
             } else {
                 
@@ -154,9 +154,9 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
             
             self.didFinishUserInteraction()
             
-            if self.cancelled {
-                
-                throw AuthenticatorError.clientCancelled
+            if let reason = self.cancelled {
+          
+                throw reason
                 
             } else {
                 
@@ -168,9 +168,9 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
             
             self.didFinishUserInteraction()
             
-            if self.cancelled {
+            if let reason = self.cancelled {
                 
-                throw AuthenticatorError.clientCancelled
+                throw reason
                 
             } else {
                 
@@ -193,10 +193,10 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         return self.userSelectionTask(sources: sources)
             .then { (source: PublicKeyCredentialSource) -> Promise<PublicKeyCredentialSource> in
                 
-                if self.cancelled {
+                if let reason = self.cancelled {
                     
                     self.didFinishUserInteraction()
-                    throw AuthenticatorError.clientCancelled
+                    throw reason
                     
                 } else {
                     
@@ -218,9 +218,9 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     
             self.didFinishUserInteraction()
     
-            if self.cancelled {
+            if let reason = self.cancelled {
     
-                throw AuthenticatorError.clientCancelled
+                throw reason
     
             } else {
     
@@ -232,9 +232,9 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     
             self.didFinishUserInteraction()
     
-            if self.cancelled {
+            if let reason = self.cancelled {
     
-                throw AuthenticatorError.clientCancelled
+                throw reason
     
             } else {
     
@@ -302,39 +302,39 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                                             switch LAError(_nsError: error as NSError) {
                                             case LAError.userFallback:
                                                 WAKLogger.debug("<UserConsentUI> user fallback")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             case LAError.userCancel:
                                                 WAKLogger.debug("<UserConsentUI> user cancel")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             case LAError.authenticationFailed:
                                                 WAKLogger.debug("<UserConsentUI> authentication failed")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             case LAError.passcodeNotSet:
                                                 WAKLogger.debug("<UserConsentUI> passcode not set")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             case LAError.systemCancel:
                                                 WAKLogger.debug("<UserConsentUI> system cancel")
-                                                self.dispatchError(resolver, .notAllowedError)
+                                                self.dispatchError(resolver, .notAllowed)
                                             default:
                                                 WAKLogger.debug("<UserConsentUI> must not come here")
-                                                self.dispatchError(resolver, .unknownError)
+                                                self.dispatchError(resolver, .unknown)
                                             }
 
                                         } else {
                                             WAKLogger.debug("<UserConsentUI> must not come here")
-                                            self.dispatchError(resolver, .unknownError)
+                                            self.dispatchError(resolver, .unknown)
                                         }
                     })
                 } else {
                     let reason = authError?.localizedDescription ?? ""
                     WAKLogger.debug("<UserConsentUI> device not supported: \(reason)")
-                    self.dispatchError(resolver, .notAllowedError)
+                    self.dispatchError(resolver, .notAllowed)
                 }
             }
         }
     }
     
-    private func dispatchError<T>(_ resolver: Resolver<T>, _ error: AuthenticatorError) {
+    private func dispatchError<T>(_ resolver: Resolver<T>, _ error: WAKError) {
         WAKLogger.debug("<UserConsentUI> dispatchError")
         DispatchQueue.global().async {
             resolver.reject(error)

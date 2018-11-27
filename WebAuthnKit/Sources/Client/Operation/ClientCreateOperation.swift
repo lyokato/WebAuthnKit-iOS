@@ -87,15 +87,34 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
                     // At the timing like that,
                     // it causes trouble if this operation tries to close.
                     // So, let the session to start closing
-                    self.session.cancel()
+                    if reason == .timeout {
+                        self.session.cancel(reason: .timeout)
+                    } else {
+                        self.session.cancel(reason: .cancelled)
+                    }
                 } else {
                     self.stop(by: reason)
                 }
             }
         }
     }
+    
+    private func completed() {
+        WAKLogger.debug("<CreateOperation> completed")
+        if self.resolver == nil {
+            WAKLogger.debug("<CreateOperation> not started")
+            return
+        }
+        if self.stopped {
+            WAKLogger.debug("<CreateOperation> already stopped")
+            return
+        }
+        self.stopped = true
+        self.stopLifetimeTimer()
+        self.delegate?.operationDidFinish(opType: self.type, opId: self.id)
+    }
 
-    private func stop() {
+    private func stopInternal(reason: WAKError) {
         WAKLogger.debug("<CreateOperation> stop")
         if self.resolver == nil {
             WAKLogger.debug("<CreateOperation> not started")
@@ -107,7 +126,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
         }
         self.stopped = true
         self.stopLifetimeTimer()
-        self.session.cancel()
+        self.session.cancel(reason: reason)
         self.delegate?.operationDidFinish(opType: self.type, opId: self.id)
     }
 
@@ -115,7 +134,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
 
     private func stop(by error: WAKError) {
         WAKLogger.debug("<CreateOperation> stop by \(error)")
-        self.stop()
+        self.stopInternal(reason: error)
         self.dispatchError(error)
     }
 
@@ -306,8 +325,8 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
             response: response
         )
 
-        self.stop()
-        
+        self.completed()
+
         DispatchQueue.main.async {
             if let resolver = self.resolver {
                 resolver.fulfill(cred)
@@ -318,16 +337,9 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
 
     public func authenticatorSessionDidStopOperation(
         session: AuthenticatorMakeCredentialSession,
-        reason:  AuthenticatorError
+        reason:  WAKError
     ) {
         WAKLogger.debug("<CreateOperation> authenticator stopped operation")
-        switch reason {
-        case .invalidStateError:
-            self.stop(by: .invalidState)
-        case .userCancelled:
-            self.stop(by: .cancelled)
-        default:
-            self.stop(by: .notAllowed)
-        }
+        self.stop(by: reason)
     }
 }

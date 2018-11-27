@@ -108,7 +108,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
                     // it causes trouble if this operation tries to close.
                     // So, let the session to start closing
                     WAKLogger.debug("<GetOperation> session is 'internal', send 'cancel' to session")
-                    self.session.cancel()
+                    self.session.cancel(reason: reason)
                 } else {
                     WAKLogger.debug("<GetOperation> session is not 'internal', close operation")
                     self.stop(by: reason)
@@ -116,8 +116,23 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
             }
         }
     }
+    
+    private func completed() {
+        WAKLogger.debug("<GetOperation> completed")
+        if self.resolver == nil {
+            WAKLogger.debug("<GetOperation> not started")
+            return
+        }
+        if self.stopped {
+            WAKLogger.debug("<GetOperation> already stopped")
+            return
+        }
+        self.stopped = true
+        self.stopLifetimeTimer()
+        self.delegate?.operationDidFinish(opType: self.type, opId: self.id)
+    }
 
-    private func stop() {
+    private func stopInternal(reason: WAKError) {
         WAKLogger.debug("<GetOperation> stop")
         if self.resolver == nil {
             WAKLogger.debug("<GetOperation> not started")
@@ -129,7 +144,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
         }
         self.stopped = true
         self.stopLifetimeTimer()
-        self.session.cancel()
+        self.session.cancel(reason: reason)
         self.delegate?.operationDidFinish(opType: self.type, opId: self.id)
     }
     
@@ -151,7 +166,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
 
     private func stop(by error: WAKError) {
         WAKLogger.debug("<GetOperation> stop by")
-        self.stop()
+        self.stopInternal(reason: error)
         self.dispatchError(error)
     }
 
@@ -285,7 +300,8 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
             )
         )
 
-        self.stop()
+        self.completed()
+        
         DispatchQueue.main.async {
             if let resolver = self.resolver {
                 resolver.fulfill(cred)
@@ -301,17 +317,10 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
 
     public func authenticatorSessionDidStopOperation(
         session: AuthenticatorGetAssertionSession,
-        reason:  AuthenticatorError
+        reason:  WAKError
     ) {
         WAKLogger.debug("<GetOperation> authenticator stopped operation")
-        switch reason {
-        case .userCancelled:
-            self.stop(by: .cancelled)
-        case .invalidStateError:
-            self.stop(by: .invalidState)
-        default:
-            self.stop(by: .notAllowed)
-        }
+        self.stop(by: reason)
     }
 
 }

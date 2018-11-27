@@ -69,7 +69,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
     }
     
     // 6.3.4 authenticatorCancel Operation
-    public func cancel() {
+    public func cancel(reason: WAKError) {
         WAKLogger.debug("<MakeCredentialSession> cancel")
         if self.stopped {
             WAKLogger.debug("<MakeCredentialSession> already stopped")
@@ -77,14 +77,13 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         }
         if self.ui.opened {
             WAKLogger.debug("<MakeCredentialSession> during user interaction")
-            self.ui.cancel()
+            self.ui.cancel(reason: reason)
         } else {
-            WAKLogger.debug("<MakeCredentialSession> stop by clientCancelled")
-            self.stop(by: .clientCancelled)
+            self.stop(by: reason)
         }
     }
     
-    private func stop(by reason: AuthenticatorError) {
+    private func stop(by reason: WAKError) {
         if !self.started {
             return
         }
@@ -124,7 +123,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         guard let keySupport =
             self.keySupportChooser.choose(requestedAlgs) else {
                 WAKLogger.debug("<MakeCredentialSession> insufficient capability (alg), stop session")
-                self.stop(by: .notSupportedError)
+                self.stop(by: .unsupported)
                 return
         }
         
@@ -139,15 +138,15 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
             firstly {
                 self.ui.askUserToCreateNewCredential(rpId: rpEntity.id!)
                 }.done {
-                    self.stop(by: .invalidStateError)
+                    self.stop(by: .invalidState)
                     return
                 }.catch { error in
                     switch error {
-                    case AuthenticatorError.notAllowedError:
-                        self.stop(by: .notAllowedError)
+                    case WAKError.notAllowed:
+                        self.stop(by: .notAllowed)
                         return
                     default:
-                        self.stop(by: .unknownError)
+                        self.stop(by: .unknown)
                         return
                     }
             }
@@ -156,7 +155,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         
         if requireUserVerification && !self.setting.allowUserVerification {
             WAKLogger.debug("<MakeCredentialSession> insufficient capability (user verification), stop session")
-            self.stop(by: .constraintError)
+            self.stop(by: .constraint)
             return
         }
         
@@ -189,7 +188,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
             // TODO should remove fron KeyPair too?
 
             guard let publicKeyCOSE = keySupport.createKeyPair(label: credSource.keyLabel) else {
-                self.stop(by: .unknownError)
+                self.stop(by: .unknown)
                 return
             }
 
@@ -197,7 +196,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
 
             if !self.credentialStore.saveCredentialSource(credSource) {
                 WAKLogger.debug("<MakeCredentialSession> failed to save credential source, stop session")
-                self.stop(by: .unknownError)
+                self.stop(by: .unknown)
                 return
             }
 
@@ -227,7 +226,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                     keyLabel:       credSource.keyLabel
                 ) else {
                     WAKLogger.debug("<MakeCredentialSession> failed to build attestation object")
-                    self.stop(by: .unknownError)
+                    self.stop(by: .unknown)
                     return
             }
 
@@ -238,14 +237,10 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
             )
 
         }.catch { error in
-            // When failed to got user consent
-            switch error {
-            case AuthenticatorError.notAllowedError:
-                self.stop(by: .notAllowedError)
-                return
-            default:
-                self.stop(by: .unknownError)
-                return
+            if let err = error as? WAKError {
+                self.stop(by: err)
+            } else {
+                self.stop(by: .unknown)
             }
         }
     }

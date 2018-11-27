@@ -57,9 +57,11 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
     
     public func start() {
         if self.stopped {
+            WAKLogger.debug("<MakeCredentialSession> already stopped")
             return
         }
         if self.started {
+            WAKLogger.debug("<MakeCredentialSession> already started")
             return
         }
         self.started = true
@@ -68,9 +70,16 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
     
     // 6.3.4 authenticatorCancel Operation
     public func cancel() {
+        WAKLogger.debug("<MakeCredentialSession> cancel")
+        if self.stopped {
+            WAKLogger.debug("<MakeCredentialSession> already stopped")
+            return
+        }
         if self.ui.opened {
+            WAKLogger.debug("<MakeCredentialSession> during user interaction")
             self.ui.cancel()
         } else {
+            WAKLogger.debug("<MakeCredentialSession> stop by clientCancelled")
             self.stop(by: .clientCancelled)
         }
     }

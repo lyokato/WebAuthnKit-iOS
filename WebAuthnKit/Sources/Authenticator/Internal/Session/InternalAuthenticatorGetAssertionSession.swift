@@ -68,10 +68,15 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
     // 6.3.4 authenticatorCancel Operation
     public func cancel() {
         WAKLogger.debug("<GetAssertionSession> cancel")
-        
+        if self.stopped {
+            WAKLogger.debug("<GetAssertionSession> already stopped")
+            return
+        }
         if self.ui.opened {
+            WAKLogger.debug("<GetAssertionSession> during user interaction")
            self.ui.cancel()
         } else {
+            WAKLogger.debug("<GetAssertionSession> stop by clientCancelled")
             self.stop(by: .clientCancelled)
         }
     }

@@ -28,7 +28,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     private var resolver: Resolver<WebAuthnClient.CreateResponse>?
     private var stopped: Bool = false
 
-    private var timer: Timer?
+    private var timer: DispatchSource?
 
     internal init(
         options:        PublicKeyCredentialCreationOptions,
@@ -77,10 +77,21 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
         }
     }
 
-    public func cancel() {
+    public func cancel(reason: WAKError = .cancelled) {
         WAKLogger.debug("<CreateOperation> cancel")
-        DispatchQueue.global().async {
-            self.stop(by: .cancelled)
+        if self.resolver != nil && !self.stopped {
+            DispatchQueue.global().async {
+                if self.session.transport == .internal_ {
+                    // When session is for *internal* authentciator,
+                    // it may be showing UI on same process as this client.
+                    // At the timing like that,
+                    // it causes trouble if this operation tries to close.
+                    // So, let the session to start closing
+                    self.session.cancel()
+                } else {
+                    self.stop(by: reason)
+                }
+            }
         }
     }
 
@@ -124,24 +135,27 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
             WAKLogger.debug("<CreateOperation> timer already started")
             return
         }
-        self.timer = Timer.scheduledTimer(
-            timeInterval: TimeInterval(self.lifetimeTimer),
-            target:       self,
-            selector:     #selector(ClientCreateOperation.lifetimeTimerTimeout),
-            userInfo:     nil,
-            repeats:      false
-        )
+        if let timer = DispatchSource.makeTimerSource() as? DispatchSource {
+            timer.schedule(deadline: .now() + TimeInterval(self.lifetimeTimer))
+            timer.setEventHandler(handler: {
+                [weak self] in
+                self?.lifetimeTimerTimeout()
+            })
+            timer.resume()
+            self.timer = timer
+        }
     }
 
     private func stopLifetimeTimer() {
         WAKLogger.debug("<CreateOperation> stopLifetimeTimer")
-        self.timer?.invalidate()
+        self.timer?.cancel()
         self.timer = nil
     }
 
     @objc func lifetimeTimerTimeout() {
         WAKLogger.debug("<CreateOperation> timeout")
-        self.stop(by: .timeout)
+        self.stopLifetimeTimer()
+        self.cancel(reason: .timeout)
     }
 
     private func judgeUserVerificationExecution(_ session: AuthenticatorMakeCredentialSession) -> Bool {

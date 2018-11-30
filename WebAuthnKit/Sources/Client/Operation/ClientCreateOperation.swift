@@ -227,41 +227,41 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
                 self.stop(by: .unsupported)
                 return
             }
-
-            let userVerification =
-                self.judgeUserVerificationExecution(session)
-
-            let userPresence = !userVerification
-
-            let excludeCredentialDescriptorList =
-                self.options.excludeCredentials.filter {descriptor in
-                    if descriptor.transports.contains(session.transport) {
-                        return false
-                    } else {
-                        return true
-                    }
-            }
-
-            let requireResidentKey =
-                options.authenticatorSelection?.requireResidentKey ?? false
-
-            let rpEntity = PublicKeyCredentialRpEntity(
-                id:   self.rpId,
-                name: options.rp.name,
-                icon: options.rp.icon
-            )
-
-            session.makeCredential(
-                hash:                            self.clientDataHash,
-                rpEntity:                        rpEntity,
-                userEntity:                      options.user,
-                requireResidentKey:              requireResidentKey,
-                requireUserPresence:             userPresence,
-                requireUserVerification:         userVerification,
-                credTypesAndPubKeyAlgs:          options.pubKeyCredParams,
-                excludeCredentialDescriptorList: excludeCredentialDescriptorList
-            )
         }
+
+        let userVerification =
+            self.judgeUserVerificationExecution(session)
+
+        let userPresence = !userVerification
+
+        let excludeCredentialDescriptorList =
+            self.options.excludeCredentials.filter {descriptor in
+                if descriptor.transports.contains(session.transport) {
+                    return false
+                } else {
+                    return true
+                }
+        }
+
+        let requireResidentKey =
+            options.authenticatorSelection?.requireResidentKey ?? false
+
+        let rpEntity = PublicKeyCredentialRpEntity(
+            id:   self.rpId,
+            name: options.rp.name,
+            icon: options.rp.icon
+        )
+
+        session.makeCredential(
+            hash:                            self.clientDataHash,
+            rpEntity:                        rpEntity,
+            userEntity:                      options.user,
+            requireResidentKey:              requireResidentKey,
+            requireUserPresence:             userPresence,
+            requireUserVerification:         userVerification,
+            credTypesAndPubKeyAlgs:          options.pubKeyCredParams,
+            excludeCredentialDescriptorList: excludeCredentialDescriptorList
+        )
     }
 
     public func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorMakeCredentialSession) {

@@ -12,7 +12,6 @@ import EllipticCurveKeyPair
 
 public protocol KeySupport {
     var selectedAlg: COSEAlgorithmIdentifier { get }
-    func canHandle(alg: Int) -> Bool
     func createKeyPair(label: String) -> Optional<COSEKey>
     func sign(data: [UInt8], label: String) -> Optional<[UInt8]>
 }
@@ -29,10 +28,6 @@ public class KeySupportChooser {
             switch alg {
             case COSEAlgorithmIdentifier.es256:
                 return ECDSAKeySupport(alg: .es256)
-            case COSEAlgorithmIdentifier.es384:
-                return ECDSAKeySupport(alg: .es384)
-            case COSEAlgorithmIdentifier.es512:
-                return ECDSAKeySupport(alg: .es512)
             default:
                 WAKLogger.debug("<KeySupportChooser> currently this algorithm not supported")
                 return nil
@@ -44,13 +39,6 @@ public class KeySupportChooser {
 }
 
 public class ECDSAKeySupport : KeySupport {
-    
-    public static let algorithms: [COSEAlgorithmIdentifier] = [.es256, .es384, .es512]
-    
-    public func canHandle(alg: Int) -> Bool {
-        WAKLogger.debug("<ECDSAKeySupport> canHandle")
-        return type(of: self).algorithms.contains { $0.rawValue == alg }
-    }
     
     public let selectedAlg: COSEAlgorithmIdentifier
     
@@ -81,7 +69,7 @@ public class ECDSAKeySupport : KeySupport {
     public func sign(data: [UInt8], label: String) -> Optional<[UInt8]> {
         do {
             let pair = self.createPair(label: label)
-            let signature = try pair.sign(Data(bytes: data), hash: self.getDigestType())
+            let signature = try pair.sign(Data(bytes: data), hash: .sha256)
             return signature.bytes
         } catch let error {
             WAKLogger.debug("<ECDSAKeySupport> failed to sign: \(error)")
@@ -89,19 +77,6 @@ public class ECDSAKeySupport : KeySupport {
         }
     }
     
-    private func getDigestType() -> EllipticCurveKeyPair.Hash {
-        switch selectedAlg {
-        case .es256:
-            return .sha256
-        case .es384:
-            return .sha384
-        case .es512:
-            return .sha512
-        default:
-            fatalError("must not come here")
-        }
-    }
-
     public func createKeyPair(label: String) -> Optional<COSEKey> {
         WAKLogger.debug("<ECDSAKeySupport> createKeyPair")
         do {

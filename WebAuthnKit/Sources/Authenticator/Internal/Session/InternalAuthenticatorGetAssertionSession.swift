@@ -132,75 +132,75 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                 requireVerification: requireUserVerification
             )
             
-            }.done { cred in
+        }.done { cred in
                 
-                var newSignCount: UInt32 = 0
-                
-                var copiedCred = cred
-                copiedCred.signCount = cred.signCount + self.setting.counterStep
-                newSignCount = copiedCred.signCount
-                if !self.credentialStore.saveCredentialSource(copiedCred) {
-                    self.stop(by: .unknown)
-                    return
-                }
+            var newSignCount: UInt32 = 0
 
-                let extensions = SimpleOrderedDictionary<String>()
-                
-                let authenticatorData = AuthenticatorData(
-                    rpIdHash:               rpId.bytes.sha256(),
-                    userPresent:            requireUserPresence,
-                    userVerified:           requireUserVerification,
-                    signCount:              newSignCount,
-                    attestedCredentialData: nil,
-                    extensions:             extensions
-                )
-                
-                let authenticatorDataBytes = authenticatorData.toBytes()
-                
-                var data = authenticatorDataBytes
-                data.append(contentsOf: hash)
-                
-                guard let alg = COSEAlgorithmIdentifier.fromInt(cred.alg) else {
+            var copiedCred = cred
+            copiedCred.signCount = cred.signCount + self.setting.counterStep
+            newSignCount = copiedCred.signCount
+            if !self.credentialStore.saveCredentialSource(copiedCred) {
+                self.stop(by: .unknown)
+                return
+            }
+
+            let extensions = SimpleOrderedDictionary<String>()
+
+            let authenticatorData = AuthenticatorData(
+                rpIdHash:               rpId.bytes.sha256(),
+                userPresent:            requireUserPresence,
+                userVerified:           requireUserVerification,
+                signCount:              newSignCount,
+                attestedCredentialData: nil,
+                extensions:             extensions
+            )
+
+            let authenticatorDataBytes = authenticatorData.toBytes()
+
+            var data = authenticatorDataBytes
+            data.append(contentsOf: hash)
+
+            guard let alg = COSEAlgorithmIdentifier.fromInt(cred.alg) else {
+                WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
+                self.stop(by: .unsupported)
+                return
+            }
+
+            guard let keySupport =
+                self.keySupportChooser.choose([alg]) else {
                     WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
                     self.stop(by: .unsupported)
                     return
-                }
+            }
 
-                guard let keySupport =
-                    self.keySupportChooser.choose([alg]) else {
-                        WAKLogger.debug("<GetAssertion> insufficient capability (alg), stop session")
-                        self.stop(by: .unsupported)
-                        return
-                }
+            guard let signature = keySupport.sign(data: data, label: cred.keyLabel) else {
+                self.stop(by: .unknown)
+                return
+            }
+
+            var assertion = AuthenticatorAssertionResult(
+                authenticatorData: authenticatorDataBytes,
+                signature:         signature
+            )
+
+            assertion.userHandle = cred.userHandle
+
+            if allowCredentialDescriptorList.count != 1 {
+                assertion.credentailId = cred.id
+            }
+
+            self.completed()
+            self.delegate?.authenticatorSessionDidDiscoverCredential(
+                session:   self,
+                assertion: assertion
+            )
                 
-                guard let signature = keySupport.sign(data: data, label: cred.keyLabel) else {
-                    self.stop(by: .unknown)
-                    return
-                }
-                
-                var assertion = AuthenticatorAssertionResult(
-                    authenticatorData: authenticatorDataBytes,
-                    signature:         signature
-                )
-                
-                assertion.userHandle = cred.userHandle
-                
-                if allowCredentialDescriptorList.count != 1 {
-                    assertion.credentailId = cred.id
-                }
-                
-                self.completed()
-                self.delegate?.authenticatorSessionDidDiscoverCredential(
-                    session:   self,
-                    assertion: assertion
-                )
-                
-            }.catch { error in
-                if let err = error as? WAKError {
-                    self.stop(by: err)
-                } else {
-                    self.stop(by: .unknown)
-                }
+        }.catch { error in
+            if let err = error as? WAKError {
+                self.stop(by: err)
+            } else {
+                self.stop(by: .unknown)
+            }
         }
         
     }

@@ -45,7 +45,7 @@ public class WebAuthnClient: ClientOperationDelegate {
 
     public func create(_ options: PublicKeyCredentialCreationOptions)
         -> Promise<CreateResponse> {
-            
+
             WAKLogger.debug("<WebAuthnClient> create")
 
             return Promise { resolver in
@@ -70,7 +70,7 @@ public class WebAuthnClient: ClientOperationDelegate {
 
     public func get(_ options: PublicKeyCredentialRequestOptions)
         -> Promise<GetResponse> {
-            
+
             WAKLogger.debug("<WebAuthnClient> get")
 
             return Promise { resolver in
@@ -102,7 +102,7 @@ public class WebAuthnClient: ClientOperationDelegate {
     /// this function comforms to https://www.w3.org/TR/webauthn/#createCredential
     public func newCreateOperation(_ options: PublicKeyCredentialCreationOptions)
         -> ClientCreateOperation {
-            
+
             WAKLogger.debug("<WebAuthnClient> newCreateOperation")
 
             let lifetimeTimer = self.adjustLifetimeTimer(options.timeout)
@@ -140,7 +140,7 @@ public class WebAuthnClient: ClientOperationDelegate {
 
     public func newGetOperation(_ options: PublicKeyCredentialRequestOptions)
         -> ClientGetOperation {
-            
+
         WAKLogger.debug("<WebAuthnClient> newGetOperation")
 
         let lifetimeTimer = self.adjustLifetimeTimer(options.timeout)
@@ -204,9 +204,9 @@ public class WebAuthnClient: ClientOperationDelegate {
     /// this function comforms to https://www.w3.org/TR/webauthn/#createCredential
     /// 5.1.3 - 7 If options.rpId is not present, then set rpId to effectiveDomain.
     private func pickRelyingPartyID(_ rpId: String?) -> String {
-        
+
         WAKLogger.debug("<WebAuthnClient> pickRelyingPartyID")
-        
+
         if let _rpId = rpId {
             return _rpId
         } else {
@@ -220,7 +220,7 @@ public class WebAuthnClient: ClientOperationDelegate {
         type:      CollectedClientDataType,
         challenge: String
         ) -> (CollectedClientData, String, [UInt8]) {
-        
+
         WAKLogger.debug("<WebAuthnClient> generateClientData")
 
         // TODO TokenBinding

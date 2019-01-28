@@ -9,17 +9,17 @@
 import Foundation
 
 public struct AuthenticatorDataFlags {
-    
+
     public let UPMask: UInt8 = 0b00000001
     public let UVMask: UInt8 = 0b00000100
     public let ATMask: UInt8 = 0b01000000
     public let EDMask: UInt8 = 0b10000000
-    
+
     public var userPresent: Bool = false
     public var userVerified: Bool = false
     public var hasAttestedCredentialData: Bool = false
     public var hasExtension: Bool = false
-    
+
     init(
         userPresent: Bool,
         userVerified: Bool,
@@ -31,19 +31,19 @@ public struct AuthenticatorDataFlags {
         self.hasAttestedCredentialData = hasAttestedCredentialData
         self.hasExtension              = hasExtension
     }
-    
+
     init(flags: UInt8) {
         userPresent               = ((flags & UPMask) == UPMask)
         userVerified              = ((flags & UVMask) == UVMask)
         hasAttestedCredentialData = ((flags & ATMask) == ATMask)
         hasExtension              = ((flags & EDMask) == EDMask)
-        
+
         WAKLogger.debug("<AuthenticatorDataFlags> UP:\(userPresent)")
         WAKLogger.debug("<AuthenticatorDataFlags> UV:\(userVerified)")
         WAKLogger.debug("<AuthenticatorDataFlags> AT:\(hasAttestedCredentialData)")
         WAKLogger.debug("<AuthenticatorDataFlags> ED:\(hasExtension)")
     }
-    
+
     public func toByte() -> UInt8 {
         var flags: UInt8 = 0b00000000
         if self.userPresent {
@@ -87,7 +87,7 @@ public struct AttestedCredentialData {
 }
 
 public struct AuthenticatorData {
-    
+
     public static func fromBytes(_ bytes: [UInt8]) -> Optional<AuthenticatorData> {
         WAKLogger.debug("<AuthenticatorData> fromBytes")
         if bytes.count < 37 {
@@ -100,9 +100,9 @@ public struct AuthenticatorData {
 
         let signCount = UInt32((UInt32(bytes[33]) << 24) | (UInt32(bytes[34]) << 16) | (UInt32(bytes[35]) << 8) | UInt32(bytes[36]))
 
-        
+
         WAKLogger.debug("<AuthenticatorData> sing-count:\(signCount)")
-        
+
         var pos = 37
 
         var attestedCredentialData: AttestedCredentialData? = nil
@@ -195,7 +195,7 @@ public struct AuthenticatorData {
             hasAttestedCredentialData: (self.attestedCredentialData != nil),
             hasExtension:              !self.extensions.isEmpty
         ).toByte()
-        
+
         result.append(flags)
 
         result.append(UInt8((signCount & 0xff000000) >> 24))

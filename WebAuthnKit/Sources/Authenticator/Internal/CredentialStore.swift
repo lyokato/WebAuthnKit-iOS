@@ -16,7 +16,6 @@ public protocol CredentialStore {
     func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource]
     func deleteCredentialSource(_ cred: PublicKeyCredentialSource) -> Bool
     func deleteAllCredentialSources(rpId: String, userHandle: [UInt8])
-    func findOrCreateEncryptionKey() -> Optional<[UInt8]>
 }
 
 public class KeychainCredentialStore : CredentialStore {
@@ -25,58 +24,6 @@ public class KeychainCredentialStore : CredentialStore {
     private static let encryptionKeyHandle: String = "encryption-key"
     
     public init() {}
-    
-    private func newRandom() -> Optional<[UInt8]> {
-        var randomBytes = [UInt8](repeating: 0, count: 16)
-        if SecRandomCopyBytes(kSecRandomDefault, 16, &randomBytes) == errSecSuccess {
-            return randomBytes
-        } else {
-            WAKLogger.debug("<KeychainStore> failed to create random")
-            return nil
-        }
-    }
-    
-    public func findOrCreateEncryptionKey() -> Optional<[UInt8]> {
-        WAKLogger.debug("<KeychainStore> findOrCreateEncryptionKey")
-        
-        let keychain = Keychain(service: type(of: self).webAuthnKitService)
-        let handle = type(of: self).encryptionKeyHandle
-        
-        if let result = try? keychain.getData(handle) {
-            if let bytes = result?.bytes {
-                if bytes.count == 16 {
-                    return bytes
-                } else {
-                    return self.createEncryptionKey()
-                }
-            } else {
-                WAKLogger.debug("<KeychainStore> not found data for key:\(handle)")
-                return self.createEncryptionKey()
-            }
-        } else {
-            WAKLogger.debug("<KeychainStore> failed to load data for key:\(handle)")
-            return nil
-        }
-    }
-    
-    private func createEncryptionKey() -> Optional<[UInt8]> {
-        WAKLogger.debug("<KeychainStore> findOrCreateEncryptionKey")
-        
-        let keychain = Keychain(service: type(of: self).webAuthnKitService)
-        let handle = type(of: self).encryptionKeyHandle
-
-        if let random = self.newRandom() {
-            do {
-                try keychain.set(Data(bytes: random), key: handle)
-                return random
-            } catch let error {
-                WAKLogger.debug("<KeychainStore> failed to save encryption key: \(error)")
-                return nil
-            }
-        } else {
-            return nil
-        }
-    }
     
     public func loadAllCredentialSources(rpId: String) -> [PublicKeyCredentialSource] {
         WAKLogger.debug("<KeychainStore> loadAllCredentialSources")

@@ -137,18 +137,18 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         if hasSourceToBeExcluded {
             firstly {
                 self.ui.askUserToCreateNewCredential(rpId: rpEntity.id!)
-                }.done {
-                    self.stop(by: .invalidState)
+            }.done {
+                self.stop(by: .invalidState)
+                return
+            }.catch { error in
+                switch error {
+                case WAKError.notAllowed:
+                    self.stop(by: .notAllowed)
                     return
-                }.catch { error in
-                    switch error {
-                    case WAKError.notAllowed:
-                        self.stop(by: .notAllowed)
-                        return
-                    default:
-                        self.stop(by: .unknown)
-                        return
-                    }
+                default:
+                    self.stop(by: .unknown)
+                    return
+                }
             }
             return
         }
@@ -211,7 +211,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                 
             let authenticatorData = AuthenticatorData(
                 rpIdHash:               rpEntity.id!.bytes.sha256(),
-                userPresent:            requireUserPresence,
+                userPresent:            (requireUserPresence || requireUserVerification),
                 userVerified:           requireUserVerification,
                 signCount:              0,
                 attestedCredentialData: attestedCredData,

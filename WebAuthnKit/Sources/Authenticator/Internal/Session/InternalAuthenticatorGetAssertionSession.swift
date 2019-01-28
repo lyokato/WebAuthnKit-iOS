@@ -148,7 +148,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
 
             let authenticatorData = AuthenticatorData(
                 rpIdHash:               rpId.bytes.sha256(),
-                userPresent:            requireUserPresence,
+                userPresent:            (requireUserPresence || requireUserVerification),
                 userVerified:           requireUserVerification,
                 signCount:              newSignCount,
                 attestedCredentialData: nil,

@@ -211,7 +211,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                 
             let authenticatorData = AuthenticatorData(
                 rpIdHash:               rpEntity.id!.bytes.sha256(),
-                userPresent:            requireUserPresence,
+                userPresent:            (requireUserPresence || requireUserVerification),
                 userVerified:           requireUserVerification,
                 signCount:              0,
                 attestedCredentialData: attestedCredData,

@@ -55,7 +55,7 @@ self.webAuthnClient = WebAuthnClient(
 ## Registration Flow
 
 With a flow which is described in following documents,
-WebAuthnClient creates a credential if success.
+WebAuthnClient creates a credential if it succeeded.
 
 - https://www.w3.org/TR/webauthn/#createCredential
 - https://www.w3.org/TR/webauthn/#op-make-cred

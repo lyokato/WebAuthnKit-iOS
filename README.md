@@ -79,7 +79,7 @@ options.authenticatorSelection = AuthenticatorSelectionCriteria(
 )
 
 self.webAuthnClient.create(options).then { credential in
-  // sent parameters to your server
+  // send parameters to your server
 
   // credential.id
   // credential.rawId

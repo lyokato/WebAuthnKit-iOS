@@ -607,6 +607,10 @@ internal class CBORWriter {
                 _ = self.putDouble(value as! Double)
             } else if value is Bool {
                 _ = self.putBool(value as! Bool)
+            } else if value is SimpleOrderedDictionary<String> {
+                _ = self.putStringKeyMap(value as! SimpleOrderedDictionary<String>)
+            } else if value is [Any] {
+                _ = self.putArray(value as! [Any])
             } else {
                 fatalError("unsupported value type \(value)")
             }

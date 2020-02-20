@@ -54,13 +54,13 @@ public class AttestationObject {
 
     public func toBytes() -> Optional<[UInt8]> {
 
-        let dict = SimpleOrderedDictionary<String>()
-        dict.addBytes("authData", self.authData.toBytes())
-        dict.addString("fmt", "packed")
-        dict.addStringKeyMap("attStmt", self.attStmt)
+        let dict = SimpleOrderedDictionary<Int>()
+        dict.addString(0x01, "packed")
+        dict.addBytes(0x02, self.authData.toBytes())
+        dict.addStringKeyMap(0x03, self.attStmt)
 
         return CBORWriter()
-            .putStringKeyMap(dict)
+            .putIntKeyMap(dict)
             .getResult()
     }
 

@@ -253,7 +253,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
         )
 
         session.makeCredential(
-            hash:                            self.clientDataHash,
+            hash:                            self.options.challenge,
             rpEntity:                        rpEntity,
             userEntity:                      options.user,
             requireResidentKey:              requireResidentKey,

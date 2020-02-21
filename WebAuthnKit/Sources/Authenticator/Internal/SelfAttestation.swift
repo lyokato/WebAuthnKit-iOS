@@ -14,7 +14,7 @@ public class SelfAttestation {
         authData:       AuthenticatorData,
         clientDataHash: [UInt8],
         alg:            COSEAlgorithmIdentifier,
-        keyLabel:       String
+        keySupport:     KeySupport
         ) -> Optional<AttestationObject> {
         
         WAKLogger.debug("<SelfAttestation> create")
@@ -22,15 +22,8 @@ public class SelfAttestation {
         var dataToBeSigned = authData.toBytes()
         dataToBeSigned.append(contentsOf: clientDataHash)
         
-        guard let keySupport =
-            KeySupportChooser().choose([alg]) else {
-                WAKLogger.debug("<SelfAttestation> key-support not found")
-                return nil
-        }
-        
         guard let sig = keySupport.sign(
-            data:  dataToBeSigned,
-            label: keyLabel
+            data:  dataToBeSigned
         ) else {
             WAKLogger.debug("<AttestationHelper> failed to sign")
             return nil

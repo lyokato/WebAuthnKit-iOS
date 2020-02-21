@@ -12,8 +12,9 @@ import EllipticCurveKeyPair
 
 public protocol KeySupport {
     var selectedAlg: COSEAlgorithmIdentifier { get }
-    func createKeyPair(label: String) -> Optional<COSEKey>
-    func sign(data: [UInt8], label: String) -> Optional<[UInt8]>
+    func createKeyPair() -> Optional<COSEKey>
+    func sign(data: [UInt8]) -> Optional<[UInt8]>
+    func setup(label: String)
 }
 
 public class KeySupportChooser {
@@ -38,9 +39,14 @@ public class KeySupportChooser {
     }
 }
 
+enum ECDSAKeySupportError : Error {
+    case noKeyPair
+}
+
 public class ECDSAKeySupport : KeySupport {
     
     public let selectedAlg: COSEAlgorithmIdentifier
+    public var pair: EllipticCurveKeyPair.Manager?
     
     init(alg: COSEAlgorithmIdentifier) {
         self.selectedAlg = alg
@@ -66,9 +72,13 @@ public class ECDSAKeySupport : KeySupport {
         return EllipticCurveKeyPair.Manager(config: config)
     }
     
-    public func sign(data: [UInt8], label: String) -> Optional<[UInt8]> {
+    public func setup(label: String) {
+        self.pair = self.createPair(label: label)
+    }
+    
+    public func sign(data: [UInt8]) -> Optional<[UInt8]> {
         do {
-            let pair = self.createPair(label: label)
+            guard let pair = self.pair else { throw ECDSAKeySupportError.noKeyPair }
             let signature = try pair.sign(Data(bytes: data), hash: .sha256)
             return signature.bytes
         } catch let error {
@@ -77,10 +87,10 @@ public class ECDSAKeySupport : KeySupport {
         }
     }
     
-    public func createKeyPair(label: String) -> Optional<COSEKey> {
+    public func createKeyPair() -> Optional<COSEKey> {
         WAKLogger.debug("<ECDSAKeySupport> createKeyPair")
         do {
-            let pair = self.createPair(label: label)
+            guard let pair = self.pair else { throw ECDSAKeySupportError.noKeyPair }
             let publicKey = try pair.publicKey().data().DER.bytes
             if publicKey.count != 91 {
                 WAKLogger.debug("<ECDSAKeySupport> length of pubKey should be 91: \(publicKey.count)")

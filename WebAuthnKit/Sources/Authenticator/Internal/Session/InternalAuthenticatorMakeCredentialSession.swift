@@ -186,8 +186,9 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
             )
 
             // TODO should remove fron KeyPair too?
-
-            guard let publicKeyCOSE = keySupport.createKeyPair(label: credSource.keyLabel) else {
+            keySupport.setup(label: credSource.keyLabel)
+            
+            guard let publicKeyCOSE = keySupport.createKeyPair() else {
                 self.stop(by: .unknown)
                 return
             }
@@ -223,7 +224,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                     authData:       authenticatorData,
                     clientDataHash: hash,
                     alg:            keySupport.selectedAlg,
-                    keyLabel:       credSource.keyLabel
+                    keySupport:     keySupport
                 ) else {
                     WAKLogger.debug("<MakeCredentialSession> failed to build attestation object")
                     self.stop(by: .unknown)

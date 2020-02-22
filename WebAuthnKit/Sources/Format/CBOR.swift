@@ -504,7 +504,11 @@ internal class CBORReader {
         case 4:
             result = Int64((UInt32(b2[0]) << 24) | (UInt32(b2[1]) << 16) | (UInt32(b2[2]) << 8) | UInt32(b2[3]))
         case 8:
-            let result1 = Int64((UInt64(b2[0]) << 56) | (UInt64(b2[1]) << 48) | (UInt64(b2[2]) << 40) | (UInt64(b2[3]) << 32))
+            let A = (UInt64(b2[0]) << 56)
+            let B = (UInt64(b2[1]) << 48)
+            let C = (UInt64(b2[2]) << 40)
+            let D = (UInt64(b2[3]) << 32)
+            let result1 = Int64( A | B | C | D )
             let result2 = Int64((UInt64(b2[4]) << 24) | (UInt64(b2[5]) << 16) | (UInt64(b2[6]) << 8) | UInt64(b2[7]))
             result = result1 | result2
         default:
@@ -603,6 +607,10 @@ internal class CBORWriter {
                 _ = self.putDouble(value as! Double)
             } else if value is Bool {
                 _ = self.putBool(value as! Bool)
+            } else if value is SimpleOrderedDictionary<String> {
+                _ = self.putStringKeyMap(value as! SimpleOrderedDictionary<String>)
+            } else if value is [Any] {
+                _ = self.putArray(value as! [Any])
             } else {
                 fatalError("unsupported value type \(value)")
             }

@@ -172,8 +172,9 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                     self.stop(by: .unsupported)
                     return
             }
-
-            guard let signature = keySupport.sign(data: data, label: cred.keyLabel) else {
+            
+            keySupport.setup(label: cred.keyLabel)
+            guard let signature = keySupport.sign(data: data) else {
                 self.stop(by: .unknown)
                 return
             }

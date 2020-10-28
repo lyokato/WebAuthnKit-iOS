@@ -1,6 +1,8 @@
-# WebAuthnKit
+# WebAuthnKit (iOS)
 
 This library provides you a way to handle W3C Web Authentication API (a.k.a. WebAuthN / FIDO 2.0) easily.
+
+(You can also get Android version here https://github.com/lyokato/WebAuthnKit-Android)
 
 ![webauthnkit](https://user-images.githubusercontent.com/30877/48991209-58517080-f175-11e8-879c-2a7628ff5df5.png)
 
@@ -18,7 +20,7 @@ platform :ios, '10.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'WebAuthnKit', '~> 0.9.2'
+    pod 'WebAuthnKit', '~> 0.9.3'
 end
 ```
 
@@ -55,7 +57,7 @@ self.webAuthnClient = WebAuthnClient(
 ## Registration Flow
 
 With a flow which is described in following documents,
-WebAuthnClient creates a credential if success.
+WebAuthnClient creates a credential if it succeeded.
 
 - https://www.w3.org/TR/webauthn/#createCredential
 - https://www.w3.org/TR/webauthn/#op-make-cred
@@ -79,7 +81,7 @@ options.authenticatorSelection = AuthenticatorSelectionCriteria(
 )
 
 self.webAuthnClient.create(options).then { credential in
-  // sent parameters to your server
+  // send parameters to your server
 
   // credential.id
   // credential.rawId

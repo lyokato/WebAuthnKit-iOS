@@ -32,15 +32,19 @@ public class Bytes {
     }
 
     public static func toUInt64(_ bytes: [UInt8]) -> UInt64 {
-        var b = bytes
-        while b.count < 8 {
-            b.insert(UInt8(0x00), at: 0)
+        var bytes = bytes
+        while bytes.count < 8 {
+            bytes.insert(UInt8(0x00), at: 0)
         }
-        while b.count > 8 {
-           b.removeFirst()
+        while bytes.count > 8 {
+            bytes.removeFirst()
         }
-        let result1 = UInt64((UInt64(b[0]) << 56) | (UInt64(b[1]) << 48) | (UInt64(b[2]) << 40) | (UInt64(b[3]) << 32))
-        let result2 = UInt64((UInt64(b[4]) << 24) | (UInt64(b[5]) << 16) | (UInt64(b[6]) << 8) | UInt64(b[7]))
+        let a = UInt64(bytes[0]) << 56
+        let b = UInt64(bytes[1]) << 48
+        let c = UInt64(bytes[2]) << 40
+        let d = UInt64(bytes[3]) << 32
+        let result1 = UInt64(a | b | c | d)
+        let result2 = UInt64((UInt64(bytes[4]) << 24) | (UInt64(bytes[5]) << 16) | (UInt64(bytes[6]) << 8) | UInt64(bytes[7]))
         return result1 | result2
     }
 

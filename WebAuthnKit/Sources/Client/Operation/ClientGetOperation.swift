@@ -239,7 +239,7 @@ public class ClientGetOperation: AuthenticatorGetAssertionSessionDelegate {
 
         } else {
 
-            var allowCredentialDescriptorList = self.options.allowCredentials.filter {
+            let allowCredentialDescriptorList = self.options.allowCredentials.filter {
                 // TODO more check for id
                 $0.transports.contains(session.transport)
             }

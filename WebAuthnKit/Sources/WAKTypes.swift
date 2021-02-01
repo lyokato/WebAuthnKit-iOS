@@ -67,7 +67,7 @@ public struct AuthenticatorAssertionResponse: AuthenticatorResponse {
 }
 
 public struct PublicKeyCredential<T: AuthenticatorResponse>: Codable {
-    public let type: PublicKeyCredentialType = .publicKey
+    public var type: PublicKeyCredentialType = .publicKey
     public var rawId: [UInt8]
     public var id: String
     public var response: T
@@ -182,7 +182,7 @@ public enum AttestationConveyancePreference: String, Codable {
 }
 
 public struct PublicKeyCredentialParameters : Codable {
-    public let type: PublicKeyCredentialType = .publicKey
+    public var type: PublicKeyCredentialType = .publicKey
     public var alg: COSEAlgorithmIdentifier
     
     public init(alg: COSEAlgorithmIdentifier) {

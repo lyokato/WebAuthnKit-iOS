@@ -5,19 +5,19 @@ target 'WebAuthnKitDemo' do
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
   use_frameworks!
 
-  pod "PromiseKit", "~> 6.3.4"
-  pod "EllipticCurveKeyPair", "~> 2.0-beta1"
-  pod "KeychainAccess", "~> 3.1.2"
-  pod "CryptoSwift", "~> 0.13.0"
+  pod "PromiseKit", "~> 6.13.1"
+  pod "EllipticCurveKeyPair", "~> 2.0"
+  pod "KeychainAccess", "~> 4.2.1"
+  pod "CryptoSwift", "~> 1.3.8"
 
   # Pods for WebAuthnKitDemo
 
   target 'WebAuthnKit' do
     inherit! :search_paths
-    pod "PromiseKit", "~> 6.3.4"
-    pod "EllipticCurveKeyPair", "~> 2.0-beta1"
-    pod "KeychainAccess", "~> 3.1.2"
-    pod "CryptoSwift", "~> 0.13.0"
+    pod "PromiseKit", "~> 6.13.1"
+    pod "EllipticCurveKeyPair", "~> 2.0"
+    pod "KeychainAccess", "~> 4.2.1"
+    pod "CryptoSwift", "~> 1.3.8"
   end
 
   target 'WebAuthnKitTests' do

@@ -27,6 +27,18 @@ public class UserConsentUIConfig {
     public var showRPInformation: Bool = true
     public var alwaysShowKeySelection: Bool = false
     public var requireBiometrics: Bool = false
+    
+    public var borderLightColor: UInt = 0xbbbbbb
+    public var titleTextLightColor: UIColor = UIColor.black
+    public var fieldTextLightColor: UIColor = UIColor.white
+    public var pickerBackgroundLightColor: UIColor = UIColor.lightGray.withAlphaComponent(0.2)
+    public var viewBorderLightColor: UInt = 0xdddddd
+    
+    public var borderDarkColor: UInt = 0x444444
+    public var titleTextDarkColor: UIColor = UIColor.white
+    public var fieldTextDarkColor: UIColor = UIColor.black
+    public var pickerBackgroundDarkColor: UIColor = UIColor.darkGray.withAlphaComponent(0.2)
+    public var viewBorderDarkColor: UInt = 0x222222
 
     public init() {}
     
@@ -35,6 +47,61 @@ public class UserConsentUIConfig {
             return self.requireBiometrics ?
                 .deviceOwnerAuthenticationWithBiometrics :
                 .deviceOwnerAuthentication
+        }
+    }
+    
+    public var titleTextColor: UIColor {
+        get {
+            if #available(iOS 13.0, *) {
+                if UITraitCollection.current.userInterfaceStyle == .dark {
+                    return titleTextDarkColor;
+                }
+            }
+            return titleTextLightColor;
+        }
+    }
+    
+    public var pickerBackgroundColor: UIColor {
+        get {
+            if #available(iOS 13.0, *) {
+                if UITraitCollection.current.userInterfaceStyle == .dark {
+                    return pickerBackgroundDarkColor;
+                }
+            }
+            return pickerBackgroundLightColor;
+        }
+    }
+    
+    public var fieldTextColor: UIColor {
+        get {
+            if #available(iOS 13.0, *) {
+                if UITraitCollection.current.userInterfaceStyle == .dark {
+                    return fieldTextDarkColor;
+                }
+            }
+            return fieldTextLightColor;
+        }
+    }
+    
+    public var borderColor: UInt {
+        get {
+            if #available(iOS 13.0, *) {
+                if UITraitCollection.current.userInterfaceStyle == .dark {
+                    return borderDarkColor;
+                }
+            }
+            return borderLightColor;
+        }
+    }
+    
+    public var viewBorderColor: UInt {
+        get {
+            if #available(iOS 13.0, *) {
+                if UITraitCollection.current.userInterfaceStyle == .dark {
+                    return viewBorderDarkColor;
+                }
+            }
+            return viewBorderLightColor;
         }
     }
 

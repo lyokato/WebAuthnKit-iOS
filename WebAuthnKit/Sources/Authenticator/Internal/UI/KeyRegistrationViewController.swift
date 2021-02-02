@@ -97,7 +97,7 @@ class KeyDetailView: UIView, UITextFieldDelegate {
             height: titleHeight
         )
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = UIColor.black
+        titleLabel.textColor = self.config.titleTextColor;
         titleLabel.text = self.config.keyCreationTitle
         titleLabel.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
         titleLabel.textAlignment = .center
@@ -117,9 +117,10 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         self.keyNameField.borderStyle = .none
         self.keyNameField.delegate = self
         self.keyNameField.layer.backgroundColor = UIColor.white.cgColor
-        self.keyNameField.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
+        self.keyNameField.layer.borderColor = self.rgbColor(self.config.borderColor).cgColor
         self.keyNameField.layer.cornerRadius = 5.0
         self.keyNameField.text = self.createDefaultKeyName()
+        self.keyNameField.textColor = self.config.fieldTextColor;
         self.keyNameField.font = UIFont.systemFont(ofSize: 14.0, weight: .medium)
         self.addSubview(self.keyNameField)
         
@@ -222,7 +223,7 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         )
         cancelButton.setTitle(self.config.keyCreationCancelButtonText, for: .normal)
         cancelButton.setTitleColor(self.tintColor, for: .normal)
-        cancelButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
+        cancelButton.layer.borderColor = self.rgbColor(self.config.borderColor).cgColor
         cancelButton.layer.borderWidth = 1.0
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .light)
         cancelButton.addTarget(
@@ -241,7 +242,7 @@ class KeyDetailView: UIView, UITextFieldDelegate {
         )
         createButton.setTitleColor(self.tintColor, for: .normal)
         createButton.setTitle(self.config.keyCreationCreateButtonText, for: .normal)
-        createButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
+        createButton.layer.borderColor = self.rgbColor(self.config.borderColor).cgColor
         createButton.layer.borderWidth = 1.0
         createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .medium)
         createButton.addTarget(
@@ -260,7 +261,7 @@ class KeyDetailView: UIView, UITextFieldDelegate {
             height: offset
         )
         
-        self.layer.borderColor = self.rgbColor(0xdddddd).cgColor
+        self.layer.borderColor = self.rgbColor(self.config.viewBorderColor).cgColor
         self.layer.borderWidth = 1
         backgroundView.frame = self.frame
 

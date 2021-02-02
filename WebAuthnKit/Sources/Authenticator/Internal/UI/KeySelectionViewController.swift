@@ -72,7 +72,7 @@ public class KeySelectionView: UIView, UIPickerViewDataSource, UIPickerViewDeleg
             height: titleHeight
         )
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = UIColor.black
+        titleLabel.textColor = self.config.titleTextColor
         titleLabel.text = self.config.keySelectionTitle
         titleLabel.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
         titleLabel.textAlignment = .center
@@ -89,7 +89,7 @@ public class KeySelectionView: UIView, UIPickerViewDataSource, UIPickerViewDeleg
             height: pickerViewHeight
         )
         
-        pickerView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.2)
+        pickerView.backgroundColor = self.config.pickerBackgroundColor
         pickerView.delegate = self
         pickerView.dataSource = self
         self.addSubview(pickerView)
@@ -109,7 +109,7 @@ public class KeySelectionView: UIView, UIPickerViewDataSource, UIPickerViewDeleg
         )
         cancelButton.setTitle(self.config.keySelectionCancelButtonText, for: .normal)
         cancelButton.setTitleColor(self.tintColor, for: .normal)
-        cancelButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
+        cancelButton.layer.borderColor = self.rgbColor(self.config.borderColor).cgColor
         cancelButton.layer.borderWidth = 1.0
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .light)
         cancelButton.addTarget(
@@ -128,7 +128,7 @@ public class KeySelectionView: UIView, UIPickerViewDataSource, UIPickerViewDeleg
         )
         selectButton.setTitleColor(self.tintColor, for: .normal)
         selectButton.setTitle(self.config.keySelectionSelectButtonText, for: .normal)
-        selectButton.layer.borderColor = self.rgbColor(0xbbbbbb).cgColor
+        selectButton.layer.borderColor = self.rgbColor(self.config.borderColor).cgColor
         selectButton.layer.borderWidth = 1.0
         selectButton.titleLabel?.font = UIFont.systemFont(ofSize: 16.0, weight: .medium)
         selectButton.addTarget(
@@ -147,7 +147,7 @@ public class KeySelectionView: UIView, UIPickerViewDataSource, UIPickerViewDeleg
             height: offset
         )
         
-        self.layer.borderColor = self.rgbColor(0xdddddd).cgColor
+        self.layer.borderColor = self.rgbColor(self.config.viewBorderColor).cgColor
         self.layer.borderWidth = 1
         backgroundView.frame = self.frame
         
@@ -186,7 +186,7 @@ public class KeySelectionView: UIView, UIPickerViewDataSource, UIPickerViewDeleg
         }
         let text = self.sources[row].otherUI
         pickerLabel?.text = text
-        pickerLabel?.textColor = UIColor.black
+        pickerLabel?.textColor = self.config.titleTextColor
         
         return pickerLabel!
     }

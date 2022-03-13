@@ -10,7 +10,6 @@ import UIKit
 import WebAuthnKit
 import PromiseKit
 import CryptoSwift
-import LocalAuthentication
 
 class AuthenticationViewController: UIViewController, UITextFieldDelegate {
     
@@ -23,7 +22,7 @@ class AuthenticationViewController: UIViewController, UITextFieldDelegate {
         self.userConsentUI.config.alwaysShowKeySelection = true
 
         let authenticator = InternalAuthenticator(ui: self.userConsentUI)
-                
+        
         self.webAuthnClient = WebAuthnClient(
             origin:        "https://example.org",
             authenticator: authenticator

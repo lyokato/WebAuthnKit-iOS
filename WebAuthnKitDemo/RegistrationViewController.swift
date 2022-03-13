@@ -10,7 +10,6 @@ import UIKit
 import WebAuthnKit
 import PromiseKit
 import CryptoSwift
-import LocalAuthentication
 
 public enum FormError : Error {
     case missing(String)
@@ -27,7 +26,7 @@ class RegistrationViewController: UIViewController, UITextFieldDelegate {
         self.userConsentUI = UserConsentUI(viewController: self)
 
         let authenticator = InternalAuthenticator(ui: self.userConsentUI)
-                
+        
         self.webAuthnClient = WebAuthnClient(
             origin:        "https://example.org",
             authenticator: authenticator

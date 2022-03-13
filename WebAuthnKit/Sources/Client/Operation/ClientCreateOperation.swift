@@ -8,7 +8,6 @@
 
 import Foundation
 import PromiseKit
-import LocalAuthentication
 
 public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     

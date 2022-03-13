@@ -195,7 +195,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     // MARK: AuthenticatorMakeCredentialSessionDelegate Methods
 
     /// 5.1.3 - 20
-    public func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession, context: LAContext) {
+    public func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession) {
         
         WAKLogger.debug("<CreateOperation> authenticator become available")
 

@@ -21,7 +21,7 @@ public struct AuthenticatorAssertionResult {
 }
 
 public protocol AuthenticatorMakeCredentialSessionDelegate: class {
-    func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession, context: LAContext)
+    func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession)
     func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorMakeCredentialSession)
     func authenticatorSessionDidStopOperation(session: AuthenticatorMakeCredentialSession, reason: WAKError)
     func authenticatorSessionDidMakeCredential(session: AuthenticatorMakeCredentialSession, attestation: AttestationObject)

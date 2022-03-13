@@ -69,7 +69,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
             return
         }
         self.started = true
-        self.delegate?.authenticatorSessionDidBecomeAvailable(session: self, context: context)
+        self.delegate?.authenticatorSessionDidBecomeAvailable(session: self)
     }
     
     // 6.3.4 authenticatorCancel Operation

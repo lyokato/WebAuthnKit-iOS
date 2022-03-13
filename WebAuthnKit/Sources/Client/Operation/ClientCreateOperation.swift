@@ -8,6 +8,7 @@
 
 import Foundation
 import PromiseKit
+import LocalAuthentication
 
 public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     
@@ -194,7 +195,7 @@ public class ClientCreateOperation: AuthenticatorMakeCredentialSessionDelegate {
     // MARK: AuthenticatorMakeCredentialSessionDelegate Methods
 
     /// 5.1.3 - 20
-    public func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession) {
+    public func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession, context: LAContext) {
         
         WAKLogger.debug("<CreateOperation> authenticator become available")
 

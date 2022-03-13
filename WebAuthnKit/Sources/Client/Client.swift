@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import CryptoSwift
+import LocalAuthentication
 
 public enum ClientOperationType {
    case get
@@ -43,14 +44,14 @@ public class WebAuthnClient: ClientOperationDelegate {
         self.authenticator = authenticator
     }
 
-    public func create(_ options: PublicKeyCredentialCreationOptions)
+    public func create(_ options: PublicKeyCredentialCreationOptions, context: LAContext? = nil)
         -> Promise<CreateResponse> {
 
             WAKLogger.debug("<WebAuthnClient> create")
 
             return Promise { resolver in
 
-                let op = self.newCreateOperation(options)
+                let op = self.newCreateOperation(options, context: context)
                 op.delegate = self
                 self.createOperations[op.id] = op
 
@@ -64,18 +65,17 @@ public class WebAuthnClient: ClientOperationDelegate {
                     resolver.reject(error)
 
                 }
-
             }
     }
 
-    public func get(_ options: PublicKeyCredentialRequestOptions)
+    public func get(_ options: PublicKeyCredentialRequestOptions, context: LAContext? = nil)
         -> Promise<GetResponse> {
 
             WAKLogger.debug("<WebAuthnClient> get")
 
             return Promise { resolver in
-
-                let op = self.newGetOperation(options)
+                
+                let op = self.newGetOperation(options, context: context)
                 op.delegate = self
                 self.getOperations[op.id] = op
 
@@ -100,7 +100,7 @@ public class WebAuthnClient: ClientOperationDelegate {
     }
 
     /// this function comforms to https://www.w3.org/TR/webauthn/#createCredential
-    public func newCreateOperation(_ options: PublicKeyCredentialCreationOptions)
+    public func newCreateOperation(_ options: PublicKeyCredentialCreationOptions, context: LAContext?)
         -> ClientCreateOperation {
 
             WAKLogger.debug("<WebAuthnClient> newCreateOperation")
@@ -124,7 +124,7 @@ public class WebAuthnClient: ClientOperationDelegate {
                     challenge: Base64.encodeBase64URL(options.challenge)
                 )
 
-            let session = self.authenticator.newMakeCredentialSession()
+            let session = self.authenticator.newMakeCredentialSession(context: context)
 
             return ClientCreateOperation(
                 options:        options,
@@ -138,7 +138,7 @@ public class WebAuthnClient: ClientOperationDelegate {
 
     }
 
-    public func newGetOperation(_ options: PublicKeyCredentialRequestOptions)
+    public func newGetOperation(_ options: PublicKeyCredentialRequestOptions, context: LAContext?)
         -> ClientGetOperation {
 
         WAKLogger.debug("<WebAuthnClient> newGetOperation")
@@ -156,7 +156,7 @@ public class WebAuthnClient: ClientOperationDelegate {
                 challenge: Base64.encodeBase64URL(options.challenge)
         )
 
-        let session = self.authenticator.newGetAssertionSession()
+        let session = self.authenticator.newGetAssertionSession(context: context)
 
         return ClientGetOperation(
             options:        options,

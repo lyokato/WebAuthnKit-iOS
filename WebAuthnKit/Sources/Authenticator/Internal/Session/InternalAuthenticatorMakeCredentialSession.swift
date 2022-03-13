@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import CryptoSwift
+import LocalAuthentication
 
 public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCredentialSession {
     
@@ -31,6 +32,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
     private let ui:                UserConsentUI
     private let credentialStore:   CredentialStore
     private let keySupportChooser: KeySupportChooser
+    private let context:           LAContext
     
     private var started = false
     private var stopped = false
@@ -39,12 +41,14 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         setting:           InternalAuthenticatorSetting,
         ui:                UserConsentUI,
         credentialStore:   CredentialStore,
-        keySupportChooser: KeySupportChooser
+        keySupportChooser: KeySupportChooser,
+        context:           LAContext? = nil
     ) {
         self.setting           = setting
         self.ui                = ui
         self.credentialStore   = credentialStore
         self.keySupportChooser = keySupportChooser
+        self.context           = context ?? LAContext()
     }
     
     public func canPerformUserVerification() -> Bool {
@@ -65,7 +69,7 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
             return
         }
         self.started = true
-        self.delegate?.authenticatorSessionDidBecomeAvailable(session: self)
+        self.delegate?.authenticatorSessionDidBecomeAvailable(session: self, context: context)
     }
     
     // 6.3.4 authenticatorCancel Operation
@@ -114,7 +118,8 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
         requireUserPresence:             Bool,
         requireUserVerification:         Bool,
         credTypesAndPubKeyAlgs:          [PublicKeyCredentialParameters] = [PublicKeyCredentialParameters](),
-        excludeCredentialDescriptorList: [PublicKeyCredentialDescriptor] = [PublicKeyCredentialDescriptor]()) {
+        excludeCredentialDescriptorList: [PublicKeyCredentialDescriptor] = [PublicKeyCredentialDescriptor]()
+    ) {
         
         WAKLogger.debug("<MakeCredentialSession> make credential")
         
@@ -164,7 +169,8 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
             self.ui.requestUserConsent(
                 rpEntity:            rpEntity,
                 userEntity:          userEntity,
-                requireVerification: requireUserVerification
+                requireVerification: requireUserVerification,
+                context:             context
             )
             
         }.done { keyName in
@@ -223,7 +229,8 @@ public class InternalAuthenticatorMakeCredentialSession : AuthenticatorMakeCrede
                     authData:       authenticatorData,
                     clientDataHash: hash,
                     alg:            keySupport.selectedAlg,
-                    keyLabel:       credSource.keyLabel
+                    keyLabel:       credSource.keyLabel,
+                    context:        self.context
                 ) else {
                     WAKLogger.debug("<MakeCredentialSession> failed to build attestation object")
                     self.stop(by: .unknown)

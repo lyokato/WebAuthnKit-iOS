@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import LocalAuthentication
 
 public struct AuthenticatorAssertionResult {
     var credentailId: [UInt8]?
@@ -20,7 +21,7 @@ public struct AuthenticatorAssertionResult {
 }
 
 public protocol AuthenticatorMakeCredentialSessionDelegate: class {
-    func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession)
+    func authenticatorSessionDidBecomeAvailable(session: AuthenticatorMakeCredentialSession, context: LAContext)
     func authenticatorSessionDidBecomeUnavailable(session: AuthenticatorMakeCredentialSession)
     func authenticatorSessionDidStopOperation(session: AuthenticatorMakeCredentialSession, reason: WAKError)
     func authenticatorSessionDidMakeCredential(session: AuthenticatorMakeCredentialSession, attestation: AttestationObject)
@@ -91,8 +92,8 @@ public protocol Authenticator {
     var allowResidentKey: Bool { get }
     var allowUserVerification: Bool { get }
     
-    func newMakeCredentialSession() -> AuthenticatorMakeCredentialSession
-    func newGetAssertionSession() -> AuthenticatorGetAssertionSession
+    func newMakeCredentialSession(context: LAContext?) -> AuthenticatorMakeCredentialSession
+    func newGetAssertionSession(context: LAContext?) -> AuthenticatorGetAssertionSession
 
 }
 

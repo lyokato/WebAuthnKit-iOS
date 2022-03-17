@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import CryptoSwift
+import LocalAuthentication
 
 public struct InternalAuthenticatorSetting {
     public let attachment: AuthenticatorAttachment = .platform
@@ -86,23 +87,25 @@ public class InternalAuthenticator : Authenticator {
         self.credentialStore = credentialStore
     }
 
-    public func newMakeCredentialSession() -> AuthenticatorMakeCredentialSession {
+    public func newMakeCredentialSession(context: LAContext?) -> AuthenticatorMakeCredentialSession {
         WAKLogger.debug("<InternalAuthenticator> newMakeCredentialSession")
         return InternalAuthenticatorMakeCredentialSession(
             setting:           self.setting,
             ui:                self.ui,
             credentialStore:   self.credentialStore,
-            keySupportChooser: self.keySupportChooser
+            keySupportChooser: self.keySupportChooser,
+            context:           context
         )
     }
     
-    public func newGetAssertionSession() -> AuthenticatorGetAssertionSession {
+    public func newGetAssertionSession(context: LAContext?) -> AuthenticatorGetAssertionSession {
         WAKLogger.debug("<InternalAuthenticator> newGetAssertionSession")
         return InternalAuthenticatorGetAssertionSession(
             setting:           self.setting,
             ui:                self.ui,
             credentialStore:   self.credentialStore,
-            keySupportChooser: self.keySupportChooser
+            keySupportChooser: self.keySupportChooser,
+            context:           context
         )
     }
 

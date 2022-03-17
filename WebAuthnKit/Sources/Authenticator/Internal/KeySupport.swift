@@ -9,11 +9,12 @@
 import Foundation
 import CryptoSwift
 import EllipticCurveKeyPair
+import LocalAuthentication
 
 public protocol KeySupport {
     var selectedAlg: COSEAlgorithmIdentifier { get }
     func createKeyPair(label: String) -> Optional<COSEKey>
-    func sign(data: [UInt8], label: String) -> Optional<[UInt8]>
+    func sign(data: [UInt8], label: String, context: LAContext) -> Optional<[UInt8]>
 }
 
 public class KeySupportChooser {
@@ -66,10 +67,10 @@ public class ECDSAKeySupport : KeySupport {
         return EllipticCurveKeyPair.Manager(config: config)
     }
     
-    public func sign(data: [UInt8], label: String) -> Optional<[UInt8]> {
+    public func sign(data: [UInt8], label: String, context: LAContext) -> Optional<[UInt8]> {
         do {
             let pair = self.createPair(label: label)
-            let signature = try pair.sign(Data(bytes: data), hash: .sha256)
+            let signature = try pair.sign(Data(bytes: data), hash: .sha256, context: context)
             return signature.bytes
         } catch let error {
             WAKLogger.debug("<ECDSAKeySupport> failed to sign: \(error)")

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import LocalAuthentication
 
 public class SelfAttestation {
     
@@ -14,7 +15,8 @@ public class SelfAttestation {
         authData:       AuthenticatorData,
         clientDataHash: [UInt8],
         alg:            COSEAlgorithmIdentifier,
-        keyLabel:       String
+        keyLabel:       String,
+        context:        LAContext
         ) -> Optional<AttestationObject> {
         
         WAKLogger.debug("<SelfAttestation> create")
@@ -30,7 +32,8 @@ public class SelfAttestation {
         
         guard let sig = keySupport.sign(
             data:  dataToBeSigned,
-            label: keyLabel
+            label: keyLabel,
+            context: context
         ) else {
             WAKLogger.debug("<AttestationHelper> failed to sign")
             return nil

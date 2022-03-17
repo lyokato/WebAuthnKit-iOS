@@ -100,7 +100,8 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     internal func requestUserConsent(
         rpEntity:            PublicKeyCredentialRpEntity,
         userEntity:          PublicKeyCredentialUserEntity,
-        requireVerification: Bool
+        requireVerification: Bool,
+        context:             LAContext
         ) -> Promise<String> {
         
         WAKLogger.debug("<UserConsentUI> requestUserConsent")
@@ -139,7 +140,8 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                     
                     return self.verifyUser(
                         message: "Create-Key Authentication",
-                        params:  keyName
+                        params:  keyName,
+                        context: context
                     )
                     
                 } else {
@@ -183,7 +185,8 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     
     internal func requestUserSelection(
         sources:             [PublicKeyCredentialSource],
-        requireVerification: Bool
+        requireVerification: Bool,
+        context:             LAContext
         ) -> Promise<PublicKeyCredentialSource> {
         
         WAKLogger.debug("<UserConsentUI> requestUserSelection")
@@ -204,7 +207,8 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                         
                         return self.verifyUser(
                             message: "Use-Key Authentication",
-                            params: source
+                            params: source,
+                            context: context
                         )
                         
                     } else {
@@ -214,35 +218,31 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
                     }
                     
                 }
-        }.then { (source: PublicKeyCredentialSource) -> Promise<PublicKeyCredentialSource> in
+            }.then { (source: PublicKeyCredentialSource) -> Promise<PublicKeyCredentialSource> in
     
-            self.didFinishUserInteraction()
+                self.didFinishUserInteraction()
+        
+                if let reason = self.cancelled {
+                    throw reason
+                } else {
+                    return Promise<PublicKeyCredentialSource>{ $0.fulfill(source) }
+                }
     
-            if let reason = self.cancelled {
-    
-                throw reason
-    
-            } else {
-    
-                return Promise<PublicKeyCredentialSource>{ $0.fulfill(source) }
-    
+            }.recover { error -> Promise<PublicKeyCredentialSource> in
+        
+                self.didFinishUserInteraction()
+        
+                if let reason = self.cancelled {
+        
+                    throw reason
+        
+                } else {
+        
+                    throw error
+        
+                }
+        
             }
-    
-        }.recover { error -> Promise<PublicKeyCredentialSource> in
-    
-            self.didFinishUserInteraction()
-    
-            if let reason = self.cancelled {
-    
-                throw reason
-    
-            } else {
-    
-                throw error
-    
-            }
-    
-        }
 
     }
     
@@ -280,7 +280,7 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
         }
     }
 
-    private func verifyUser<T>(message: String, params: T) -> Promise<T> {
+    private func verifyUser<T>(message: String, params: T, context: LAContext) -> Promise<T> {
         
         WAKLogger.debug("<UserConsentUI> verifyUser")
 
@@ -288,10 +288,10 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
 
             DispatchQueue.main.async {
 
-                let ctx = LAContext()
                 var authError: NSError?
-                if ctx.canEvaluatePolicy(self.config.localAuthPolicy, error: &authError) {
-                    ctx.evaluatePolicy(self.config.localAuthPolicy,
+                
+                if context.canEvaluatePolicy(self.config.localAuthPolicy, error: &authError) {
+                    context.evaluatePolicy(self.config.localAuthPolicy,
                                        localizedReason: message,
                                        reply: { success, error in
                                         if success {

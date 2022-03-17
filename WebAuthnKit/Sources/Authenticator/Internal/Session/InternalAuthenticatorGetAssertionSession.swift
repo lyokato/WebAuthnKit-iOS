@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import CryptoSwift
+import LocalAuthentication
 
 public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertionSession {
     
@@ -31,6 +32,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
     private let ui:                UserConsentUI
     private let credentialStore:   CredentialStore
     private let keySupportChooser: KeySupportChooser
+    private let context:           LAContext
     
     private var started = false
     private var stopped = false
@@ -39,12 +41,14 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         setting:             InternalAuthenticatorSetting,
         ui:                  UserConsentUI,
         credentialStore:     CredentialStore,
-        keySupportChooser:   KeySupportChooser
+        keySupportChooser:   KeySupportChooser,
+        context:             LAContext? = nil
     ) {
         self.setting             = setting
         self.ui                  = ui
         self.credentialStore     = credentialStore
         self.keySupportChooser   = keySupportChooser
+        self.context             = context ?? LAContext()
     }
     
     public func start() {
@@ -109,7 +113,7 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
         requireUserPresence:           Bool,
         requireUserVerification:       Bool
         // extensions: [] CBOR MAP
-        ) {
+    ) {
         
         WAKLogger.debug("<GetAssertionSession> get assertion")
         
@@ -129,7 +133,8 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
             
             self.ui.requestUserSelection(
                 sources:             credSources,
-                requireVerification: requireUserVerification
+                requireVerification: requireUserVerification,
+                context:             context
             )
             
         }.done { cred in
@@ -172,8 +177,8 @@ public class InternalAuthenticatorGetAssertionSession : AuthenticatorGetAssertio
                     self.stop(by: .unsupported)
                     return
             }
-
-            guard let signature = keySupport.sign(data: data, label: cred.keyLabel) else {
+            
+            guard let signature = keySupport.sign(data: data, label: cred.keyLabel, context: self.context) else {
                 self.stop(by: .unknown)
                 return
             }

@@ -20,7 +20,7 @@ platform :ios, '11.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'WebAuthnKit', '~> 0.9.5'
+    pod 'WebAuthnKit', '~> 0.9.6'
 end
 ```
 

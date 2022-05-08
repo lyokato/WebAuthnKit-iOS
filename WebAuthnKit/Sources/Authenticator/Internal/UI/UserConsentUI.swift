@@ -51,6 +51,7 @@ public class UserConsentUI: UserConsentViewControllerDelegate {
     
     internal func askUserToCreateNewCredential(rpId: String) -> Promise<()> {
         
+        print("NOA COHEN")
         WAKLogger.debug("<UserConsentUI> askUserToCreateNewCredential")
         
         self.willStartUserInteraction()
